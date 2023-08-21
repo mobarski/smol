@@ -1,0 +1,159 @@
+<script>
+	vm = {}
+	vm.ip = 0
+	vm.code = []
+	vm.stack = []
+	vm.reg = new Array(256).fill(0)
+	vm.ext = {} // extensions
+	
+	function vm_run(n_steps) {
+		for (var i=0; i<n_steps; i++) { vm_step() }
+	}
+
+	function get_op() {
+		var op = vm.code[vm.ip]
+		vm.ip += 1
+		return op
+	}
+	
+	function vm_step() {
+		var t = get_op()
+		switch (t) {
+			case 'return':
+				vm.ip = vm.stack.pop()
+				break
+			case 'call':
+				vm.stack.append(vm.ip)
+				vm.ip = get_op()
+				break
+			case 'goto':
+				vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
+				break
+			case 'push':
+				var a = get_op()
+				var val = value_of(a)
+				vm.stack.push(val)
+				break
+			case 'pop':
+				var a = get_op()
+				var val = vm.stack.pop()
+				vm_set(a, val)
+				break
+			case 'nop':
+				break
+			// CORE
+			case 'if':
+				var a = get_op()
+				var op = get_op()
+				var b = get_op()
+				var addr = get_op()
+				if (vm_alu(a,op,b)) { vm.ip = addr }
+				break
+			case '#': // EXTENSION
+				var op = get_op()
+				vm.ext[op]()
+				break
+			default: // ALU
+				var op = get_op()
+				var b = get_op()
+				var val = vm_alu(t,op,b)
+				vm_set(t, val)
+		}
+	}
+	
+	function vm_alu(a,op,b) {
+		var a = value_of(a)
+		var b = value_of(b)
+		switch (op) {
+		    case  '+': case '+=':  return a+b
+		    case  '-': case '-=':  return a-b
+		    case  '*': case '*=':  return a*b
+		    case  '/': case '/=':  return a/b
+		    case  '%': case '%=':  return a%b
+		    case  '&': case '&=':  return a&b
+		    case  '|': case '|=':  return a|b
+		    case  '^': case '^=':  return a^b
+		    case '<<': case '<<=': return a<<b
+		    case '>>': case '>>=': return a>>b
+		    case '//': case '//=': return Math.floor(a/b)
+		    case  '=': return b
+		    case  '<': return a<b
+		    case  '>': return a>b
+		    case '<=': return a<=b
+		    case '>=': return a>=b
+		    case '==': return a==b
+		    case '!=': return a!=b
+		    case '&&': return a&&b
+		    case '||': return a||b
+        }
+	}
+
+
+	function vm_set(x, val) {
+		if (is_ref(x)) {
+			var r = get_ref(x)
+			vm.reg[r] = val
+		} else if (is_reg(x)) {
+			var r = get_reg(x)
+			vm.reg[r] = val
+		}
+	}
+	
+	function value_of(x) {
+		if (is_num(x)) {
+			return x
+		} else if (is_ref(x)) {
+			var r = get_ref(x)
+			return vm.reg[r]
+		} else if (is_reg(x)) {
+			var r = get_reg(x)
+			return vm.reg[r]
+		}		
+	}
+
+	function get_reg(x) {
+		return parseInt(x.slice(1))
+	}
+	
+	function get_ref(x) {
+		var r = get_reg(x.slice(1))
+		return vm.reg[r]
+	}
+	
+	function is_reg(x) {
+		var r = get_reg(x)
+		return ((x[0]=='r') && (r>=0) && (r<=255))
+	}
+	
+	function is_ref(x) {
+		return ((x[0]=='@') && is_reg(x.slice(1)))
+	}
+	
+	function is_num(x) {
+		return !isNaN(x)
+	}
+
+	// === EXTENSTIONS ============================================================================
+	
+	function ext_halt() {
+		vm.ip -= 2
+	}
+	vm.ext['halt'] = ext_halt
+	
+	function ext_log() {
+		var op = get_op()
+		var val = value_of(op)
+		console.log('log',op,val)
+	}
+	vm.ext['log'] = ext_log
+	
+	// === SANDBOX ================================================================================
+	
+	vm.reg[1] = 11
+	vm.reg[2] = 22
+	vm.reg[3] = 33
+	
+	vm.code = ['r0','=',10,'r1','=',0,'nop','r2','=','r0','r2','+=','r1','@r2','=','r1','r1','+=',1,'if','r1','<',5,6,'#','halt']
+	
+</script>
+

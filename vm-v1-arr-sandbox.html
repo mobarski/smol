@@ -1,0 +1,134 @@
+<script>
+	vm = {}
+	vm.ip = 0
+	vm.code = []
+	vm.stack = []
+	vm.reg = new Array(256).fill(0)
+	vm.ext = {} // extensions
+	
+	function get_op() {
+		var op = vm.code[vm.ip]
+		vm.ip += 1
+		return op
+	}
+	
+	function vm_step() {
+		var t = get_op()
+		switch (t) {
+			case 'return':
+				vm.ip = vm.stack.pop()
+			case 'call':
+				vm.stack.append(vm.ip)
+				vm.ip = get_op()
+			case 'goto':
+				vm.ip = get_op()
+			case 'if':
+				var a = get_op()
+				var op = get_op()
+				var b = get_op()
+				var addr = get_op()
+				if (alu(a,op,b)) { vm.ip = addr }
+			case '#':
+				var op = get_op()
+				vm.ext[op]()
+			default: // ALU
+				var op = get_op()
+				var b = get_op()
+				var val = alu(t,op,b)
+				vm_set(t, val)
+		}
+	}
+	
+	function alu(a,op,b) {
+		var a = value_of(a)
+		var b = value_of(b)
+		switch (op) {
+		    case  '+': case '+=':  return a+b
+		    case  '-': case '-=':  return a-b
+		    case  '*': case '*=':  return a*b
+		    case  '/': case '/=':  return a/b
+		    case  '%': case '%=':  return a%b
+		    case  '&': case '&=':  return a&b
+		    case  '|': case '|=':  return a|b
+		    case  '^': case '^=':  return a^b
+		    case '<<': case '<<=': return a<<b
+		    case '>>': case '>>=': return a>>b
+		    case '//': case '//=': return Math.floor(a/b)
+		    case  '=': return b
+		    case  '<': return a<b
+		    case  '>': return a>b
+		    case '<=': return a<=b
+		    case '>=': return a>=b
+		    case '==': return a==b
+		    case '!=': return a!=b
+        }
+	}
+
+	function vm_set(x, val) {
+		if (is_array(x)) {
+			var r = get_array_reg(x)
+			vm.reg[r] = val
+		} else if (is_reg(x)) {
+			var r = get_reg(x)
+			vm.reg[r] = val
+		}
+	}
+	
+	function value_of(x) {
+		if (is_num(x)) {
+			return x		
+		} else if (is_array(x)) {
+			var r = get_array_reg(x)
+			return vm.reg[r]
+		} else if (is_reg(x)) {
+			var r = get_reg(x)
+			return vm.reg[r]
+		}		
+	}
+
+
+	function get_reg(x) {
+		return parseInt(x.slice(1))
+	}
+	
+	function get_array_reg(x) {
+		var a = x.split('.')[0]
+		var b = x.split('.')[1]
+		var r = get_reg(a)
+		return r + parseInt(value_of(b))
+	}
+	
+	function is_reg(x) {
+		var r = get_reg(x)
+		return ((x[0]=='r') && (r>=0) && (r<=255))
+	}
+	
+	function is_array(x) {
+		if (!x.includes('.')) { return false }
+		var a = x.split('.')[0]
+		var b = x.split('.')[1]
+		if (!is_reg(a)) { return false }
+		if (!is_num(b) && !is_reg(b)) { return false }
+		return true
+	}
+
+	function is_num(x) {
+		return !isNaN(x)
+	}
+
+	// === EXTENSTIONS ============================================================================
+	
+	function ext_halt() {
+		vm.ip -= 1
+	}
+	vm.ext['halt'] = ext_halt
+	
+	function ext_log() {
+		var op = get_op()
+		var val = value_of(op)
+		console.log('log',op,val)
+	}
+	vm.ext['log'] = ext_log
+	
+</script>
+
