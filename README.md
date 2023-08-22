@@ -56,18 +56,39 @@ if r1 < 5 :loop
 ### Extensions
 
 - stack
+
+- leds
+
 - colors / palettes
-- screen
+
 - mouse
+
+- time
+
+- random
+
+- math
+
 - threads (cooperative)
-- rom
-- ram
+
+- screen
+
 - text
+
+- rom
+
+- ram
+
 - touch
+
 - sprites
+
 - particles
+
 - sound
+
 - music
+
 - micro:bit
 
 
