@@ -6,5 +6,5 @@ _loop:
 	@r2 = r1
 	r1 += 1	
 if r1 < 5 :_loop
-# halt
+halt
 

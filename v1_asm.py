@@ -56,8 +56,11 @@ def find_label_definition(name, pos, defined):
             return defined[i][0]
     raise Exception(f'Label not found: {name}, starting from {pos}, {defined}')
 
-def minify(tokens):
+def as_list(tokens):
     return str(tokens).replace(', ', ',')
+
+def as_str(tokens):
+    return str(tokens).replace(', ', ' ').replace("'",'')[1:-1]
 
 # === CLI =========================================================================================
 
@@ -71,6 +74,5 @@ if __name__ == '__main__':
     tokens = tokenize(code)
     labels = detect_labels(tokens)
     linked = link(tokens, labels)
-    #print(linked)
-    print(minify(linked))
-    #print(str(linked).replace(', ', ' ').replace("'",'')[1:-1])
+    print(as_list(linked))
+    print(as_str(linked))
