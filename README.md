@@ -11,7 +11,7 @@
 - [Another World VM](https://fabiensanglard.net/anotherWorld_code_review/) ([polygons](https://fabiensanglard.net/another_world_polygons/))
 - [p-code machine](https://en.wikipedia.org/wiki/P-code_machine)
 - [UXN](https://100r.co/site/uxn.html)
-- [pico-8](https://www.lexaloffle.com/dl/docs/pico-8_manual.html) / [tic-80](https://tic80.com/learn) / 24a2 / cel7 
+- [pico-8](https://www.lexaloffle.com/dl/docs/pico-8_manual.html) / [tic-80](https://tic80.com/learn) / [24a2](https://24a2.routley.io) / [cel7](https://rxi.itch.io/cel7)
 
 
 
