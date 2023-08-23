@@ -63,7 +63,7 @@ if r1 < 5 :loop
 | colors                  | ○         | ●              | ?      | ○     | ○       | ○     |       |
 | screen                  |           |                |        |       |         |       |       |
 | time                    |           |                |        |       |         |       |       |
-| mouse/touch             | ●○○○○○ ○○ | ●○○○○○ ○○      |        |       |         |       |       |
+| mouse/touch             | ●●●●      | ●○○○           |        |       |         |       |       |
 | ----------------------- |           |                |        |       |         |       |       |
 | threads (cooperative)   |           |                |        |       |         |       |       |
 | random                  |           |                |        |       |         |       |       |

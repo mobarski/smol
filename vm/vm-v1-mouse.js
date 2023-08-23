@@ -6,6 +6,24 @@ function ext_mouse_init() {
     document.addEventListener('mouseup', vm_on_mouse_up)
 }
 
+function ext_mouse_key() {
+    var t = get_op() // output target
+    var v = 0 // TODO: get button state
+    vm_set(t, v)
+}
+
+function ext_mouse_xy() {
+    var tx = get_op() // output target x
+    var ty = get_op() // output target y
+
+    var mx = 0 // TODO
+    var my = 0 // TODO
+    vm_set(tx, mx)
+    vm_set(ty, my)
+}
+
+
+
 // TODO
 function vm_on_mouse_down(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
@@ -39,6 +57,8 @@ function _ext_mouse_xy(e) {
 }
 
 vm.ext['mouse-init'] = ext_mouse_init
+vm.ext['mouse-key'] = ext_mouse_key
+vm.ext['mouse-xy'] = ext_mouse_xy
 
 // TODO: pass x,y
 // TODO: pass event type (short click, long click, gesture, etc)
