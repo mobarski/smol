@@ -1,4 +1,4 @@
-function ext_init_leds() {
+function ext_leds_init() {
     vm.leds = {}
     vm.leds.width = vm.cfg.leds.width
     vm.leds.height = vm.cfg.leds.height
@@ -37,7 +37,7 @@ function ext_leds_get() {
     vm_set(t, v)
 }
 
-vm.ext['leds-init'] = ext_init_leds
+vm.ext['leds-init'] = ext_leds_init
 vm.ext['leds-clear'] = ext_leds_clear
 vm.ext['leds-draw'] = ext_leds_draw
 vm.ext['leds-set'] = ext_leds_set

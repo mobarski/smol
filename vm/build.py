@@ -6,6 +6,7 @@ part_to_filename = {
     'stack':  'vm-v1-stack.js',
     'colors': 'vm-v1-colors.js',
     'leds':   'vm-v1-leds.js',
+    'mouse':  'vm-v1-mouse.js',
 }
 
 def config_as_js(config):
@@ -48,7 +49,7 @@ def code_as_str(code):
 
 config = {
     'core.registers': 256,
-    'core.parts': ['core', 'sugar','colors','leds'],
+    'core.parts': ['core', 'sugar','colors','leds','mouse'],
     #
     'leds.width': 17,
     'leds.height': 7,
@@ -58,6 +59,7 @@ config = {
 
 code = [
     'leds-init',
+    'mouse-init',
     'leds-clear',0,
     'leds-set',1,1,1,
     'leds-set',1,2,2,
