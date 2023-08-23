@@ -55,6 +55,13 @@ function _ext_leds_init() {
     document.body.appendChild(canvas)
     vm.leds.canvas = canvas
     vm.leds.ctx = canvas.getContext("2d")
+    //
+    vm.screen = {}
+    vm.screen.width = canvas.width
+    vm.screen.height = canvas.height
+    vm.screen.scale = vm.leds.size
+    vm.screen.ctx = canvas.getContext("2d")
+    vm.screen.canvas = canvas
 }
 
 function _ext_leds_draw_led(x, y, v) {

@@ -32,10 +32,10 @@ function _ext_mouse_xy(e) {
 	var mx = e.clientX - bcr_left
 	var my = e.clientY - bcr_top
 
-    // TODO
+    // TODO: get sx, sy from screen ???
     var sx = vm.leds.size
     var sy = vm.leds.size
-    return {x:mx/sx, y:my/sy}
+    return {x:Math.floor(mx/sx), y:Math.floor(my/sy)}
 }
 
 vm.ext['mouse-init'] = ext_mouse_init

@@ -11,7 +11,8 @@
 - [Another World VM](https://fabiensanglard.net/anotherWorld_code_review/) ([polygons](https://fabiensanglard.net/another_world_polygons/))
 - [p-code machine](https://en.wikipedia.org/wiki/P-code_machine)
 - [UXN](https://100r.co/site/uxn.html)
-- [pico-8](https://www.lexaloffle.com/dl/docs/pico-8_manual.html) / [tic-80](https://tic80.com/learn) / [24a2](https://24a2.routley.io) / [cel7](https://rxi.itch.io/cel7)
+- [pico-8](https://www.lexaloffle.com/dl/docs/pico-8_manual.html) / [24a2](https://24a2.routley.io) / [cel7](https://rxi.itch.io/cel7) / [tic-80](https://tic80.com/learn)
+- micro:bit / scroll:bit
 
 
 
@@ -55,29 +56,29 @@ if r1 < 5 :loop
 
 ### Extensions
 
-| extension             | interface | implementation | config | test  | example | docs  | other |
-| --------------------- | --------- | -------------- | ------ | ----- | ------- | ----- | ----- |
-| stack                 | ●●●●      | ●●●●           |        | ○○○○  | ○○○○    | ○○○○  |       |
-| leds                  | ●●●●●     | ●●●●●          | ●●●●   | ●●●○○ | ○○○○○   | ○○○○○ |       |
-| colors                | ○         | ●              | ?      | ○     | ○       | ○     |       |
-| palettes              | ●         | ●              | ○      | ○     | ○       | ○     | ○     |
-| screen                |           |                |        |       |         |       |       |
-| mouse/touch           | ●○○○○○ ○○ | ●○○○○○ ○○      |        |       |         |       |       |
-| keys                  |           |                |        |       |         |       |       |
-| time                  |           |                |        |       |         |       |       |
-| random                |           |                |        |       |         |       |       |
-| math                  |           |                |        |       |         |       |       |
-| threads (cooperative) |           |                |        |       |         |       |       |
-| font                  |           |                |        |       |         |       |       |
-| text                  |           |                |        |       |         |       |       |
-| rom                   |           |                |        |       |         |       |       |
-| ram                   |           |                |        |       |         |       |       |
-| touch                 |           |                |        |       |         |       |       |
-| sprites               |           |                |        |       |         |       |       |
-| particles             |           |                |        |       |         |       |       |
-| sound                 |           |                |        |       |         |       |       |
-| music                 |           |                |        |       |         |       |       |
-| micro:bit             |           |                |        |       |         |       |       |
+| extension               | interface | implementation | config | test  | example | docs  | other |
+| ----------------------- | --------- | -------------- | ------ | ----- | ------- | ----- | ----- |
+| stack                   | ●●●●      | ●●●●           |        | ○○○○  | ○○○○    | ○○○○  |       |
+| leds                    | ●●●●●     | ●●●●●          | ●●●●   | ●●●○○ | ○○○○○   | ○○○○○ |       |
+| colors                  | ○         | ●              | ?      | ○     | ○       | ○     |       |
+| screen                  |           |                |        |       |         |       |       |
+| time                    |           |                |        |       |         |       |       |
+| mouse/touch             | ●○○○○○ ○○ | ●○○○○○ ○○      |        |       |         |       |       |
+| ----------------------- |           |                |        |       |         |       |       |
+| threads (cooperative)   |           |                |        |       |         |       |       |
+| random                  |           |                |        |       |         |       |       |
+| palettes                | ●         | ●              | ○      | ○     | ○       | ○     | ○     |
+| keys                    |           |                |        |       |         |       |       |
+| math                    |           |                |        |       |         |       |       |
+| font                    |           |                |        |       |         |       |       |
+| text                    |           |                |        |       |         |       |       |
+| rom                     |           |                |        |       |         |       |       |
+| ram                     |           |                |        |       |         |       |       |
+| sprites                 |           |                |        |       |         |       |       |
+| particles               |           |                |        |       |         |       |       |
+| sound                   |           |                |        |       |         |       |       |
+| music                   |           |                |        |       |         |       |       |
+| micro:bit               |           |                |        |       |         |       |       |
 
 
 
