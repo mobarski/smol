@@ -24,5 +24,5 @@ function ext_sprite() {
 	ctx.stroke()
 }
 
-vm.ext['init_screen'] = ext_init_screen
+vm.ext['screen-init'] = ext_init_screen
 

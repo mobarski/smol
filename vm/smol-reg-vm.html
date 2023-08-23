@@ -1,0 +1,241 @@
+<html></html>
+<script>
+vm = {}
+vm.cfg = {}
+vm.cfg.core = {}
+vm.cfg.sugar = {}
+vm.cfg.colors = {}
+vm.cfg.leds = {}
+vm.cfg.core.registers = 256
+vm.cfg.leds.width = 17
+vm.cfg.leds.height = 7
+vm.cfg.leds.size = 32
+vm.cfg.leds.radius = 15
+vm.ip = 0
+vm.code = []
+vm.reg = new Array(vm.cfg.core.registers).fill(0)
+vm.ext = {} // extensions
+
+function vm_run(n_steps) {
+	for (var i=0; i<n_steps; i++) { vm_step() }
+}
+
+function vm_step() {
+	var t = get_op()
+	if (t=='if') {
+		// CONDITIONAL JUMP
+		var a = get_op()
+		var op = get_op()
+		var b = get_op()
+		var addr = get_op()
+		if (vm_alu(a,op,b)) { vm.ip = addr }
+	} else if (t in vm.ext) {
+		// EXTENSION
+		vm.ext[t]()
+	} else {
+		// ALU
+		var op = get_op()
+		var b = get_op()
+		var val = vm_alu(t,op,b)
+		vm_set(t, val)
+	}
+}
+
+function get_op() {
+	var op = vm.code[vm.ip]
+	vm.ip += 1
+	return op
+}
+
+function vm_alu(a,op,b) {
+	var a = value_of(a)
+	var b = value_of(b)
+	switch (op) {
+	    case  '+': case '+=':  return a+b
+	    case  '-': case '-=':  return a-b
+	    case  '*': case '*=':  return a*b
+	    case  '/': case '/=':  return a/b
+	    case  '%': case '%=':  return a%b
+	    case  '&': case '&=':  return a&b
+	    case  '|': case '|=':  return a|b
+	    case  '^': case '^=':  return a^b
+	    case '<<': case '<<=': return a<<b
+	    case '>>': case '>>=': return a>>b
+	    case '//': case '//=': return Math.floor(a/b)
+	    case  '=': return b
+	    case  '<': return a<b
+	    case  '>': return a>b
+	    case '<=': return a<=b
+	    case '>=': return a>=b
+	    case '==': return a==b
+	    case '!=': return a!=b
+	    case '&&': return a&&b
+	    case '||': return a||b
+    }
+}
+
+
+function vm_set(x, val) {
+	if (is_ref(x)) {
+		var r = get_ref(x)
+		vm.reg[r] = val
+	} else if (is_reg(x)) {
+		var r = get_reg(x)
+		vm.reg[r] = val
+	}
+}
+
+function value_of(x) {
+	if (is_num(x)) {
+		return x
+	} else if (is_ref(x)) {
+		var r = get_ref(x)
+		return vm.reg[r]
+	} else if (is_reg(x)) {
+		var r = get_reg(x)
+		return vm.reg[r]
+	}		
+}
+
+function get_reg(x) {
+	return parseInt(x.slice(1))
+}
+
+function get_ref(x) {
+	var r = get_reg(x.slice(1))
+	return vm.reg[r]
+}
+
+function is_reg(x) {
+	var r = get_reg(x)
+	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
+}
+
+function is_ref(x) {
+	return ((x[0]=='@') && is_reg(x.slice(1)))
+}
+
+function is_num(x) {
+	return !isNaN(x)
+}
+
+function ext_goto() {
+	vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
+}
+
+function ext_halt() {
+	vm.ip -= 1
+}
+
+function ext_nop() {
+}
+
+function ext_log() {
+	var op = get_op()
+	var val = value_of(op)
+	console.log('log',op,val)
+}
+
+vm.ext['goto'] = ext_goto
+vm.ext['halt'] = ext_halt
+vm.ext['log'] = ext_log
+vm.ext['nop'] = ext_nop
+
+// TODO
+vm.colors = [ // endsega-16
+	'#e4a672',
+	'#b86f50',
+	'#743f39',
+	'#3f2832',
+	'#9e2835',
+	'#e53b44',
+	'#fb922b',
+	'#ffe762',
+	'#63c64d',
+	'#327345',
+	'#193d3f',
+	'#4f6781',
+	'#afbfd2',
+	'#ffffff',
+	'#2ce8f4',
+	'#0484d1'
+]
+
+function ext_init_leds() {
+    vm.leds = {}
+    vm.leds.width = vm.cfg.leds.width
+    vm.leds.height = vm.cfg.leds.height
+    vm.leds.data = new Array(vm.leds.width * vm.leds.height).fill(0)
+    _ext_leds_init()
+}
+
+function ext_leds_clear() {
+    var v = value_of(get_op())
+    vm.leds.data.fill(v)
+}
+
+function ext_leds_draw() {
+    _ext_leds_draw_begin()
+    for (var y = 0; y < vm.leds.height; y++) {
+        for (var x = 0; x < vm.leds.width; x++) {
+            var v = vm.leds.data[x + y * vm.leds.width]
+            _ext_leds_draw_led(x, y, v)
+        }
+    }
+    _ext_leds_draw_end()
+}
+
+function ext_leds_set() {
+    var x = value_of(get_op())
+    var y = value_of(get_op())
+    var v = value_of(get_op())
+    vm.leds.data[x + y * vm.leds.width] = v
+}
+
+function ext_leds_get() {
+    var x = value_of(get_op())
+    var y = value_of(get_op())
+    var t = get_op() // output target
+    var v = vm.leds.data[x + y * vm.leds.width]
+    vm_set(t, v)
+}
+
+vm.ext['leds-init'] = ext_init_leds
+vm.ext['leds-clear'] = ext_leds_clear
+vm.ext['leds-draw'] = ext_leds_draw
+vm.ext['leds-set'] = ext_leds_set
+vm.ext['leds-get'] = ext_leds_get
+
+
+// IMPLEMENTATION DETAILS
+
+function _ext_leds_init() {
+    vm.leds.size   = vm.cfg.leds.size
+    vm.leds.radius = vm.cfg.leds.radius
+    var canvas = document.createElement('canvas')
+    canvas.width = vm.leds.width * vm.leds.size
+    canvas.height = vm.leds.height * vm.leds.size
+    document.body.appendChild(canvas)
+    vm.leds.canvas = canvas
+    vm.leds.ctx = canvas.getContext("2d")
+}
+
+function _ext_leds_draw_led(x, y, v) {
+    var c = vm.colors[v]
+    var r = vm.leds.radius
+    vm.leds.ctx.fillStyle = c
+    vm.leds.ctx.beginPath()
+    //vm.leds.ctx.rect(x * vm.leds.size, y * vm.leds.size, 2*r, 2*r)
+    vm.leds.ctx.arc(vm.leds.size/2 + x * vm.leds.size, vm.leds.size/2 + y * vm.leds.size, r, 0, 2 * Math.PI, false)
+    vm.leds.ctx.fill()
+}
+
+function _ext_leds_draw_begin() {
+    // TODO: background color
+    vm.leds.ctx.clearRect(0, 0, vm.leds.ctx.canvas.width, vm.leds.ctx.canvas.height)
+}
+
+function _ext_leds_draw_end()   {} // NOT USED IN THIS IMPLEMENTATIN
+
+vm.code = ['leds-init','leds-clear',0,'leds-set',1,1,1,'leds-set',1,2,2,'leds-set',1,3,3,'leds-draw','halt']
+</script>

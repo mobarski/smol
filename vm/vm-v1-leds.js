@@ -1,8 +1,8 @@
 function ext_init_leds() {
     vm.leds = {}
-    vm.leds.width = 17 // TODO: config
-    vm.leds.height = 7 // TODO: config
-    vm.leds.data = new Array(vm.leds.width * vm.leds.height)
+    vm.leds.width = vm.cfg.leds.width
+    vm.leds.height = vm.cfg.leds.height
+    vm.leds.data = new Array(vm.leds.width * vm.leds.height).fill(0)
     _ext_leds_init()
 }
 
@@ -37,29 +37,39 @@ function ext_leds_get() {
     vm_set(t, v)
 }
 
-vm.ext['init_leds'] = ext_init_leds
-vm.ext['leds_clear'] = ext_leds_clear
-vm.ext['leds_draw'] = ext_leds_draw
-vm.ext['leds_set'] = ext_leds_set
-vm.ext['leds_get'] = ext_leds_get
+vm.ext['leds-init'] = ext_init_leds
+vm.ext['leds-clear'] = ext_leds_clear
+vm.ext['leds-draw'] = ext_leds_draw
+vm.ext['leds-set'] = ext_leds_set
+vm.ext['leds-get'] = ext_leds_get
 
 
 // IMPLEMENTATION DETAILS
 
 function _ext_leds_init() {
-    vm.leds.size   = 32 // TODO: config
-    vm.leds.radius = 12 // TODO: config
-    vm.leds.ctx = document.createElement('canvas').getContext("2d")
-    vm.leds.ctx.canvas.width = vm.leds.width * vm.leds.size
-    vm.leds.ctx.canvas.height = vm.leds.height * vm.leds.size
+    vm.leds.size   = vm.cfg.leds.size
+    vm.leds.radius = vm.cfg.leds.radius
+    var canvas = document.createElement('canvas')
+    canvas.width = vm.leds.width * vm.leds.size
+    canvas.height = vm.leds.height * vm.leds.size
+    document.body.appendChild(canvas)
+    vm.leds.canvas = canvas
+    vm.leds.ctx = canvas.getContext("2d")
 }
 
 function _ext_leds_draw_led(x, y, v) {
     var c = vm.colors[v]
+    var r = vm.leds.radius
     vm.leds.ctx.fillStyle = c
-    vm.leds.ctx.circle(x * vm.leds.size, y * vm.leds.size, vm.leds.radius)
+    vm.leds.ctx.beginPath()
+    //vm.leds.ctx.rect(x * vm.leds.size, y * vm.leds.size, 2*r, 2*r)
+    vm.leds.ctx.arc(vm.leds.size/2 + x * vm.leds.size, vm.leds.size/2 + y * vm.leds.size, r, 0, 2 * Math.PI, false)
     vm.leds.ctx.fill()
 }
 
-function _ext_leds_draw_begin() {} // NOT USED IN THIS IMPLEMENTATIN
+function _ext_leds_draw_begin() {
+    // TODO: background color
+    vm.leds.ctx.clearRect(0, 0, vm.leds.ctx.canvas.width, vm.leds.ctx.canvas.height)
+}
+
 function _ext_leds_draw_end()   {} // NOT USED IN THIS IMPLEMENTATIN

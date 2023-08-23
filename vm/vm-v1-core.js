@@ -1,7 +1,6 @@
-vm = {}
 vm.ip = 0
 vm.code = []
-vm.reg = new Array(256).fill(0)
+vm.reg = new Array(vm.cfg.core.registers).fill(0)
 vm.ext = {} // extensions
 
 function vm_run(n_steps) {
@@ -96,7 +95,7 @@ function get_ref(x) {
 
 function is_reg(x) {
 	var r = get_reg(x)
-	return ((x[0]=='r') && (r>=0) && (r<=255))
+	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
 }
 
 function is_ref(x) {

@@ -49,47 +49,35 @@ if r1 < 5 :loop
 
 
 
-# Future
+# Progress
 
 
 
 ### Extensions
 
-- stack
-
-- leds
-
-- colors / palettes
-
-- mouse
-
-- time
-
-- random
-
-- math
-
-- threads (cooperative)
-
-- screen
-
-- text
-
-- rom
-
-- ram
-
-- touch
-
-- sprites
-
-- particles
-
-- sound
-
-- music
-
-- micro:bit
+| extension             | interface | implementation | config | test  | example | docs  | other |
+| --------------------- | --------- | -------------- | ------ | ----- | ------- | ----- | ----- |
+| stack                 | ●●●●      | ●●●●           |        | ○○○○  | ○○○○    | ○○○○  |       |
+| leds                  | ●●●●●     | ●●●●●          | ●●●●   | ●●●○○ | ○○○○○   | ○○○○○ |       |
+| colors                | ○         | ●              | ?      | ○     | ○       | ○     |       |
+| palettes              | ●         | ●              | ?      | ○     | ○       | ○     |       |
+| screen                |           |                |        |       |         |       |       |
+| mouse                 |           |                |        |       |         |       |       |
+| keys                  |           |                |        |       |         |       |       |
+| time                  |           |                |        |       |         |       |       |
+| random                |           |                |        |       |         |       |       |
+| math                  |           |                |        |       |         |       |       |
+| threads (cooperative) |           |                |        |       |         |       |       |
+| font                  |           |                |        |       |         |       |       |
+| text                  |           |                |        |       |         |       |       |
+| rom                   |           |                |        |       |         |       |       |
+| ram                   |           |                |        |       |         |       |       |
+| touch                 |           |                |        |       |         |       |       |
+| sprites               |           |                |        |       |         |       |       |
+| particles             |           |                |        |       |         |       |       |
+| sound                 |           |                |        |       |         |       |       |
+| music                 |           |                |        |       |         |       |       |
+| micro:bit             |           |                |        |       |         |       |       |
 
 
 
