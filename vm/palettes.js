@@ -63,6 +63,186 @@ palettes = [
 			'#1f0e1c'
 		]
 	},
+	{
+		url: 'https://lospec.com/palette-list/cartoon-army',
+		rgb: [
+			'#201616',
+			'#37403b',
+			'#4d6a89',
+			'#93aae2',
+			'#975cac',
+			'#5b2a4d',
+			'#e53d63',
+			'#f8a095',
+			'#ffffff',
+			'#c1bfbe',
+			'#7d707b',
+			'#822525',
+			'#b07032',
+			'#e6c369',
+			'#728933',
+			'#aade6e'
+		]
+	},
+	// === 15 colors ===================================================
+	{
+		url: 'https://lospec.com/palette-list/15p-dx',
+		rgb: [
+			'#6e3232',
+			'#bb5735',
+			'#df9245',
+			'#ecd274',
+			'#83a816',
+			'#277224',
+			'#173b47',
+			'#046894',
+			'#17a1a9',
+			'#81dbcd',
+			'#fdf9f1',
+			'#c7b295',
+			'#87715b',
+			'#463f3c',
+			'#201708'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/generic-15',
+		rgb: [
+			'#222428',
+			'#5c596f',
+			'#a59ab6',
+			'#f4f0f4',
+			'#703f30',
+			'#d5555f',
+			'#ff95cf',
+			'#d7772d',
+			'#f3c775',
+			'#ffd8c3',
+			'#186444',
+			'#7ca230',
+			'#2b51a7',
+			'#169ac8',
+			'#81d5d7'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/bit-interior',
+		rgb: [
+			'#f3e2b1',
+			'#f7c439',
+			'#ff880b',
+			'#ff5036',
+			'#ae3737',
+			'#e05ad1',
+			'#4dd464',
+			'#5fb7f3',
+			'#c98c4b',
+			'#a26134',
+			'#bec4bb',
+			'#929992',
+			'#2e2823',
+			'#331b0b',
+			'#201208'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/consistent-15',
+		rgb: [
+			'#80dbf8',
+			'#6079dc',
+			'#5d4483',
+			'#cb62a9',
+			'#ffc0ad',
+			'#ffffff',
+			'#bbcbe0',
+			'#8183b6',
+			'#377a77',
+			'#80d566',
+			'#fff475',
+			'#eb795d',
+			'#913d5c',
+			'#2e2549',
+			'#030305'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/pastel-refinado',
+		rgb: [
+			'#545454',
+			'#7e7e7e',
+			'#d2d2d2',
+			'#5b443c',
+			'#a36b70',
+			'#cc8fbd',
+			'#e5b7f5',
+			'#b38f7d',
+			'#c4a586',
+			'#34504a',
+			'#5e8f6b',
+			'#89b37d',
+			'#b8f5d4',
+			'#8fccc5',
+			'#6b8ea3'
+		]
+	},
+	// === 14 colors ===================================================
+	{
+		url: 'https://lospec.com/palette-list/zencillo14',
+		rgb: [
+			'#1a1226',
+			'#515270',
+			'#8498ab',
+			'#f2fffe',
+			'#69f7ff',
+			'#389bc2',
+			'#204d8c',
+			'#2c1861',
+			'#780c72',
+			'#de3a68',
+			'#f5805d',
+			'#ffe785',
+			'#7fd66f',
+			'#3ba150'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/nostalgi14',
+		rgb: [
+			'#261f33',
+			'#3c3f4f',
+			'#717882',
+			'#cccccc',
+			'#81cc88',
+			'#77959e',
+			'#58578c',
+			'#492d54',
+			'#a65370',
+			'#c78e77',
+			'#855967',
+			'#663a5e',
+			'#7b4c7d',
+			'#b07994'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/dungeon14',
+		rgb: [
+			'#191520',
+			'#2a2d3c',
+			'#294566',
+			'#2c6cba',
+			'#85c4d7',
+			'#4b7c52',
+			'#a0b035',
+			'#f8d877',
+			'#ffa057',
+			'#e93f59',
+			'#9653a2',
+			'#723738',
+			'#c68c76',
+			'#f0efdf'
+		]
+	},
 	// === 12 colors ===================================================
 	{
 		url: 'https://lospec.com/palette-list/japanese-woodblock',
@@ -125,6 +305,21 @@ palettes = [
 			'#a6ced2',
 			'#4796cf',
 			'#204075'
+		]
+	},
+	// === 9 colors ===================================================
+	{
+		url: 'https://lospec.com/palette-list/reteocal-9',
+		rgb: [
+			'#7aadb4',
+			'#364e57',
+			'#3aa64f',
+			'#fff1b2',
+			'#d78d5b',
+			'#77433e',
+			'#3e1d3d',
+			'#a2304d',
+			'#748e86'
 		]
 	},
 	// === 8 colors ===================================================
@@ -206,6 +401,32 @@ palettes = [
 			'#f0f6e8'			
 		]
 	},
+	{
+		url: 'https://lospec.com/palette-list/islandshore',
+		rgb: [
+			'#2c2111',
+			'#584e44',
+			'#2b5e91',
+			'#647631',
+			'#a17b5b',
+			'#5ba1a7',
+			'#cbb234',
+			'#ded598'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/crayon-paint',
+		rgb: [
+			'#76a1f1',
+			'#2f6a5d',
+			'#69bf2b',
+			'#fbf7b6',
+			'#e98e33',
+			'#a03030',
+			'#151212',
+			'#9e969b'
+		]
+	},
 	// === 7 colors ===================================================
 	{
 		url: 'https://lospec.com/palette-list/pastel-qt',
@@ -243,6 +464,48 @@ palettes = [
 			'#d6c0ae'
 		]
 	},
+	{
+		url: 'https://lospec.com/palette-list/s-lucky',
+		rgb: [
+			'#ab6187',
+			'#ebc686',
+			'#d8e8e6',
+			'#65db73',
+			'#709dcf',
+			'#5a687d',
+			'#211e33'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/mini-7',
+		rgb: [
+			'#30303d',
+			'#5564a0',
+			'#61b7ac',
+			'#ede4da',
+			'#f7b33d',
+			'#ea6e48',
+			'#818747'
+		]
+	},
+	{
+		url: 'https://lospec.com/palette-list/discord-2021',
+		rgb: [
+			'#ed4245',
+			'#fee75c',
+			'#57f287',
+			'#5865f2',
+			'#eb459e',
+			'#ffffff',
+			'#000000'
+		]
+	},
+	{
+		url: '',
+		rgb: [
+
+		]
+	},
 	// === 6 colors ===================================================
 	{
 		url: 'https://lospec.com/palette-list/curiosities',
@@ -277,6 +540,17 @@ palettes = [
 			'#d6baa5'
 		]
 	},
+	{
+		url: 'https://lospec.com/palette-list/puffball-6',
+		rgb: [
+			'#eedbc8',
+			'#e0bb68',
+			'#97b34e',
+			'#d58353',
+			'#548b71',
+			'#5a473e'
+		]
+	},
 	// === 5 colors ===================================================
 	{
 		url: 'https://lospec.com/palette-list/twilight-5',
@@ -309,6 +583,15 @@ palettes = [
 		]
 	},
 	// === 4 colors ===================================================
+	{
+		url: 'https://lospec.com/palette-list/2bit-demichrome',
+		rgb: [
+			'#211e20',
+			'#555568',
+			'#a0a08b',
+			'#e9efec'
+		]
+	},
 	// === TEMPLATE ===================================================
 	{
 		url: '',

@@ -8,7 +8,8 @@ part_to_filename = {
     'leds':   'vm-v1-leds.js',
 }
 
-def config_as_js(parts, config):
+def config_as_js(config):
+    parts = config['core.parts']
     js = [
         'vm = {}',
         'vm.cfg = {}',
@@ -19,23 +20,24 @@ def config_as_js(parts, config):
         js.append(f'vm.cfg.{k} = {v}')
     return '\n'.join(js)
 
-def vm_as_js(parts, config):
+def vm_as_js(config, code):
     out = []
-    js = config_as_js(parts, config)
+    js = config_as_js(config)
     out.append(js)
+    parts = config['core.parts']
     for p in parts:
         fn = part_to_filename[p]
         js = open(fn).read()
         out.append(js)
+    out.append('vm.code = ' + code_as_str(code))
+    # TODO: vm_run(xxx)
     return '\n'.join(out)
 
-def js_and_html(js, code=['halt']):
+def js_and_html(js):
     html = []
     html.append('<html></html>')
     html.append('<script>')
     html.append(js)
-    html.append('vm.code = ' + code_as_str(code))
-    # TODO: vm_run(xxx)
     html.append('</script>')
     return '\n'.join(html)
 
@@ -46,6 +48,8 @@ def code_as_str(code):
 
 config = {
     'core.registers': 256,
+    'core.parts': ['core', 'sugar','colors','leds'],
+    #
     'leds.width': 17,
     'leds.height': 7,
     'leds.size': 32,
@@ -62,7 +66,6 @@ code = [
     'halt'
 ]
 
-parts = ['core', 'sugar','colors','leds']
-js = vm_as_js(parts, config)
-html = js_and_html(js, code)
+js = vm_as_js(config, code)
+html = js_and_html(js)
 open('smol-reg-vm.html', 'w').write(html)
