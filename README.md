@@ -164,12 +164,13 @@ Get color of the led at x,y and store it in `c`.
 | extension             | interface | implementation | config | tests   | docs    | notes                            |
 | --------------------- | --------- | -------------- | ------ | ------- | ------- | -------------------------------- |
 | stack                 | ●●● ●     | ●●● ●          |        | ○○○ ○   | ○○○ ○   |                                  |
-| leds                  | ●●● ●●    | ●●● ●●         | ●●● ●  | ●●● ○○  | ○○○ ○○  |                                  |
 | colors                | ●         | ●              | ●      | ●       | ○       |                                  |
-| screen                |           |                |        |         |         | pages, blit                      |
-| mouse/touch           | ●●● ●     | ●○○ ○          | ○○     | ○○○ ○   | ○○○ ○   |                                  |
-| threads (cooperative) | ●●● ●○    | ●●● ●○         | ●      | ●●○ ○○  | ○○○ ○○  | run!                             |
+| leds                  | ●●● ●●    | ●●● ●●         | ●●● ●  | ●●● ○○  | ○○○ ○○  |                                  |
+| threads (cooperative) | ●●● ●     | ●●● ●          | ●      | ●●○ ○   | ○○○ ○   | errors: -id                      |
 | text                  | ●●● ●●    | ●●● ●●●        | ●●●    | ●●● ●○○ | ○○○ ○○○ | mk1 = ala 24a2<br />banks!       |
+| callbacks/hooks       |           |                |        |         |         |                                  |
+| mouse/touch           | ●●● ●     | ●○○ ○          | ○○     | ○○○ ○   | ○○○ ○   |                                  |
+| screen                |           |                | ●●●○   |         |         | pages, blit                      |
 | ----------------      |           |                |        |         |         |                                  |
 | random                |           |                |        |         |         |                                  |
 | time                  |           |                |        |         |         |                                  |
