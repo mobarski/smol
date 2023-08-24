@@ -1,30 +1,21 @@
-function ext_init_screen() {
-	var width = vm.cfg.screen.width
-	var height = vm.cfg.screen.height
-	var scale = vm.cfg.screen.scale
-	var canvas = document.createElement('canvas')
-	canvas.width = width * scale
-	canvas.height = height * scale
-	document.body.appendChild(canvas)
-	vm.screen = {}
+// === SCREEN MK1 =============================================================
+
+vm.screen = {}
+vm.screen.dom_id = coalesce(vm.cfg.screen.dom_id, 'vm-screen')
+vm.screen.height = coalesce(vm.cfg.screen.height, 128)
+vm.screen.width  = coalesce(vm.cfg.screen.width,  128)
+vm.screen.scale  = coalesce(vm.cfg.screen.scale, 1)
+vm.init.push(_vm_init_screen)
+
+
+function _vm_init_screen() {
+	let scale = vm.cfg.screen.scale
+	let canvas = document.getElementById(vm.screen.dom_id)
+	canvas.width = vm.screen.width * scale
+	canvas.height = vm.screen.height * scale
 	vm.screen.ctx = canvas.getContext("2d") // TODO: vs ("2d", { alpha: false })
 	vm.screen.ctx.scale(scale,scale)
 }
-
-function ext_sprite() {
-	var ctx = vm.screen.ctx
-	var x = 0
-	var y = 0
-	var s = 0
-	var f = 0 // frame
-	var z = 0 // zoom
-	var r = 0 // rotation
-	ctx.moveTo(0,0)
-	ctx.lineTo(256,128)
-	ctx.stroke()
-}
-
-vm.ext['screen-init'] = ext_init_screen
 
 // default resolution candidates:
 // - 160x128 (common display for micro:bit)
@@ -33,3 +24,6 @@ vm.ext['screen-init'] = ext_init_screen
 // - 128x128 (pico-8)
 // - 128x64 (8-lined dot-matrix display)
 // - 64x64 (lowrezjam)
+// ----------------------------
+// - 128x160 (common display for micro:bit, rotated for mobile)
+// - 160x160 (???)
