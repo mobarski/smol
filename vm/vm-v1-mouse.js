@@ -1,18 +1,22 @@
-function ext_mouse_init() {
-    vm.mouse = {}
+// === MOUSE MK1 ==============================================================
+
+vm.mouse = {}
+vm.init.push(_vm_mouse_init)
+
+function _vm_mouse_init() {
     vm.mouse.canvas = vm.leds.canvas // TODO: vm.screen.canvas
 
     document.addEventListener('mousedown', vm_on_mouse_down)
     document.addEventListener('mouseup', vm_on_mouse_up)
 }
 
-function ext_mouse_key() {
+function vm_mouse_btn() {
     var t = get_op() // output target
     var v = 0 // TODO: get button state
     vm_set(t, v)
 }
 
-function ext_mouse_xy() {
+function vm_mouse_xy() {
     var tx = get_op() // output target x
     var ty = get_op() // output target y
 
@@ -27,18 +31,18 @@ function ext_mouse_xy() {
 // TODO
 function vm_on_mouse_down(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _ext_mouse_xy(e)
+    var mxy = _vm_mouse_xy(e)
     console.log('mouse down', e, bcr, mxy)
 }
 
 // TODO
 function vm_on_mouse_up(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _ext_mouse_xy(e)
+    var mxy = _vm_mouse_xy(e)
     console.log('mouse up', e, bcr, mxy)
 }
 
-function _ext_mouse_xy(e) {
+function _vm_mouse_xy(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
 
 	//var ratio = bcr.height/fc.height
@@ -56,9 +60,8 @@ function _ext_mouse_xy(e) {
     return {x:Math.floor(mx/sx), y:Math.floor(my/sy)}
 }
 
-vm.ext['mouse-init'] = ext_mouse_init
-vm.ext['mouse-key'] = ext_mouse_key
-vm.ext['mouse-xy'] = ext_mouse_xy
+vm.ext['mouse-btn'] = vm_mouse_btn
+vm.ext['mouse-xy'] = vm_mouse_xy
 
 // TODO: pass x,y
 // TODO: pass event type (short click, long click, gesture, etc)
