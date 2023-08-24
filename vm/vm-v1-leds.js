@@ -1,55 +1,58 @@
-function ext_leds_init() {
-    vm.leds = {}
+// === LEDS mk1 ===============================================================
+
+vm.leds = {}
+vm.init.push(_vm_leds_init)
+
+function _vm_leds_init() {
     vm.leds.width = vm.cfg.leds.width
     vm.leds.height = vm.cfg.leds.height
     vm.leds.data = new Array(vm.leds.width * vm.leds.height).fill(0)
-    _ext_leds_init()
+    _vm_leds_init2()
 }
 
-function ext_leds_clear() {
-    var v = value_of(get_op())
+function vm_leds_clear() {
+    let v = value_of(get_op())
     vm.leds.data.fill(v)
 }
 
-function ext_leds_draw() {
-    _ext_leds_draw_begin()
+function vm_leds_draw() {
+    _vm_leds_draw_begin()
     for (var y = 0; y < vm.leds.height; y++) {
         for (var x = 0; x < vm.leds.width; x++) {
             var v = vm.leds.data[x + y * vm.leds.width]
-            _ext_leds_draw_led(x, y, v)
+            _vm_leds_draw_led(x, y, v)
         }
     }
-    _ext_leds_draw_end()
+    _vm_leds_draw_end()
 }
 
-function ext_leds_set() {
-    var x = value_of(get_op())
-    var y = value_of(get_op())
-    var v = value_of(get_op())
+function vm_leds_set() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let v = value_of(get_op())
     vm.leds.data[x + y * vm.leds.width] = v
 }
 
-function ext_leds_get() {
-    var x = value_of(get_op())
-    var y = value_of(get_op())
-    var t = get_op() // output target
-    var v = vm.leds.data[x + y * vm.leds.width]
+function vm_leds_get() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let t = get_op() // output target
+    let v = vm.leds.data[x + y * vm.leds.width]
     vm_set(t, v)
 }
 
-vm.ext['leds-init'] = ext_leds_init
-vm.ext['leds-clear'] = ext_leds_clear
-vm.ext['leds-draw'] = ext_leds_draw
-vm.ext['leds-set'] = ext_leds_set
-vm.ext['leds-get'] = ext_leds_get
+vm.ext['leds-clear'] = vm_leds_clear // TODO: rename leds-fill
+vm.ext['leds-draw'] = vm_leds_draw
+vm.ext['leds-set'] = vm_leds_set
+vm.ext['leds-get'] = vm_leds_get
 
 
-// IMPLEMENTATION DETAILS
+// === LEDS MK1 - IMPLEMENTATION DETAILS ===
 
-function _ext_leds_init() {
+function _vm_leds_init2() {
     vm.leds.size   = vm.cfg.leds.size
     vm.leds.radius = vm.cfg.leds.radius
-    var canvas = document.createElement('canvas')
+    let canvas = document.createElement('canvas')
     canvas.width = vm.leds.width * vm.leds.size
     canvas.height = vm.leds.height * vm.leds.size
     document.body.appendChild(canvas)
@@ -64,9 +67,9 @@ function _ext_leds_init() {
     vm.screen.canvas = canvas
 }
 
-function _ext_leds_draw_led(x, y, v) {
-    var c = vm.colors[v]
-    var r = vm.leds.radius
+function _vm_leds_draw_led(x, y, v) {
+    let c = vm_color(v)
+    let r = vm.leds.radius
     vm.leds.ctx.fillStyle = c
     vm.leds.ctx.beginPath()
     //vm.leds.ctx.rect(x * vm.leds.size, y * vm.leds.size, 2*r, 2*r)
@@ -74,9 +77,10 @@ function _ext_leds_draw_led(x, y, v) {
     vm.leds.ctx.fill()
 }
 
-function _ext_leds_draw_begin() {
+function _vm_leds_draw_begin() {
     // TODO: background color
     vm.leds.ctx.clearRect(0, 0, vm.leds.ctx.canvas.width, vm.leds.ctx.canvas.height)
 }
 
-function _ext_leds_draw_end()   {} // NOT USED IN THIS IMPLEMENTATIN
+function _vm_leds_draw_end() {} // NOT USED IN THIS IMPLEMENTATIN
+
