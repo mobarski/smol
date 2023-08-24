@@ -1,10 +1,23 @@
+// === CORE MK1 ===============================================================
+
 vm.ip = 0
 vm.code = []
 vm.reg = new Array(vm.cfg.core.registers).fill(0)
 vm.ext = {} // extensions
+vm.halt = false
+vm.init = []
+
+function vm_init() {
+	for (var i=0; i<vm.init.length; i++) {
+		vm.init[i]()
+	}
+}
 
 function vm_run(n_steps) {
-	for (var i=0; i<n_steps; i++) { vm_step() }
+	var i = 0
+	var t0 = performance.now()
+	for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
+	console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
 }
 
 function vm_step() {
@@ -104,4 +117,13 @@ function is_ref(x) {
 
 function is_num(x) {
 	return !isNaN(x)
+}
+
+function coalesce(...args) {
+    for (let arg of args) {
+        if (arg !== null && arg !== undefined) {
+            return arg;
+        }
+    }
+    return null;
 }

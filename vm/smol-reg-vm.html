@@ -7,19 +7,35 @@ vm.cfg.sugar = {}
 vm.cfg.colors = {}
 vm.cfg.leds = {}
 vm.cfg.mouse = {}
+vm.cfg.threads = {}
+vm.cfg.text = {}
 vm.cfg.core.registers = 256
-vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse']
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text']
 vm.cfg.leds.width = 17
 vm.cfg.leds.height = 7
 vm.cfg.leds.size = 32
 vm.cfg.leds.radius = 15
+vm.cfg.colors.data = ['#211e20', '#555568', '#a0a08b', '#e9efec']
+// === CORE MK1 ===============================================================
+
 vm.ip = 0
 vm.code = []
 vm.reg = new Array(vm.cfg.core.registers).fill(0)
 vm.ext = {} // extensions
+vm.halt = false
+vm.init = []
+
+function vm_init() {
+	for (var i=0; i<vm.init.length; i++) {
+		vm.init[i]()
+	}
+}
 
 function vm_run(n_steps) {
-	for (var i=0; i<n_steps; i++) { vm_step() }
+	var i = 0
+	var t0 = performance.now()
+	for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
+	console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
 }
 
 function vm_step() {
@@ -121,110 +137,122 @@ function is_num(x) {
 	return !isNaN(x)
 }
 
-function ext_goto() {
+function coalesce(...args) {
+    for (let arg of args) {
+        if (arg !== null && arg !== undefined) {
+            return arg;
+        }
+    }
+    return null;
+}
+
+// === SUGAR MK1 ========================================================================
+
+function vm_goto() {
 	vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
 }
 
-function ext_halt() {
+function vm_halt() {
 	vm.ip -= 1
+	vm.halt = true
 }
 
-function ext_nop() {
+function vm_nop() {
 }
 
-function ext_log() {
+function vm_log() {
 	var op = get_op()
 	var val = value_of(op)
 	console.log('log',op,val)
 }
 
-vm.ext['goto'] = ext_goto
-vm.ext['halt'] = ext_halt
-vm.ext['log'] = ext_log
-vm.ext['nop'] = ext_nop
+vm.ext['goto'] = vm_goto
+vm.ext['halt'] = vm_halt
+vm.ext['log'] = vm_log
+vm.ext['nop'] = vm_nop
 
-// TODO
-vm.colors = [ // sweetie-16
-	'#1a1c2c',
-	'#5d275d',
-	'#b13e53',
-	'#ef7d57',
-	'#ffcd75',
-	'#a7f070',
-	'#38b764',
-	'#257179',
-	'#29366f',
-	'#3b5dc9',
-	'#41a6f6',
-	'#73eff7',
-	'#f4f4f4',
-	'#94b0c2',
-	'#566c86',
-	'#333c57'
-]
+// === COLORS MK1 =============================================================
 
-function ext_leds_init() {
-    vm.leds = {}
+vm.colors = {}
+vm.colors.data = coalesce(vm.cfg.colors.data, ['#000000','#ffffff'])
+
+function vm_color(x) {
+	var id = x % vm.colors.data.length;
+	return vm.colors.data[id]
+}
+
+// === LEDS mk1 ===============================================================
+
+vm.leds = {}
+vm.init.push(_vm_leds_init)
+
+function _vm_leds_init() {
     vm.leds.width = vm.cfg.leds.width
     vm.leds.height = vm.cfg.leds.height
     vm.leds.data = new Array(vm.leds.width * vm.leds.height).fill(0)
-    _ext_leds_init()
+    _vm_leds_init2()
 }
 
-function ext_leds_clear() {
-    var v = value_of(get_op())
+function vm_leds_clear() {
+    let v = value_of(get_op())
     vm.leds.data.fill(v)
 }
 
-function ext_leds_draw() {
-    _ext_leds_draw_begin()
+function vm_leds_draw() {
+    _vm_leds_draw_begin()
     for (var y = 0; y < vm.leds.height; y++) {
         for (var x = 0; x < vm.leds.width; x++) {
             var v = vm.leds.data[x + y * vm.leds.width]
-            _ext_leds_draw_led(x, y, v)
+            _vm_leds_draw_led(x, y, v)
         }
     }
-    _ext_leds_draw_end()
+    _vm_leds_draw_end()
 }
 
-function ext_leds_set() {
-    var x = value_of(get_op())
-    var y = value_of(get_op())
-    var v = value_of(get_op())
+function vm_leds_set() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let v = value_of(get_op())
     vm.leds.data[x + y * vm.leds.width] = v
 }
 
-function ext_leds_get() {
-    var x = value_of(get_op())
-    var y = value_of(get_op())
-    var t = get_op() // output target
-    var v = vm.leds.data[x + y * vm.leds.width]
+function vm_leds_get() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let t = get_op() // output target
+    let v = vm.leds.data[x + y * vm.leds.width]
     vm_set(t, v)
 }
 
-vm.ext['leds-init'] = ext_leds_init
-vm.ext['leds-clear'] = ext_leds_clear
-vm.ext['leds-draw'] = ext_leds_draw
-vm.ext['leds-set'] = ext_leds_set
-vm.ext['leds-get'] = ext_leds_get
+vm.ext['leds-clear'] = vm_leds_clear // TODO: rename leds-fill
+vm.ext['leds-draw'] = vm_leds_draw
+vm.ext['leds-set'] = vm_leds_set
+vm.ext['leds-get'] = vm_leds_get
 
 
-// IMPLEMENTATION DETAILS
+// === LEDS MK1 - IMPLEMENTATION DETAILS ===
 
-function _ext_leds_init() {
+function _vm_leds_init2() {
     vm.leds.size   = vm.cfg.leds.size
     vm.leds.radius = vm.cfg.leds.radius
-    var canvas = document.createElement('canvas')
+    let canvas = document.createElement('canvas')
     canvas.width = vm.leds.width * vm.leds.size
     canvas.height = vm.leds.height * vm.leds.size
     document.body.appendChild(canvas)
     vm.leds.canvas = canvas
     vm.leds.ctx = canvas.getContext("2d")
+    //
+    vm.screen = {}
+    vm.screen.width = canvas.width
+    vm.screen.height = canvas.height
+    vm.screen.scale = vm.leds.size
+    vm.screen.ctx = canvas.getContext("2d")
+    vm.screen.canvas = canvas
 }
 
-function _ext_leds_draw_led(x, y, v) {
-    var c = vm.colors[v]
-    var r = vm.leds.radius
+function _vm_leds_draw_led(x, y, v) {
+    let c = vm_color(v)
+    let r = vm.leds.radius
     vm.leds.ctx.fillStyle = c
     vm.leds.ctx.beginPath()
     //vm.leds.ctx.rect(x * vm.leds.size, y * vm.leds.size, 2*r, 2*r)
@@ -232,36 +260,59 @@ function _ext_leds_draw_led(x, y, v) {
     vm.leds.ctx.fill()
 }
 
-function _ext_leds_draw_begin() {
+function _vm_leds_draw_begin() {
     // TODO: background color
     vm.leds.ctx.clearRect(0, 0, vm.leds.ctx.canvas.width, vm.leds.ctx.canvas.height)
 }
 
-function _ext_leds_draw_end()   {} // NOT USED IN THIS IMPLEMENTATIN
+function _vm_leds_draw_end() {} // NOT USED IN THIS IMPLEMENTATIN
 
-function ext_mouse_init() {
-    vm.mouse = {}
+
+// === MOUSE MK1 ==============================================================
+
+vm.mouse = {}
+vm.init.push(_vm_mouse_init)
+
+function _vm_mouse_init() {
     vm.mouse.canvas = vm.leds.canvas // TODO: vm.screen.canvas
 
     document.addEventListener('mousedown', vm_on_mouse_down)
     document.addEventListener('mouseup', vm_on_mouse_up)
 }
 
+function vm_mouse_btn() {
+    var t = get_op() // output target
+    var v = 0 // TODO: get button state
+    vm_set(t, v)
+}
+
+function vm_mouse_xy() {
+    var tx = get_op() // output target x
+    var ty = get_op() // output target y
+
+    var mx = 0 // TODO
+    var my = 0 // TODO
+    vm_set(tx, mx)
+    vm_set(ty, my)
+}
+
+
+
 // TODO
 function vm_on_mouse_down(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _ext_mouse_xy(e)
+    var mxy = _vm_mouse_xy(e)
     console.log('mouse down', e, bcr, mxy)
 }
 
 // TODO
 function vm_on_mouse_up(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _ext_mouse_xy(e)
+    var mxy = _vm_mouse_xy(e)
     console.log('mouse up', e, bcr, mxy)
 }
 
-function _ext_mouse_xy(e) {
+function _vm_mouse_xy(e) {
     var bcr = vm.mouse.canvas.getBoundingClientRect()
 
 	//var ratio = bcr.height/fc.height
@@ -273,13 +324,134 @@ function _ext_mouse_xy(e) {
 	var mx = e.clientX - bcr_left
 	var my = e.clientY - bcr_top
 
-    // TODO
+    // TODO: get sx, sy from screen ???
     var sx = vm.leds.size
     var sy = vm.leds.size
-    return {x:mx/sx, y:my/sy}
+    return {x:Math.floor(mx/sx), y:Math.floor(my/sy)}
 }
 
-vm.ext['mouse-init'] = ext_mouse_init
+vm.ext['mouse-btn'] = vm_mouse_btn
+vm.ext['mouse-xy'] = vm_mouse_xy
 
-vm.code = ['leds-init','mouse-init','leds-clear',0,'leds-set',1,1,1,'leds-set',1,2,2,'leds-set',1,3,3,'leds-draw','halt']
+// TODO: pass x,y
+// TODO: pass event type (short click, long click, gesture, etc)
+// TODO: handle animation frame
+// TODO: detect short click
+// TODO: detect long click
+
+// TDOO: detect simple gesture (up, down, left, right)
+// TODO: detect compound gesture (up+left, down+right, etc)
+// === THREADS MK1 ============================================================
+
+vm.threads = {}
+vm.threads.addr = new Array(vm.cfg.core.threads).fill(0)
+vm.threads.current = -1
+
+function vm_threads_set() {
+    var id = value_of(get_op())
+    if (id<0) { id = length(vm.threads.addr) + id }
+    let addr = get_op()
+    // TODO: thread argument (one value per thread) ???
+    vm.threads.addr[id] = addr
+}
+
+function vm_threads_next() {
+    var id = vm.threads.current
+    vm.threads.addr[id] = vm.ip
+    for (var i=id+1; i<vm.threads.addr.length; i++) {
+        if (vm.threads.addr[i] > 0) {
+            vm.ip = vm.threads.addr[i]
+            vm.thread = i
+            return
+        }
+    }
+    // all threads done, wait for the next main loop
+    vm.halt = true
+}
+
+function vm_threads_kill() {
+    var id = vm.threads.current
+    vm.threads.addr[id] = 0
+}
+
+function vm_threads_id() {
+    var t = get_op()
+    vm_set(t, vm.threads.current)
+}
+
+vm.ext['thread-set'] = vm_threads_set
+vm.ext['thread-next'] = vm_threads_next
+vm.ext['thread-kill'] = vm_threads_kill
+vm.ext['thread-id'] = vm_threads_id
+
+// === TEXT MK1 ===============================================================
+
+vm.text = {}
+vm.text.bank = 0
+vm.text.buffer = []
+vm.text.banks = coalesce(vm.cfg.text.banks, [[]])
+vm.text.data = vm.text.banks[vm.text.bank]
+vm.text.dom_id = coalesce(vm.cfg.text.dom_id, 'vm-text')
+vm.text.sep = coalesce(vm.cfg.text.sep, '%%')
+
+function vm_text_bank() {
+	let bank_id = value_of(get_op())
+	vm.text.bank = bank_id
+	vm.text.data = vm.text.banks[bank_id]
+}
+
+function vm_text_new() {
+	vm.text.buffer = []
+}
+
+function vm_text_part() {
+	let text_id = value_of(get_op())
+	let part_id = value_of(get_op())
+	let sep = vm.text.sep
+	let part = vm.text.data[text_id].split(sep)[part_id]
+	_vm_text_append(part)
+}
+
+function vm_text_val() {
+	let v = value_of(get_op())
+	let s = v.toString() // TODO: format ???
+	_vm_text_append(s)
+}
+
+function vm_text_chr() {
+	let v = value_of(get_op())
+	let c = String.fromCharCode(v)
+	_vm_text_append(c)
+}
+
+function vm_text_emit() {
+	let text = vm.text.buffer.join('')
+	let dom_target = document.getElementById(vm.text.dom_id)
+	if (dom_target) { dom_target.innerHTML = text }
+	console.log('text-emit', text) // XXX
+}
+
+vm.ext['text-bank'] = vm_text_bank
+vm.ext['text-new'] = vm_text_new
+vm.ext['text-part'] = vm_text_part
+vm.ext['text-val'] = vm_text_val
+vm.ext['text-chr'] = vm_text_chr
+vm.ext['text-emit'] = vm_text_emit
+
+function _vm_text_append(s) {
+	vm.text.buffer.push(s)
+}
+
+/*
+USAGE EXAMPLE:
+text-new
+text-part r1 0
+text-val r2
+text-part r1 0
+text-emit
+*/
+
+vm.code = ['leds-clear',3,'r1','=',1,'leds-set','r1',1,2,'leds-set','r1',2,1,'leds-set','r1',3,0,'leds-set','r1',4,1,'leds-set','r1',5,2,'r1','+=',1,'if','r1','<',16,5,'leds-draw','halt']
+vm_init()
+vm_run(200)
 </script>

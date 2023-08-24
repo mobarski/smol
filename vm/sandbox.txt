@@ -1,0 +1,30 @@
+leds-init
+
+thread-set 1 :t1
+thread-set 2 :t2
+thread-set 0 :t0
+halt
+
+t0:	
+	text-new
+	text-part 0 0
+	text-emit
+	thread-next
+	goto :t0
+
+
+t1:	
+	text-new
+	text-part 1 0
+	text-emit
+	thread-next
+	goto :t1
+
+
+t2:
+	text-new
+	text-part 2 0
+	text-emit 
+	thread-next
+	goto :t2
+
