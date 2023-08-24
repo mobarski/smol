@@ -1,19 +1,9 @@
-// TODO
-vm.colors = [ // sweetie-16
-	'#1a1c2c',
-	'#5d275d',
-	'#b13e53',
-	'#ef7d57',
-	'#ffcd75',
-	'#a7f070',
-	'#38b764',
-	'#257179',
-	'#29366f',
-	'#3b5dc9',
-	'#41a6f6',
-	'#73eff7',
-	'#f4f4f4',
-	'#94b0c2',
-	'#566c86',
-	'#333c57'
-]
+// === COLORS MK1 =============================================================
+
+vm.colors = {}
+vm.colors.data = coalesce(vm.cfg.colors.data, ['#000000','#ffffff'])
+
+function vm_color(x) {
+	var id = x % vm.colors.data.length;
+	return vm.colors.data[id]
+}
