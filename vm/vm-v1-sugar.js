@@ -1,21 +1,24 @@
-function ext_goto() {
+// === SUGAR MK1 ========================================================================
+
+function vm_goto() {
 	vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
 }
 
-function ext_halt() {
+function vm_halt() {
 	vm.ip -= 1
+	vm.halt = true
 }
 
-function ext_nop() {
+function vm_nop() {
 }
 
-function ext_log() {
+function vm_log() {
 	var op = get_op()
 	var val = value_of(op)
 	console.log('log',op,val)
 }
 
-vm.ext['goto'] = ext_goto
-vm.ext['halt'] = ext_halt
-vm.ext['log'] = ext_log
-vm.ext['nop'] = ext_nop
+vm.ext['goto'] = vm_goto
+vm.ext['halt'] = vm_halt
+vm.ext['log'] = vm_log
+vm.ext['nop'] = vm_nop
