@@ -168,7 +168,7 @@ Get color of the led at x,y and store it in `c`.
 | colors                | ●         | ●              | ●      | ●       | ○       |                                  |
 | screen                |           |                |        |         |         | pages, blit                      |
 | mouse/touch           | ●●● ●     | ●○○ ○          | ○○     | ○○○ ○   | ○○○ ○   |                                  |
-| threads (cooperative) | ●●● ●○    | ●●● ●○         | ●      | ○○○ ○○  | ○○○ ○○  | run!                             |
+| threads (cooperative) | ●●● ●○    | ●●● ●○         | ●      | ●●○ ○○  | ○○○ ○○  | run!                             |
 | text                  | ●●● ●●    | ●●● ●●●        | ●●●    | ●●● ●○○ | ○○○ ○○○ | mk1 = ala 24a2<br />banks!       |
 | ----------------      |           |                |        |         |         |                                  |
 | random                |           |                |        |         |         |                                  |
