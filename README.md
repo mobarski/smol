@@ -161,7 +161,7 @@ Get color of the led at x,y and store it in `c`.
 
 ### Extension modules
 
-| extension             | interface | implementation | config | tests   | docs    | notes                            |
+| extension             | interface | implementation | config | tested  | docs    | notes                            |
 | --------------------- | --------- | -------------- | ------ | ------- | ------- | -------------------------------- |
 | stack                 | ●●● ●     | ●●● ●          |        | ○○○ ○   | ○○○ ○   |                                  |
 | colors                | ●         | ●              | ●      | ●       | ○       |                                  |
@@ -187,6 +187,26 @@ Get color of the led at x,y and store it in `c`.
 | font                  |           |                |        |         |         |                                  |
 | music                 |           |                |        |         |         |                                  |
 | micro:bit             |           |                |        |         |         |                                  |
+
+
+
+### Assembly
+
+- [x] basic tokenization
+- [x] comments
+- [x] global labels
+- [x] local labels
+- [x] basic CLI
+- [ ] variables
+- [ ] better tokenization (whitespaces not required)
+- [ ] minification / obfuscation
+- [ ] macros (to much for being "smol"?)
+
+### Linker
+
+- [x] extensions
+- [x] configuration
+- [ ] call assembly
 
 
 

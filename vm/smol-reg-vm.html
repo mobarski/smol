@@ -378,12 +378,12 @@ function vm_threads_kill() {
 
 function vm_threads_id() {
     var t = get_op()
-    vm_set(t, vm.threads.current)
+    vm_set(t, vm.threads.current) // ERROR
 }
 
 vm.ext['threads-set'] = vm_threads_set
 vm.ext['threads-next'] = vm_threads_next
-vm.ext['threads-kill'] = vm_threads_kill
+vm.ext['threads-kill'] = vm_threads_kill // NOT TESTED
 vm.ext['threads-id'] = vm_threads_id
 
 // === TEXT MK1 ===============================================================

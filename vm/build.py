@@ -1,12 +1,12 @@
 
 part_to_filename = {
-    'config':  'vm-v1-config.js',
-    'core':    'vm-v1-core.js',
-    'sugar':   'vm-v1-sugar.js',
-    'stack':   'vm-v1-stack.js',
-    'colors':  'vm-v1-colors.js',
-    'leds':    'vm-v1-leds.js',
-    'mouse':   'vm-v1-mouse.js',
+    'config':  'vm-config-mk1.js',
+    'core':    'vm-core-mk1.js',
+    'sugar':   'vm-sugar-mk1.js',
+    'stack':   'vm-stack-mk1.js',
+    'colors':  'vm-colors-mk1.js',
+    'leds':    'vm-leds-mk1.js',
+    'mouse':   'vm-mouse-mk1.js',
     'threads': 'vm-threads-mk1.js',
     'text':    'vm-text-mk1.js',
 }
