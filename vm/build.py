@@ -1,3 +1,6 @@
+import os
+
+ROOT = os.path.dirname(os.path.realpath(__file__))
 
 part_to_filename = {
     'config':  'vm-config-mk1.js',
@@ -31,7 +34,7 @@ def vm_as_js(config, code, run=False):
     parts = config['core.parts']
     for p in parts:
         fn = part_to_filename[p]
-        js = open(fn).read()
+        js = open(ROOT+'/'+fn).read()
         out.append(js)
     out.append('vm.code = ' + code_as_str(code))
     out.append('vm_init()')
