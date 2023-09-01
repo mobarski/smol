@@ -88,61 +88,32 @@ config = {
     ]
 }
 
-code = [
-    'leds-clear',3,
-    'r1','=',1,
-    'leds-set','r1',1,2,
-    'leds-set','r1',2,1,
-    'leds-set','r1',3,0,
-    'leds-set','r1',4,1,
-    'leds-set','r1',5,2,
-    'r1','+=',1,
-    'if','r1','<',16,5,
-    'leds-draw',
-    'halt'
-]
+# =================================================================
 
-code = [
-    'leds-clear',0,
-    'r1','=',1,
-    'leds-set','r1',1,'r1',
-    'leds-set','r1',2,'r1',
-    'leds-set','r1',3,'r1',
-    'leds-set','r1',4,'r1',
-    'leds-set','r1',5,'r1',
-    'r1','+=',1,
-    'if','r1','<',15,5,
-    'leds-draw',
-    'halt'
-]
+import sys; sys.path.append('../asm')
+import v1_asm as asm
 
+def build(path_in, path_out=None):
+    cfg = config # TODO: path_cfg
+    path_out = path_out or 'out.html'
+    if path_in=='-':
+        text = sys.stdin.read()
+    else:
+        text = open(path_in).read()
+    code = asm.text_to_code(text)
 
-# code = [
-#     'timer-set',10,4,
-#     'halt',
-#     'r1','+=',1,
-#     'log','r1',
-#     'halt'
-# ]
+    js = vm_as_js(cfg, code, run=0)
+    html = js_and_html(js)
+    open(path_out, 'w').write(html)
 
-# code = ['threads-set',1,11,'threads-set',2,17,'threads-next','threads-next','log',333,'halt','nop','log',111,'threads-next','goto',11,'nop','log',222,'threads-next','goto',17]
-# code = ['threads-set',1,11,'threads-set',2,21,'threads-next','threads-next','log',333,'halt','nop','log',111,'threads-id',11,'log','r11','threads-next','goto',11,'nop','log',222,'threads-id',22,'log','r22','threads-next','goto',21]
-# code = ['threads-set',1,11,'threads-set',2,19,'threads-next','threads-next','log',333,'halt','nop','log',111,'threads-id',5,'threads-next','goto',11,'nop','log',222,'threads-id',6,'threads-next','goto',19]
-#code = ['threads-set',1,11,'threads-set',2,19,'threads-next','threads-next','log',333,'halt','nop','log',111,'log','r11','threads-next','goto',11,'nop','log',222,'log','r22','threads-next','goto',19]
+# =================================================================
 
-code = [
-    'leds-clear',0,
-    'timer-set',5,6,'halt',
-    #
-    'mouse-frame',
-    'mouse-btn','>r1',
-    'mouse-xy','>r2','>r3',
-    'leds-set','r2','r3','r1',
-    'log','r1',
-    'leds-draw',
-    'halt'
-]
-
-js = vm_as_js(config, code, run=0)
-html = js_and_html(js)
-open('smol-reg-vm.html', 'w').write(html)
+if __name__=="__main__":
+    argv = dict(enumerate(sys.argv))
+    print('argv', argv)
+    path_in = argv.get(1, '')
+    path_out = argv.get(2, '')
+    if path_in:
+        build(path_in, path_out)
+    else:
+        print('Usage: python build.py [file.asm|-] [out.html]')

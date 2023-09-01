@@ -221,6 +221,10 @@ Switch text bank
 
 ### Next tasks
 
+- [x] asm + build
+
+- [ ] run
+
 - [x] configuration default values at the top of the module
 
   ```javascript
@@ -234,9 +238,9 @@ Switch text bank
 
 - [x] rename files `vm-v1-core.js` -> `vm-core-mk1.js`
 
-- [ ] init / update / draw (callbacks, hooks, events, triggers, signals, interrupts) (-set, -bind, -link, -attach) 
+- [x] init / update / draw (callbacks, hooks, events, triggers, signals, interrupts) (-set, -bind, -link, -attach)  -> single timer hook
 
-- [ ] btn state
+- [x] btn state
 
 - [ ] screen vs time vs threads (requestAnimationFrame)
 

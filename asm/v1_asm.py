@@ -84,6 +84,13 @@ def as_list(tokens):
 def as_str(tokens):
     return str(tokens).replace(', ', ' ').replace("'",'')[1:-1]
 
+def text_to_code(text):
+    tokens = tokenize(text)
+    tokens = preprocess(tokens)
+    labels = detect_labels(tokens)
+    linked = link(tokens, labels)
+    return linked
+
 # === CLI =========================================================================================
 
 if __name__ == '__main__':
@@ -93,9 +100,6 @@ if __name__ == '__main__':
         sys.exit(1)
     with open(sys.argv[1]) as f:
         code = f.read()
-    tokens = tokenize(code)
-    tokens = preprocess(tokens)
-    labels = detect_labels(tokens)
-    linked = link(tokens, labels)
+    linked = text_to_code(code)
     print(as_list(linked))
     print(as_str(linked))
