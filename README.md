@@ -44,19 +44,34 @@ The core VM has:
 assembly
 
 ```asm
-r1 = 0
-r2 = 0
+def a r1
+def b r2
+
+a = 0
+b = 0
 loop:
-    r1 += 1
-    r2 += r1
-if r1 < 5 :loop
+    a += 1
+    b += a
+if a < 5 :loop
 ```
 
-JSON machine code:
+VM code (JSON):
 
 ```javascript
-['r1','=',0,'r2','=',0,'nop','r1','+=',1,'r2','+=','r1','if','r1','<',5,6]
+['r1','=',0,'r2','=',0,'(6)','r1','+=',1,'r2','+=','r1','if','r1','<',5,6]
 ```
+
+VM code (str)
+
+``````
+r1 = 0 r2 = 0 (6) r1 += 1 r2 += r1 if r1 < 5 6
+``````
+
+VM code (dense str)
+
+``````
+r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6
+``````
 
 
 

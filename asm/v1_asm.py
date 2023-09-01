@@ -28,6 +28,28 @@ def detect_labels(tokens):
         pos += 1
     return {'defined':defined, 'used':used}
 
+def preprocess(tokens):
+    out = []
+    variables = {}
+    i = 0 
+    while i < len(tokens):
+        t = tokens[i]
+        if t=='def':
+            name = tokens[i+1]
+            value = tokens[i+2]
+            variables[name] = value
+            i += 2
+        elif t in variables:
+            out.append(variables[t])
+        elif t[0] == '@' and t[1:] in variables:
+            out.append('@'+variables[t[1:]])
+        elif t[0] == '>' and t[1:] in variables:
+            out.append('>'+variables[t[1:]])
+        else:
+            out.append(t)
+        i += 1
+    return out
+
 def link(tokens, labels):
     linked = tokens.copy()
     for pos,name in labels['defined']:
@@ -72,6 +94,7 @@ if __name__ == '__main__':
     with open(sys.argv[1]) as f:
         code = f.read()
     tokens = tokenize(code)
+    tokens = preprocess(tokens)
     labels = detect_labels(tokens)
     linked = link(tokens, labels)
     print(as_list(linked))

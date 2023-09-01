@@ -1,3 +1,4 @@
+import sys; sys.path+=['../asm']
 from v1_asm import *
 
 code = '''
