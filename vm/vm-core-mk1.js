@@ -13,11 +13,15 @@ function vm_init() {
 	}
 }
 
-function vm_run(n_steps) {
+function vm_run(n_steps=0) {
 	var i = 0
 	var t0 = performance.now()
-	for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
-	console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
+	if (n_steps==0) {
+		for (i=0; !vm.halt; i++) { vm_step() }
+	} else {
+		for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
+	}
+	//console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
 }
 
 function vm_step() {
@@ -79,8 +83,11 @@ function vm_set(x, val) {
 	if (is_ref(x)) {
 		var r = get_ref(x)
 		vm.reg[r] = val
-	} else if (is_reg(x)) {
+	} else if (is_reg(x)){
 		var r = get_reg(x)
+		vm.reg[r] = val
+	} else if (is_tgt(x)) {
+		var r = get_tgt(x)
 		vm.reg[r] = val
 	}
 }
@@ -97,10 +104,17 @@ function value_of(x) {
 	}		
 }
 
+// ie: r123 -> 123
 function get_reg(x) {
 	return parseInt(x.slice(1))
 }
 
+// ie: >r123 -> 123
+function get_tgt(x) {
+	return parseInt(x.slice(2))
+}
+
+// ie: @r123 -> reg[123]
 function get_ref(x) {
 	var r = get_reg(x.slice(1))
 	return vm.reg[r]
@@ -113,6 +127,10 @@ function is_reg(x) {
 
 function is_ref(x) {
 	return ((x[0]=='@') && is_reg(x.slice(1)))
+}
+
+function is_tgt(x) {
+	return ((x[0]=='>') && is_reg(x.slice(1)))
 }
 
 function is_num(x) {

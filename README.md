@@ -20,7 +20,7 @@
 
 # Why?
 
-- `¯\_ (ツ)_/¯`
+- `¯\_(ツ)_/¯`
 
 
 
@@ -41,6 +41,8 @@ The core VM has:
 
 # Quick example
 
+assembly
+
 ```asm
 r1 = 0
 r2 = 0
@@ -48,6 +50,12 @@ loop:
     r1 += 1
     r2 += r1
 if r1 < 5 :loop
+```
+
+JSON machine code:
+
+```javascript
+['r1','=',0,'r2','=',0,'nop','r1','+=',1,'r2','+=','r1','if','r1','<',5,6]
 ```
 
 
@@ -102,27 +110,53 @@ Get color of the led at x,y and store it in `c`.
 
 `mouse-xy >x >y`
 
+Return mouse coordinates
+
 
 
 **mouse-btn**
 
-`mouse-btn >s`
+`mouse-btn >mb`
+
+Return mouse button state
+
+
+
+**mouse-frame**
+
+Process mouse frame
+
+
+
+**mouse-t-set**
+
+`mouse-t-set 500`
+
+Set long press delay [ms]
 
 
 
 **button state (TODO)**
 
-| Value | Description                                                  |
-| ----- | ------------------------------------------------------------ |
-| 0     | unpressed                                                    |
-| 1     | pressed in this frame OR at delay1 OR every delay2 after delay1 |
-| 2     | pressed, time of press >1 and <delay                         |
-| 3     | pressed, time of press == delay1                             |
-| 4     | pressed, time of press >delay1                               |
-|       |                                                              |
-|       | released in this frame                                       |
-|       | released in this frame after <delay1                         |
-|       | released in this frame after >=delay1                        |
+- 0 - unpressed
+- 1 - released in this frame after n frames < t
+- 2 - released in this frame after n frames >= t
+
+- 3 - pressed in this frame
+
+- 4 - pressed, n frames < t
+
+- 5 - pressed, n frames == t
+
+- 6 - pressed, n frames > t
+
+  
+
+## Timer
+
+**timer-set**
+
+`timer-set freq addr`
 
 
 
@@ -141,52 +175,52 @@ Get color of the led at x,y and store it in `c`.
 
 - [x] extension init (new modules append their init to the list)
 
-- rename files `vm-v1-core.js` -> `vm-core-mk1.js`
+- [x] rename files `vm-v1-core.js` -> `vm-core-mk1.js`
 
-- leds vs screen
+- [ ] init / update / draw (callbacks, hooks, events, triggers, signals, interrupts) (-set, -bind, -link, -attach) 
 
-- btn state
+- [ ] btn state
 
-- init / update / draw
+- [ ] screen vs time vs threads (requestAnimationFrame)
 
-- var -> let
+- [ ] leds vs screen
 
-- colors vs palettes
+- [ ] var -> let
+
+- [x] colors vs palettes
 
 - [x] text vs banks
-
-- screen vs time vs threads (requestAnimationFrame)
 
   
 
 ### Extension modules
 
-| extension             | interface | implementation | config | tested  | docs    | notes                            |
-| --------------------- | --------- | -------------- | ------ | ------- | ------- | -------------------------------- |
-| stack                 | ●●● ●     | ●●● ●          |        | ○○○ ○   | ○○○ ○   |                                  |
-| colors                | ●         | ●              | ●      | ●       | ○       |                                  |
-| leds                  | ●●● ●●    | ●●● ●●         | ●●● ●  | ●●● ○○  | ○○○ ○○  |                                  |
-| threads (cooperative) | ●●● ●     | ●●● ●          | ●      | ●●○ ○   | ○○○ ○   | errors: -id                      |
-| text                  | ●●● ●●    | ●●● ●●●        | ●●●    | ●●● ●○○ | ○○○ ○○○ | mk1 = ala 24a2<br />banks!       |
-| callbacks/hooks       |           |                |        |         |         |                                  |
-| mouse/touch           | ●●● ●     | ●○○ ○          | ○○     | ○○○ ○   | ○○○ ○   |                                  |
-| screen                |           |                | ●●●○   |         |         | pages, blit                      |
-| ----------------      |           |                |        |         |         |                                  |
-| random                |           |                |        |         |         |                                  |
-| time                  |           |                |        |         |         |                                  |
-| palettes              | ●         | ●              | ○      | ○       | ○       | embed selected palettes at build |
-| pads                  |           |                |        |         |         | NES/GB style (4+2+2) x 4?        |
-| keys                  |           |                |        |         |         |                                  |
-| math                  |           |                |        |         |         |                                  |
-| rom                   |           |                |        |         |         |                                  |
-| ram                   |           |                |        |         |         |                                  |
-| draw                  |           |                |        |         |         |                                  |
-| sprites               |           |                |        |         |         |                                  |
-| particles             |           |                |        |         |         |                                  |
-| sound                 |           |                |        |         |         |                                  |
-| font                  |           |                |        |         |         |                                  |
-| music                 |           |                |        |         |         |                                  |
-| micro:bit             |           |                |        |         |         |                                  |
+| extension             | interface    | implementation | config       | tested       | docs         | notes                            |
+| --------------------- | ------------ | -------------- | ------------ | ------------ | ------------ | -------------------------------- |
+| stack                 | ●●● ●        | ●●● ●          |              | ○○○ ○        | ○○○ ○        |                                  |
+| colors                | ●            | ●              | ●            | ●            | ○            |                                  |
+| leds                  | ●●● ●●       | ●●● ●●         | ●●● ●        | ●●● ○○       | ○○○ ○○       |                                  |
+| threads (cooperative) | ●●● ●        | ●●● ●          | ●            | ●●○ ○        | ○○○ ○        | errors: -id                      |
+| text                  | ●●● ●●       | ●●● ●●●        | ●●●          | ●●● ●○○      | ○○○ ○○○      | mk1 = ala 24a2<br />banks!       |
+| timer                 | ●            | ●●●            |              | ●            | ○            | TODO: better delay               |
+| mouse/touch           | ●●● ●        | ●●● ●●● ●●●    | ○○           | ○○○ ○        | ○○○ ○        |                                  |
+| screen                |              |                | ●●●○         |              |              | pages, blit                      |
+| ------------          | ------------ | ------------   | ------------ | ------------ | ------------ | ------------                     |
+| random                |              |                |              |              |              |                                  |
+| time                  |              |                |              |              |              |                                  |
+| palettes              | ●            | ●              | ○            | ○            | ○            | embed selected palettes at build |
+| pads                  |              |                |              |              |              | NES/GB style (4+2+2) x 4?        |
+| keys                  |              |                |              |              |              |                                  |
+| math                  |              |                |              |              |              |                                  |
+| rom                   |              |                |              |              |              |                                  |
+| ram                   |              |                |              |              |              |                                  |
+| draw                  |              |                |              |              |              |                                  |
+| sprites               |              |                |              |              |              |                                  |
+| particles             |              |                |              |              |              |                                  |
+| sound                 |              |                |              |              |              |                                  |
+| font                  |              |                |              |              |              |                                  |
+| music                 |              |                |              |              |              |                                  |
+| micro:bit             |              |                |              |              |              |                                  |
 
 
 
@@ -197,8 +231,8 @@ Get color of the led at x,y and store it in `c`.
 - [x] global labels
 - [x] local labels
 - [x] basic CLI
-- [ ] variables
-- [ ] better tokenization (whitespaces not required)
+- [ ] variables / aliases
+- [ ] better tokenization (whitespace not required)
 - [ ] minification / obfuscation
 - [ ] macros (to much for being "smol"?)
 
@@ -207,6 +241,9 @@ Get color of the led at x,y and store it in `c`.
 - [x] extensions
 - [x] configuration
 - [ ] call assembly
+- [x] produce js
+- [x] produce html
+- [ ] basic CLI
 
 
 
