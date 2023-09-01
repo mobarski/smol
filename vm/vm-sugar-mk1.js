@@ -13,8 +13,8 @@ function vm_nop() {
 }
 
 function vm_log() {
-	var op = get_op()
-	var val = value_of(op)
+	let op = get_op()
+	let val = value_of(op)
 	console.log('log',op,val)
 }
 
