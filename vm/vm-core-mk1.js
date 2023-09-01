@@ -15,7 +15,7 @@ function vm_init() {
 
 function vm_run(n_steps=0) {
 	var i = 0
-	var t0 = performance.now()
+	let t0 = performance.now()
 	if (n_steps==0) {
 		for (i=0; !vm.halt; i++) { vm_step() }
 	} else {
@@ -25,28 +25,28 @@ function vm_run(n_steps=0) {
 }
 
 function vm_step() {
-	var t = get_op()
+	let t = get_op()
 	if (t=='if') {
 		// CONDITIONAL JUMP
-		var a = get_op()
-		var op = get_op()
-		var b = get_op()
-		var addr = get_op()
+		let a = get_op()
+		let op = get_op()
+		let b = get_op()
+		let addr = get_op()
 		if (vm_alu(a,op,b)) { vm.ip = addr }
 	} else if (t in vm.ext) {
 		// EXTENSION
 		vm.ext[t]()
 	} else {
 		// ALU
-		var op = get_op()
-		var b = get_op()
-		var val = vm_alu(t,op,b)
+		let op = get_op()
+		let b = get_op()
+		let val = vm_alu(t,op,b)
 		vm_set(t, val)
 	}
 }
 
 function get_op() {
-	var op = vm.code[vm.ip]
+	let op = vm.code[vm.ip]
 	vm.ip += 1
 	return op
 }
@@ -81,13 +81,13 @@ function vm_alu(a,op,b) {
 
 function vm_set(x, val) {
 	if (is_ref(x)) {
-		var r = get_ref(x)
+		let r = get_ref(x)
 		vm.reg[r] = val
 	} else if (is_reg(x)){
-		var r = get_reg(x)
+		let r = get_reg(x)
 		vm.reg[r] = val
 	} else if (is_tgt(x)) {
-		var r = get_tgt(x)
+		let r = get_tgt(x)
 		vm.reg[r] = val
 	}
 }
@@ -96,10 +96,10 @@ function value_of(x) {
 	if (is_num(x)) {
 		return x
 	} else if (is_ref(x)) {
-		var r = get_ref(x)
+		let r = get_ref(x)
 		return vm.reg[r]
 	} else if (is_reg(x)) {
-		var r = get_reg(x)
+		let r = get_reg(x)
 		return vm.reg[r]
 	}		
 }
@@ -116,12 +116,12 @@ function get_tgt(x) {
 
 // ie: @r123 -> reg[123]
 function get_ref(x) {
-	var r = get_reg(x.slice(1))
+	let r = get_reg(x.slice(1))
 	return vm.reg[r]
 }
 
 function is_reg(x) {
-	var r = get_reg(x)
+	let r = get_reg(x)
 	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
 }
 
