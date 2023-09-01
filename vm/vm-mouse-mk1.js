@@ -24,23 +24,23 @@ function _vm_mouse_init() {
 }
 
 function vm_mouse_btn() {
-    var t = get_op() // output target
-    var v = vm.mouse.button_state
+    let t = get_op() // output target
+    let v = vm.mouse.button_state
     vm_set(t, v)
 }
 
 function vm_mouse_xy() {
-    var tx = get_op() // output target x
-    var ty = get_op() // output target y
+    let tx = get_op() // output target x
+    let ty = get_op() // output target y
 
-    var mx = vm.mouse.x
-    var my = vm.mouse.y
+    let mx = vm.mouse.x
+    let my = vm.mouse.y
     vm_set(tx, mx)
     vm_set(ty, my)
 }
 
 function vm_mouse_frame() {
-    var m = vm.mouse
+    let m = vm.mouse
     m.time_frame_prev = m.time_frame
     m.time_frame = performance.now()
     // JUST PRESSED?
@@ -62,8 +62,8 @@ function vm_mouse_frame() {
 
 // TODO
 function vm_on_mouse_down(e) {
-    var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _vm_mouse_xy(e)
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
+    let mxy = _vm_mouse_xy(e)
     vm.mouse.time_pressed = performance.now()
     vm.mouse.xy_pressed = mxy
     vm.mouse.pressed = true
@@ -72,8 +72,8 @@ function vm_on_mouse_down(e) {
 
 // TODO
 function vm_on_mouse_up(e) {
-    var bcr = vm.mouse.canvas.getBoundingClientRect()
-    var mxy = _vm_mouse_xy(e)
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
+    let mxy = _vm_mouse_xy(e)
     vm.mouse.time_released = performance.now()
     vm.mouse.xy_released = mxy
     vm.mouse.pressed = false
@@ -81,32 +81,32 @@ function vm_on_mouse_up(e) {
 }
 
 function vm_on_mouse_move(e) {
-    var mxy = _vm_mouse_xy(e)
+    let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
 }
 
 function _vm_mouse_xy(e) {
-    var bcr = vm.mouse.canvas.getBoundingClientRect()
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
 
 	//var ratio = bcr.height/fc.height
 	//var bcr_left = ratio==fc.scale ? bcr.left : 0.5*(bcr.width - fc.width * ratio)
 
-	var bcr_top = bcr.top
-    var bcr_left = bcr.left
+	let bcr_top = bcr.top
+    let bcr_left = bcr.left
 	
-	var mx = e.clientX - bcr_left
-	var my = e.clientY - bcr_top
+	let mx = e.clientX - bcr_left
+	let my = e.clientY - bcr_top
 
     // TODO: get sx, sy from screen ???
-    var sx = vm.leds.size
-    var sy = vm.leds.size
+    let sx = vm.leds.size
+    let sy = vm.leds.size
     return {x:Math.floor(mx/sx), y:Math.floor(my/sy)}
 }
 
 // TODO
 function _vm_mouse_btn() {
-    var now = performance.now()
+    let now = performance.now()
     if (vm.mouse.pressed) {
         if (false) { return 3 } // TODO: pressed in this frame
         else if (now - vm.mouse.time_pressed < vm.mouse.long_press_ms) { return 4 } // short press

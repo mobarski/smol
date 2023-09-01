@@ -221,9 +221,21 @@ Switch text bank
 
 ### Next tasks
 
+- [ ] var -> let
+
+  - [ ] core
+  - [ ] mouse
+  - [ ] stack
+  - [ ] sugar
+  - [ ] threads
+
+- [ ] screen vs time vs threads (requestAnimationFrame)
+
+- [ ] leds vs screen
+
 - [x] asm + build
 
-- [ ] run
+- [x] build and run
 
 - [x] configuration default values at the top of the module
 
@@ -241,12 +253,6 @@ Switch text bank
 - [x] init / update / draw (callbacks, hooks, events, triggers, signals, interrupts) (-set, -bind, -link, -attach)  -> single timer hook
 
 - [x] btn state
-
-- [ ] screen vs time vs threads (requestAnimationFrame)
-
-- [ ] leds vs screen
-
-- [ ] var -> let
 
 - [x] colors vs palettes
 
