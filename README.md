@@ -224,10 +224,10 @@ Switch text bank
 - [ ] var -> let
 
   - [ ] core
-  - [ ] mouse
-  - [ ] stack
-  - [ ] sugar
-  - [ ] threads
+  - [x] mouse
+  - [x] stack
+  - [x] sugar
+  - [x] threads
 
 - [ ] screen vs time vs threads (requestAnimationFrame)
 
