@@ -95,10 +95,6 @@ r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6
 
 ##### leds-set
 
-`leds-set  x  y  color`
-
-`leds-set  x y color`
-
 `leds-set`  `x`  `y`  `color`
 
 `leds-set` `x` `y` `color`
@@ -112,6 +108,18 @@ Set color of the led at x,y to given color.
 `leds-get x y >c`
 
 Get color of the led at x,y and store it in `c`.
+
+
+
+### configuration
+
+- `vm.cfg.leds.width = ???`
+
+- `vm.cfg.leds.height = ???`
+
+- `vm.cfg.leds.size = ???`
+
+- `vm.cfg.leds.radius = ???`
 
 
 
@@ -149,9 +157,22 @@ Return mouse button state:
 
 
 
-**default configuration**
+### configuration
 
-`vm.cfg.mouse.long_press_ms = 500`
+- `vm.cfg.mouse.long_press_ms = 500`
+
+
+
+## Screen
+
+
+
+### configuration
+
+- `vm.cfg.screen.dom_id = 'vm-screen'`
+- `vm.cfg.screen.height = 128`
+- `vm.cfg.screen.width = 128`
+- `vm.cfg.screen.scale = 1`
 
 
 
@@ -205,6 +226,14 @@ Switch text bank
 
 
 
+### configuration
+
+- `vm.cfg.text.sep = '%%'`
+
+- `vm.cfg.text.dom_id = 'vm-text'`
+
+
+
 ## Timer
 
 
@@ -221,9 +250,14 @@ Switch text bank
 
 ### Next tasks
 
-- [ ] screen vs time vs threads (requestAnimationFrame)
-
+- [ ] CLI + file based configuration
 - [ ] leds vs screen
+- [ ] screen vs time vs threads (requestAnimationFrame)
+- [ ] name
+- [ ] pip + github based installation
+- [ ] run with "python -m xxx ..."
+
+### Finished task
 
 - [x] var -> let
 
@@ -298,7 +332,7 @@ Switch text bank
 - [x] global labels
 - [x] local labels
 - [x] basic CLI
-- [ ] variables / aliases
+- [x] variables / aliases
 - [ ] better tokenization (whitespace not required)
 - [ ] minification / obfuscation
 - [ ] macros (to much for being "smol"?)
@@ -307,10 +341,10 @@ Switch text bank
 
 - [x] extensions
 - [x] configuration
-- [ ] call assembly
+- [x] call assembly
 - [x] produce js
 - [x] produce html
-- [ ] basic CLI
+- [x] basic CLI
 
 
 
