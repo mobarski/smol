@@ -141,22 +141,68 @@ Set long press delay [ms]
 - 0 - unpressed
 - 1 - released in this frame after n frames < t
 - 2 - released in this frame after n frames >= t
-
 - 3 - pressed in this frame
-
 - 4 - pressed, n frames < t
-
 - 5 - pressed, n frames == t
-
 - 6 - pressed, n frames > t
 
-  
+
+
+## Text
+
+**text-new**
+
+`text-new`
+
+Clear the text buffer
+
+
+
+**text-part**
+
+`text-part` `text-id` `part`
+
+Append text part to the text buffer
+
+
+
+**text-val**
+
+`text-val` `value`
+
+Append value to the text buffer
+
+
+
+**text-chr**
+
+`text-chr` `char-code`
+
+Append character to the text buffer
+
+
+
+**text-emit**
+
+Emit the text buffer
+
+
+
+**text-bank**
+
+`text-bank` `bank-id`
+
+Switch text bank
+
+
 
 ## Timer
 
 **timer-set**
 
 `timer-set freq addr`
+
+
 
 
 
