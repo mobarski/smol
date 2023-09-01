@@ -290,17 +290,17 @@ function _vm_leds_draw_end() {} // NOT USED IN THIS IMPLEMENTATIN
 // === MOUSE MK1 ==============================================================
 
 vm.mouse = {}
+vm.mouse.long_press_ms = coalesce(vm.cfg.mouse.long_press_ms, 500)
 vm.mouse.time_pressed = 0
 vm.mouse.time_released = 0
-vm.mouse.long_press_ms = 500
 vm.mouse.time_frame = 0
 vm.mouse.time_frame_prev = 0
 vm.mouse.pressed = false
 vm.mouse.button_state = 0
 vm.mouse.x = 0
 vm.mouse.y = 0
-vm.mouse.xy_pressed = {x:0, y:0}
-vm.mouse.xy_released = {x:0, y:0}
+vm.mouse.xy_pressed = {x:0, y:0} // NOT USED YET (for gestures?)
+vm.mouse.xy_released = {x:0, y:0} // NOT USED YET (for gestures?)
 vm.init.push(_vm_mouse_init)
 
 function _vm_mouse_init() {

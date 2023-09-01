@@ -62,6 +62,8 @@ JSON machine code:
 
 # Modules
 
+
+
 ## Leds
 
 - `leds-init`
@@ -98,13 +100,15 @@ Get color of the led at x,y and store it in `c`.
 
 
 
-
-
-## 
-
-
-
 ## Mouse
+
+
+
+**mouse-frame**
+
+Process mouse frame
+
+
 
 **mouse-xy**
 
@@ -118,37 +122,27 @@ Return mouse coordinates
 
 `mouse-btn >mb`
 
-Return mouse button state
-
-
-
-**mouse-frame**
-
-Process mouse frame
-
-
-
-**mouse-t-set**
-
-`mouse-t-set 500`
-
-Set long press delay [ms]
-
-
-
-**button state (TODO)**
+Return mouse button state:
 
 - 0 - unpressed
-- 1 - released in this frame after n frames < t (short click)
-- 2 - released in this frame after n frames >= t (long click)
+- 1 - released in this frame after t < long_press_ms (short click)
+- 2 - released in this frame after t >= long_press_ms (long click)
 - 3 - pressed in this frame
-- 4 - held, n frames < t
-- 5 - held, n frames == t (long click detected in this frame)
-- 6 - held, n frames > t
+- 4 - held, t < long_press_ms
+- 5 - held, long click detected in this frame
+- 6 - held, t > long_press_ms (held after long click)
+
+
+
+**default configuration**
+
+`vm.cfg.mouse.long_press_ms = 500`
 
 
 
 ## Text
+
+
 
 **text-new**
 
@@ -197,6 +191,8 @@ Switch text bank
 
 
 ## Timer
+
+
 
 **timer-set**
 

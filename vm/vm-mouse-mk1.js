@@ -1,9 +1,9 @@
 // === MOUSE MK1 ==============================================================
 
 vm.mouse = {}
+vm.mouse.long_press_ms = coalesce(vm.cfg.mouse.long_press_ms, 500)
 vm.mouse.time_pressed = 0
 vm.mouse.time_released = 0
-vm.mouse.long_press_ms = 500
 vm.mouse.time_frame = 0
 vm.mouse.time_frame_prev = 0
 vm.mouse.pressed = false
