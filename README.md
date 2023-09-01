@@ -139,12 +139,12 @@ Set long press delay [ms]
 **button state (TODO)**
 
 - 0 - unpressed
-- 1 - released in this frame after n frames < t
-- 2 - released in this frame after n frames >= t
+- 1 - released in this frame after n frames < t (short click)
+- 2 - released in this frame after n frames >= t (long click)
 - 3 - pressed in this frame
-- 4 - pressed, n frames < t
-- 5 - pressed, n frames == t
-- 6 - pressed, n frames > t
+- 4 - held, n frames < t
+- 5 - held, n frames == t (long click detected in this frame)
+- 6 - held, n frames > t
 
 
 
