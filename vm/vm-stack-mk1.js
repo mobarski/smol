@@ -10,14 +10,14 @@ function ext_call() {
 }
 
 function ext_push() {
-	var a = get_op()
-	var val = value_of(a)
+	let a = get_op()
+	let val = value_of(a)
 	vm.stack.push(val)
 }
 
 function ext_pop() {
-	var a = get_op()
-	var val = vm.stack.pop()
+	let a = get_op()
+	let val = vm.stack.pop()
 	vm_set(a, val)
 }
 
