@@ -14,7 +14,7 @@ function vm_threads_set() {
 }
 
 function vm_threads_next() {
-    var id = vm.threads.current
+    let id = vm.threads.current
     vm.threads.addr[id] = vm.ip
     for (var i=id+1; i<vm.threads.addr.length; i++) {
         if (vm.threads.addr[i] > 0) {
@@ -29,12 +29,12 @@ function vm_threads_next() {
 }
 
 function vm_threads_kill() {
-    var id = vm.threads.current
+    let id = vm.threads.current
     vm.threads.addr[id] = 0
 }
 
 function vm_threads_id() {
-    var t = get_op()
+    let t = get_op()
     vm_set(t, vm.threads.current) // ERROR
 }
 
