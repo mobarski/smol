@@ -221,17 +221,17 @@ Switch text bank
 
 ### Next tasks
 
-- [ ] var -> let
+- [ ] screen vs time vs threads (requestAnimationFrame)
 
-  - [ ] core
+- [ ] leds vs screen
+
+- [x] var -> let
+
+  - [x] core
   - [x] mouse
   - [x] stack
   - [x] sugar
   - [x] threads
-
-- [ ] screen vs time vs threads (requestAnimationFrame)
-
-- [ ] leds vs screen
 
 - [x] asm + build
 
