@@ -111,7 +111,7 @@ Conditional jump. If `a op b` is true then the `ip` is set to `addr-then` if it 
 
 
 
-example uses:
+example use:
 
 ```assembly
 r1 = 10
@@ -140,6 +140,60 @@ not-zero:
 #### extension
 
 `ext` `...`
+
+
+
+## Assembly
+
+
+
+### def
+
+`def name value`
+
+
+
+example use:
+
+- `def mx r1`
+- `def pi 3.142`
+- `def n_iters 10`
+
+
+
+### local label
+
+`_name:`
+
+Local labels are only available between between two normal labels (can be reused).
+
+
+
+example use:
+
+```
+call :aaa (logs: 111 333)
+call :bbb (logs: 999 777)
+halt
+
+aaa:
+	log 111
+	goto :_end
+	log 222
+	_end:
+	log 333
+	return
+
+bbb:
+	log 999
+	goto :_end
+	log 888
+	_end:
+	log 777
+	return
+```
+
+
 
 
 
