@@ -31,8 +31,13 @@ function vm_step() {
 		let a = get_op()
 		let op = get_op()
 		let b = get_op()
-		let addr = get_op()
-		if (vm_alu(a,op,b)) { vm.ip = addr }
+		let addr_then = get_op()
+		let addr_else = get_op()
+		if (vm_alu(a,op,b)) {
+			vm.ip = addr_then ? addr_then : vm.ip
+		} else {
+			vm.ip = addr_else ? addr_else : vm.ip
+		}
 	} else if (t in vm.ext) {
 		// EXTENSION
 		vm.ext[t]()

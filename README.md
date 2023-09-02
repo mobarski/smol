@@ -29,8 +29,8 @@
 The core VM has:
 
 - only 3 instructions:
-  - conditional jump
   - ALU operation
+  - conditional jump
   - extension call
 - 256 general-purpose registers (`r0-r255`)
 - `ip` register
@@ -52,26 +52,60 @@ b = 0
 loop:
     a += 1
     b += a
-if a < 5 :loop
+if a < 5 :loop 0
 ```
 
 VM code (JSON):
 
 ```javascript
-['r1','=',0,'r2','=',0,'(6)','r1','+=',1,'r2','+=','r1','if','r1','<',5,6]
+['r1','=',0,'r2','=',0,'(6)','r1','+=',1,'r2','+=','r1','if','r1','<',5,6,0]
 ```
 
 VM code (str)
 
 ``````
-r1 = 0 r2 = 0 (6) r1 += 1 r2 += r1 if r1 < 5 6
+r1 = 0 r2 = 0 (6) r1 += 1 r2 += r1 if r1 < 5 6 0
 ``````
 
 VM code (dense str)
 
 ``````
-r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6
+r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6 0
 ``````
+
+
+
+## Instructions
+
+### alu
+
+`a` `op` `b`
+
+operations:
+
+- `=`
+
+- `+=` `-=` `*=` `/=` `%=``
+
+- ``//=`
+
+- `<<=` `>>=` `&=` `|=` `^=`
+
+- `>` `>=` `<` `<=` `==` `!=`
+
+- `&&` `||`
+
+  
+
+### if
+
+`if` `a` `op` `b` `addr-then` `addr-else`
+
+
+
+### extension
+
+`ext` `...`
 
 
 
@@ -245,113 +279,4 @@ Switch text bank
 
 
 
-
-# Progress
-
-### Next tasks
-
-- [ ] CLI + file based configuration
-- [ ] leds vs screen
-- [ ] screen vs time vs threads (requestAnimationFrame)
-- [ ] name
-- [ ] pip + github based installation
-- [ ] run with "python -m xxx ..."
-
-### Finished task
-
-- [x] var -> let
-
-  - [x] core
-  - [x] mouse
-  - [x] stack
-  - [x] sugar
-  - [x] threads
-
-- [x] asm + build
-
-- [x] build and run
-
-- [x] configuration default values at the top of the module
-
-  ```javascript
-  vm.mouse = {}
-  vm.mouse.delay1 = coalesce(vm.cfg.mouse.delay1, 500)
-  vm.mouse.delay2 = coalesce(vm.cfg.mouse.delay2, 250)
-  vm.init.push(vm_mouse_init)
-  ```
-
-- [x] extension init (new modules append their init to the list)
-
-- [x] rename files `vm-v1-core.js` -> `vm-core-mk1.js`
-
-- [x] init / update / draw (callbacks, hooks, events, triggers, signals, interrupts) (-set, -bind, -link, -attach)  -> single timer hook
-
-- [x] btn state
-
-- [x] colors vs palettes
-
-- [x] text vs banks
-
-  
-
-### Extension modules
-
-| extension             | interface    | implementation | config       | tested       | docs         | notes                            |
-| --------------------- | ------------ | -------------- | ------------ | ------------ | ------------ | -------------------------------- |
-| stack                 | ●●● ●        | ●●● ●          |              | ○○○ ○        | ○○○ ○        |                                  |
-| colors                | ●            | ●              | ●            | ●            | ○            |                                  |
-| leds                  | ●●● ●●       | ●●● ●●         | ●●● ●        | ●●● ○○       | ○○○ ○○       |                                  |
-| threads (cooperative) | ●●● ●        | ●●● ●          | ●            | ●●○ ○        | ○○○ ○        | errors: -id                      |
-| text                  | ●●● ●●       | ●●● ●●●        | ●●●          | ●●● ●○○      | ○○○ ○○○      | mk1 = ala 24a2<br />banks!       |
-| timer                 | ●            | ●●●            |              | ●            | ○            | TODO: better delay               |
-| mouse/touch           | ●●● ●        | ●●● ●●● ●●●    | ○○           | ○○○ ○        | ○○○ ○        |                                  |
-| screen                |              |                | ●●●○         |              |              | pages, blit                      |
-| ------------          | ------------ | ------------   | ------------ | ------------ | ------------ | ------------                     |
-| random                |              |                |              |              |              |                                  |
-| time                  |              |                |              |              |              |                                  |
-| palettes              | ●            | ●              | ○            | ○            | ○            | embed selected palettes at build |
-| pads                  |              |                |              |              |              | NES/GB style (4+2+2) x 4?        |
-| keys                  |              |                |              |              |              |                                  |
-| math                  |              |                |              |              |              |                                  |
-| rom                   |              |                |              |              |              |                                  |
-| ram                   |              |                |              |              |              |                                  |
-| draw                  |              |                |              |              |              |                                  |
-| sprites               |              |                |              |              |              |                                  |
-| particles             |              |                |              |              |              |                                  |
-| sound                 |              |                |              |              |              |                                  |
-| font                  |              |                |              |              |              |                                  |
-| music                 |              |                |              |              |              |                                  |
-| micro:bit             |              |                |              |              |              |                                  |
-
-
-
-### Assembly
-
-- [x] basic tokenization
-- [x] comments
-- [x] global labels
-- [x] local labels
-- [x] basic CLI
-- [x] variables / aliases
-- [ ] better tokenization (whitespace not required)
-- [ ] minification / obfuscation
-- [ ] macros (to much for being "smol"?)
-
-### Linker
-
-- [x] extensions
-- [x] configuration
-- [x] call assembly
-- [x] produce js
-- [x] produce html
-- [x] basic CLI
-
-
-
-### Compilation
-
-- **v1.py**: python -> js (interpreted), requires whitespace between tokens
-- **v1.js**: js -> js (interpreted), requires whitespace between tokens
-- **v1.xx**: compiled_language -> js (interpreted), requires whitespace between tokens
-- **v2.py**: python -> another language (js, c, go)
 

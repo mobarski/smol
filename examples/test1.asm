@@ -8,5 +8,5 @@ _loop:
     yi = y0 ; yi += i ; y = @yi
     # sprite x y 1 0
     i += 1
-if i < 10 :_loop
+if i < 10 :_loop 0
 

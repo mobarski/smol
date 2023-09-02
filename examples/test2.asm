@@ -5,6 +5,6 @@ _loop:
 	r2 += r1
 	@r2 = r1
 	r1 += 1	
-if r1 < 5 :_loop
+if r1 < 5 :_loop 0
 halt
 
