@@ -1,4 +1,8 @@
-# Idea
+# Smol
+
+
+
+## Idea
 
 - Simple register-based VM that can be easily extended (highly modular)
 - Simple assembly code that reads more like higher level language
@@ -7,7 +11,7 @@
 
 
 
-# Inspirations
+## Inspirations
 
 - [Another World VM](https://fabiensanglard.net/anotherWorld_code_review/) ([polygons](https://fabiensanglard.net/another_world_polygons/))
 - [p-code machine](https://en.wikipedia.org/wiki/P-code_machine)
@@ -18,13 +22,13 @@
 
 
 
-# Why?
+## Why?
 
 - `¯\_(ツ)_/¯`
 
 
 
-# VM
+## VM
 
 The core VM has:
 
@@ -39,7 +43,7 @@ The core VM has:
 
 
 
-# Quick example
+## Quick example
 
 assembly
 
@@ -75,19 +79,21 @@ r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6 0
 
 
 
-## Instructions
+### Instructions
 
-### alu
+#### alu
 
 `a` `op` `b`
+
+ALU operation
 
 operations:
 
 - `=`
 
-- `+=` `-=` `*=` `/=` `%=``
+- `+=` `-=` `*=` `/=` `%=`
 
-- ``//=`
+- `//=`
 
 - `<<=` `>>=` `&=` `|=` `^=`
 
@@ -97,23 +103,51 @@ operations:
 
   
 
-### if
+#### if
 
 `if` `a` `op` `b` `addr-then` `addr-else`
 
+Conditional jump. If `a op b` is true then the `ip` is set to `addr-then` if it is false then ip is set to `addr-else`.  If `ip` would be set to 0 with this operation it is not changed.
 
 
-### extension
+
+example uses:
+
+```assembly
+r1 = 10
+loop:
+	(r1 -> 10 8 6 4 2)
+	r1 -= 2
+if r1 > 0 :loop 0
+```
+
+```assembly
+if r1 == 0 :is-zero 0
+	(r1 is not 0)
+is-zero:
+```
+
+```assembly
+if r1 == 0 0 :not-zero
+	(r1 is 0)
+not-zero:
+```
+
+
+
+
+
+#### extension
 
 `ext` `...`
 
 
 
-# Modules
+## Modules
 
 
 
-## Leds
+### Leds
 
 - `leds-init`
 
@@ -157,7 +191,7 @@ Get color of the led at x,y and store it in `c`.
 
 
 
-## Mouse
+### Mouse
 
 
 
@@ -191,17 +225,17 @@ Return mouse button state:
 
 
 
-### configuration
+#### configuration
 
 - `vm.cfg.mouse.long_press_ms = 500`
 
 
 
-## Screen
+### Screen
 
 
 
-### configuration
+#### configuration
 
 - `vm.cfg.screen.dom_id = 'vm-screen'`
 - `vm.cfg.screen.height = 128`
@@ -210,7 +244,7 @@ Return mouse button state:
 
 
 
-## Text
+### Text
 
 
 
@@ -260,7 +294,7 @@ Switch text bank
 
 
 
-### configuration
+#### configuration
 
 - `vm.cfg.text.sep = '%%'`
 
@@ -268,7 +302,7 @@ Switch text bank
 
 
 
-## Timer
+### Timer
 
 
 
