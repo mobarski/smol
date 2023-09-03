@@ -1,0 +1,579 @@
+<html></html>
+<script>
+vm = {}
+vm.cfg = {}
+vm.cfg.core = {}
+vm.cfg.sugar = {}
+vm.cfg.colors = {}
+vm.cfg.leds = {}
+vm.cfg.mouse = {}
+vm.cfg.threads = {}
+vm.cfg.text = {}
+vm.cfg.timer = {}
+vm.cfg.core.registers = 256
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer']
+vm.cfg.leds.width = 17
+vm.cfg.leds.height = 17
+vm.cfg.leds.size = 32
+vm.cfg.leds.radius = 15
+vm.cfg.colors.data = ['#F5F5F5', '#D3D3D3', '#808080', '#F08080', '#FFD700', '#00FA9A', '#87CEFA', '#DDA0DD']
+// === CORE MK1 ===============================================================
+
+vm.ip = 0
+vm.code = []
+vm.reg = new Array(vm.cfg.core.registers).fill(0)
+vm.ext = {} // extensions
+vm.halt = false
+vm.init = []
+
+function vm_init() {
+	for (var i=0; i<vm.init.length; i++) {
+		vm.init[i]()
+	}
+}
+
+function vm_run(n_steps=0) {
+	var i = 0
+	let t0 = performance.now()
+	if (n_steps==0) {
+		for (i=0; !vm.halt; i++) { vm_step() }
+	} else {
+		for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
+	}
+	//console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
+}
+
+function vm_step() {
+	let t = get_op()
+	if (t=='if') {
+		// CONDITIONAL JUMP
+		let a = get_op()
+		let op = get_op()
+		let b = get_op()
+		let addr_then = get_op()
+		let addr_else = get_op()
+		if (vm_alu(a,op,b)) {
+			vm.ip = addr_then ? addr_then : vm.ip
+		} else {
+			vm.ip = addr_else ? addr_else : vm.ip
+		}
+	} else if (t in vm.ext) {
+		// EXTENSION
+		vm.ext[t]()
+	} else {
+		// ALU
+		let op = get_op()
+		let b = get_op()
+		let val = vm_alu(t,op,b)
+		vm_set(t, val)
+	}
+}
+
+function get_op() {
+	let op = vm.code[vm.ip]
+	vm.ip += 1
+	return op
+}
+
+function vm_alu(a,op,b) {
+	var a = value_of(a)
+	var b = value_of(b)
+	switch (op) {
+	    case  '+': case '+=':  return a+b
+	    case  '-': case '-=':  return a-b
+	    case  '*': case '*=':  return a*b
+	    case  '/': case '/=':  return a/b
+	    case  '%': case '%=':  return a%b
+	    case  '&': case '&=':  return a&b
+	    case  '|': case '|=':  return a|b
+	    case  '^': case '^=':  return a^b
+	    case '<<': case '<<=': return a<<b
+	    case '>>': case '>>=': return a>>b
+	    case '//': case '//=': return Math.floor(a/b)
+	    case  '=': return b
+	    case  '<': return a<b
+	    case  '>': return a>b
+	    case '<=': return a<=b
+	    case '>=': return a>=b
+	    case '==': return a==b
+	    case '!=': return a!=b
+	    case '&&': return a&&b
+	    case '||': return a||b
+    }
+}
+
+
+function vm_set(x, val) {
+	if (is_ref(x)) {
+		let r = get_ref(x)
+		vm.reg[r] = val
+	} else if (is_reg(x)){
+		let r = get_reg(x)
+		vm.reg[r] = val
+	} else if (is_tgt(x)) {
+		let r = get_tgt(x)
+		vm.reg[r] = val
+	}
+}
+
+function value_of(x) {
+	if (is_num(x)) {
+		return x
+	} else if (is_ref(x)) {
+		let r = get_ref(x)
+		return vm.reg[r]
+	} else if (is_reg(x)) {
+		let r = get_reg(x)
+		return vm.reg[r]
+	}		
+}
+
+// ie: r123 -> 123
+function get_reg(x) {
+	return parseInt(x.slice(1))
+}
+
+// ie: >r123 -> 123
+function get_tgt(x) {
+	return parseInt(x.slice(2))
+}
+
+// ie: @r123 -> reg[123]
+function get_ref(x) {
+	let r = get_reg(x.slice(1))
+	return vm.reg[r]
+}
+
+function is_reg(x) {
+	let r = get_reg(x)
+	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
+}
+
+function is_ref(x) {
+	return ((x[0]=='@') && is_reg(x.slice(1)))
+}
+
+function is_tgt(x) {
+	return ((x[0]=='>') && is_reg(x.slice(1)))
+}
+
+function is_num(x) {
+	return !isNaN(x)
+}
+
+function coalesce(...args) {
+    for (let arg of args) {
+        if (arg !== null && arg !== undefined) {
+            return arg;
+        }
+    }
+    return null;
+}
+
+// === SUGAR MK1 ========================================================================
+
+function vm_goto() {
+	vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
+}
+
+function vm_halt() {
+	vm.ip -= 1
+	vm.halt = true
+}
+
+function vm_nop() {
+}
+
+function vm_log() {
+	let op = get_op()
+	let val = value_of(op)
+	console.log('log',op,val)
+}
+
+vm.ext['goto'] = vm_goto
+vm.ext['halt'] = vm_halt
+vm.ext['log'] = vm_log
+vm.ext['nop'] = vm_nop
+
+// === COLORS MK1 =============================================================
+
+vm.colors = {}
+vm.colors.rgb = coalesce(vm.cfg.colors.data, ['#000000','#ffffff'])
+
+function vm_color(x) {
+	let id = x % vm.colors.rgb.length;
+	return vm.colors.rgb[id]
+}
+
+// === LEDS mk1 ===============================================================
+
+vm.leds = {}
+vm.init.push(_vm_leds_init)
+
+function _vm_leds_init() {
+    vm.leds.width = vm.cfg.leds.width
+    vm.leds.height = vm.cfg.leds.height
+    vm.leds.data = new Array(vm.leds.width * vm.leds.height).fill(0)
+    _vm_leds_init2()
+}
+
+function vm_leds_clear() {
+    let v = value_of(get_op())
+    vm.leds.data.fill(v)
+}
+
+function vm_leds_draw() {
+    _vm_leds_draw_begin()
+    for (var y = 0; y < vm.leds.height; y++) {
+        for (var x = 0; x < vm.leds.width; x++) {
+            var v = vm.leds.data[x + y * vm.leds.width]
+            _vm_leds_draw_led(x, y, v)
+        }
+    }
+    _vm_leds_draw_end()
+}
+
+function vm_leds_set() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let v = value_of(get_op())
+    vm.leds.data[x + y * vm.leds.width] = v
+}
+
+function vm_leds_get() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let t = get_op() // output target
+    let v = vm.leds.data[x + y * vm.leds.width]
+    vm_set(t, v)
+}
+
+vm.ext['leds-clear'] = vm_leds_clear // TODO: rename leds-fill
+vm.ext['leds-draw'] = vm_leds_draw
+vm.ext['leds-set'] = vm_leds_set
+vm.ext['leds-get'] = vm_leds_get
+
+
+// === LEDS MK1 - IMPLEMENTATION DETAILS ===
+
+function _vm_leds_init2() {
+    vm.leds.size   = vm.cfg.leds.size
+    vm.leds.radius = vm.cfg.leds.radius
+    let canvas = document.createElement('canvas')
+    canvas.width = vm.leds.width * vm.leds.size
+    canvas.height = vm.leds.height * vm.leds.size
+    document.body.appendChild(canvas)
+    vm.leds.canvas = canvas
+    vm.leds.ctx = canvas.getContext("2d")
+    //
+    vm.screen = {}
+    vm.screen.width = canvas.width
+    vm.screen.height = canvas.height
+    vm.screen.scale = vm.leds.size
+    vm.screen.ctx = canvas.getContext("2d")
+    vm.screen.canvas = canvas
+}
+
+function _vm_leds_draw_led(x, y, v) {
+    let c = vm_color(v)
+    let r = vm.leds.radius
+    vm.leds.ctx.fillStyle = c
+    vm.leds.ctx.beginPath()
+    //vm.leds.ctx.rect(x * vm.leds.size, y * vm.leds.size, 2*r, 2*r)
+    vm.leds.ctx.arc(vm.leds.size/2 + x * vm.leds.size, vm.leds.size/2 + y * vm.leds.size, r, 0, 2 * Math.PI, false)
+    vm.leds.ctx.fill()
+}
+
+function _vm_leds_draw_begin() {
+    // TODO: background color
+    vm.leds.ctx.clearRect(0, 0, vm.leds.ctx.canvas.width, vm.leds.ctx.canvas.height)
+}
+
+function _vm_leds_draw_end() {} // NOT USED IN THIS IMPLEMENTATIN
+
+
+// === MOUSE MK1 ==============================================================
+
+vm.mouse = {}
+vm.mouse.long_press_ms = coalesce(vm.cfg.mouse.long_press_ms, 500)
+vm.mouse.time_pressed = 0
+vm.mouse.time_released = 0
+vm.mouse.time_frame = 0
+vm.mouse.time_frame_prev = 0
+vm.mouse.pressed = false
+vm.mouse.button_state = 0
+vm.mouse.x = 0
+vm.mouse.y = 0
+vm.mouse.xy_pressed = {x:0, y:0} // NOT USED YET (for gestures?)
+vm.mouse.xy_released = {x:0, y:0} // NOT USED YET (for gestures?)
+vm.init.push(_vm_mouse_init)
+
+function _vm_mouse_init() {
+    vm.mouse.canvas = vm.leds.canvas // TODO: vm.screen.canvas
+
+    // REF: https://www.w3schools.com/jsref/obj_mouseevent.asp
+    document.addEventListener('mousedown', vm_on_mouse_down)
+    document.addEventListener('mouseup', vm_on_mouse_up)
+    document.addEventListener('mousemove', vm_on_mouse_move)
+}
+
+function vm_mouse_btn() {
+    let t = get_op() // output target
+    let v = vm.mouse.button_state
+    vm_set(t, v)
+}
+
+function vm_mouse_xy() {
+    let tx = get_op() // output target x
+    let ty = get_op() // output target y
+
+    let mx = vm.mouse.x
+    let my = vm.mouse.y
+    vm_set(tx, mx)
+    vm_set(ty, my)
+}
+
+function vm_mouse_frame() {
+    let m = vm.mouse
+    m.time_frame_prev = m.time_frame
+    m.time_frame = performance.now()
+    // JUST PRESSED?
+    if (m.time_pressed > m.time_frame_prev) {
+        m.button_state = 3
+    } else // JUST RELEASED?
+    if (m.time_released > m.time_frame_prev) {
+        m.button_state = (m.time_released-m.time_pressed < m.long_press_ms) ? 1 : 2
+    } else // JUST LONG PRESSED?
+    if ((m.pressed)&&(m.time_frame > m.time_pressed+m.long_press_ms)&&(m.time_frame_prev<m.time_pressed+m.long_press_ms)) {
+        m.button_state = 5
+    } else // HELD?
+    if (m.pressed) {
+        m.button_state = (m.time_frame < m.time_pressed+m.long_press_ms)? 4 : 6
+    } else {
+        m.button_state = 0
+    }
+}
+
+// TODO
+function vm_on_mouse_down(e) {
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
+    let mxy = _vm_mouse_xy(e)
+    vm.mouse.time_pressed = performance.now()
+    vm.mouse.xy_pressed = mxy
+    vm.mouse.pressed = true
+    //console.log('mouse down', e, bcr, mxy)
+}
+
+// TODO
+function vm_on_mouse_up(e) {
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
+    let mxy = _vm_mouse_xy(e)
+    vm.mouse.time_released = performance.now()
+    vm.mouse.xy_released = mxy
+    vm.mouse.pressed = false
+    //console.log('mouse up', e, bcr, mxy)
+}
+
+function vm_on_mouse_move(e) {
+    let mxy = _vm_mouse_xy(e)
+    vm.mouse.x = mxy.x
+    vm.mouse.y = mxy.y
+}
+
+function _vm_mouse_xy(e) {
+    let bcr = vm.mouse.canvas.getBoundingClientRect()
+
+	//var ratio = bcr.height/fc.height
+	//var bcr_left = ratio==fc.scale ? bcr.left : 0.5*(bcr.width - fc.width * ratio)
+
+	let bcr_top = bcr.top
+    let bcr_left = bcr.left
+	
+	let mx = e.clientX - bcr_left
+	let my = e.clientY - bcr_top
+
+    // TODO: get sx, sy from screen ???
+    let sx = vm.leds.size
+    let sy = vm.leds.size
+    return {x:Math.floor(mx/sx), y:Math.floor(my/sy)}
+}
+
+// TODO
+function _vm_mouse_btn() {
+    let now = performance.now()
+    if (vm.mouse.pressed) {
+        if (false) { return 3 } // TODO: pressed in this frame
+        else if (now - vm.mouse.time_pressed < vm.mouse.long_press_ms) { return 4 } // short press
+        else if (false) { return 5 } // TODO: long press in this frame
+        else if (now - vm.mouse.time_pressed > vm.mouse.long_press_ms) { return 6 } // long press
+    } else {
+
+    }
+
+}
+
+vm.ext['mouse-btn'] = vm_mouse_btn
+vm.ext['mouse-xy'] = vm_mouse_xy
+vm.ext['mouse-frame'] = vm_mouse_frame
+
+// TODO: pass x,y
+// TODO: pass event type (short click, long click, gesture, etc)
+// TODO: handle animation frame
+// TODO: detect short click
+// TODO: detect long click
+
+// TDOO: detect simple gesture (up, down, left, right)
+// TODO: detect compound gesture (up+left, down+right, etc)
+
+// === THREADS MK1 ============================================================
+
+vm.threads = {}
+vm.threads.threads = coalesce(vm.cfg.core.threads, 64)
+vm.threads.addr = new Array(vm.threads.threads).fill(0)
+vm.threads.current = 0 // main thread
+
+function vm_threads_set() {
+    var id = value_of(get_op())
+    let addr = get_op()
+    // allow addressing from the end (-1 as the last thread)
+    if (id<0) { id = length(vm.threads.addr) + id }
+    vm.threads.addr[id] = addr
+}
+
+function vm_threads_next() {
+    let id = vm.threads.current
+    vm.threads.addr[id] = vm.ip
+    for (var i=id+1; i<vm.threads.addr.length; i++) {
+        if (vm.threads.addr[i] > 0) {
+            vm.ip = vm.threads.addr[i]
+            vm.threads.current = i
+            return
+        }
+    }
+    // all threads done, return to the main thread
+    vm.ip = vm.threads.addr[0]
+    vm.threads.current = 0
+}
+
+function vm_threads_kill() {
+    let id = vm.threads.current
+    vm.threads.addr[id] = 0
+}
+
+function vm_threads_id() {
+    let t = get_op()
+    vm_set(t, vm.threads.current) // ERROR
+}
+
+vm.ext['threads-set'] = vm_threads_set
+vm.ext['threads-next'] = vm_threads_next
+vm.ext['threads-kill'] = vm_threads_kill // NOT TESTED
+vm.ext['threads-id'] = vm_threads_id
+
+// === TEXT MK1 ===============================================================
+
+vm.text = {}
+vm.text.bank = 0
+vm.text.buffer = []
+vm.text.banks = coalesce(vm.cfg.text.banks, [[]])
+vm.text.data = vm.text.banks[vm.text.bank]
+vm.text.dom_id = coalesce(vm.cfg.text.dom_id, 'vm-text')
+vm.text.sep = coalesce(vm.cfg.text.sep, '%%')
+
+function vm_text_bank() {
+	let bank_id = value_of(get_op())
+	vm.text.bank = bank_id
+	vm.text.data = vm.text.banks[bank_id]
+}
+
+function vm_text_new() {
+	vm.text.buffer = []
+}
+
+function vm_text_part() {
+	let text_id = value_of(get_op())
+	let part_id = value_of(get_op())
+	let sep = vm.text.sep
+	let part = vm.text.data[text_id].split(sep)[part_id]
+	_vm_text_append(part)
+}
+
+function vm_text_val() {
+	let v = value_of(get_op())
+	let s = v.toString() // TODO: format ???
+	_vm_text_append(s)
+}
+
+function vm_text_chr() {
+	let v = value_of(get_op())
+	let c = String.fromCharCode(v)
+	_vm_text_append(c)
+}
+
+function vm_text_emit() {
+	let text = vm.text.buffer.join('')
+	let dom_target = document.getElementById(vm.text.dom_id)
+	if (dom_target) { dom_target.innerHTML = text }
+	console.log('text-emit', text) // XXX
+}
+
+vm.ext['text-bank'] = vm_text_bank
+vm.ext['text-new'] = vm_text_new
+vm.ext['text-part'] = vm_text_part
+vm.ext['text-val'] = vm_text_val
+vm.ext['text-chr'] = vm_text_chr
+vm.ext['text-emit'] = vm_text_emit
+
+function _vm_text_append(s) {
+	vm.text.buffer.push(s)
+}
+
+/*
+USAGE EXAMPLE:
+text-new
+text-part r1 0
+text-val r2
+text-part r1 0
+text-emit
+*/
+
+vm.timer = {}
+vm.timer.addr = 0
+vm.timer.freq = 0
+vm.timer.tick = 0
+//
+vm.timer.debug = []
+vm.timer.t0 = 0
+
+function vm_timer_set() {
+    vm.timer.freq = value_of(get_op())
+    vm.timer.addr = get_op()
+    _vm_set_timer()
+}
+
+function _vm_on_timer() {
+    vm.timer.debug.push(performance.now())
+    vm.timer.tick += 1
+    //
+    let addr = vm.timer.addr
+    let freq = vm.timer.freq
+    if ((addr==0) || (freq==0)) { return }
+    _vm_set_timer()
+    //
+    vm.ip = addr
+    vm.halt = false
+    vm_run()
+}
+
+function _vm_set_timer() {
+    if (vm.timer.freq==0) { return }
+    let delay = Math.floor(1000 / vm.timer.freq) // TODO: more precise method (ie 60fps)
+    setTimeout(_vm_on_timer, delay)
+}
+
+vm.ext['timer-set'] = vm_timer_set
+
+vm.code = ['nop','leds-clear',0,'timer-set',60,7,'halt','nop','mouse-frame','mouse-btn','>r1','mouse-xy','>r2','>r3','r0','=',0,'nop','leds-set','r0',0,'r0','r0','+=',1,'if','r0','<',17,17,0,'if','r1','>',3,0,53,'if','r3','==',0,0,48,'r4','=','r2','goto',53,'nop','leds-set','r2','r3','r4','nop','leds-draw','halt']
+vm_init()
+vm_run(0)
+</script>

@@ -1,4 +1,6 @@
 import os
+import toml
+import json
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -96,8 +98,12 @@ config = {
 import sys; sys.path.append('../asm')
 import v1_asm as asm
 
-def build(path_in, path_out=None):
-    cfg = config # TODO: path_cfg
+def build(path_in, path_out=None, path_cfg=None):
+    if path_cfg and path_cfg.endswith('.toml'):
+        cfg = toml.load(open(path_cfg)) if path_cfg else config
+    else:
+        cfg = json.load(open(path_cfg)) if path_cfg else config
+    print('cfg', cfg) # XXX
     path_out = path_out or 'out.html'
     if path_in=='-':
         text = sys.stdin.read()
@@ -114,9 +120,11 @@ def build(path_in, path_out=None):
 if __name__=="__main__":
     argv = dict(enumerate(sys.argv))
     print('argv', argv)
-    path_in = argv.get(1, '')
+    path_in  = argv.get(1, '')
     path_out = argv.get(2, '')
+    path_cfg = argv.get(3, '')
     if path_in:
-        build(path_in, path_out)
+        build(path_in, path_out, path_cfg)
     else:
-        print('Usage: python build.py [file.asm|-] [out.html]')
+        print('Usage: python build.py [file.asm|-] [out.html] [config.(json|toml)]')
+
