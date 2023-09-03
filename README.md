@@ -65,21 +65,23 @@ VM code (JSON):
 ['r1','=',0,'r2','=',0,'(6)','r1','+=',1,'r2','+=','r1','if','r1','<',5,6,0]
 ```
 
-VM code (str)
 
-``````
-r1 = 0 r2 = 0 (6) r1 += 1 r2 += r1 if r1 < 5 6 0
-``````
 
-VM code (dense str)
+## Installation
 
-``````
-r1=0;r2=0;(6);r1+=1;r2+=r1;if r1<5 6 0
-``````
+TODO
 
 
 
-### Instructions
+## Build
+
+`python build.py [file.asm|-] [out.html] [config.(json|toml)]`
+
+TODO
+
+
+
+## Instructions
 
 #### alu
 
@@ -165,7 +167,7 @@ example use:
 
 `_name:`
 
-Local labels are only available between between two normal labels (can be reused).
+Local labels (starting with underscore) are only available between between two normal labels (can be reused).
 
 
 

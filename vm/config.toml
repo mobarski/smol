@@ -1,0 +1,18 @@
+'core.registers' = 256
+'core.parts' = ["core", "sugar","colors","leds","mouse","threads","text","timer"]
+
+'leds.width' = 17
+'leds.height' = 17
+'leds.size' = 32
+'leds.radius' = 15
+
+'colors.data' = [
+    "#F5F5F5",
+    "#D3D3D3", # XXX
+    "#808080",
+    "#F08080",
+    "#FFD700", # YYY
+    "#00FA9A",
+    "#87CEFA",
+    "#DDA0DD"
+]
