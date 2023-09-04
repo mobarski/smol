@@ -55,7 +55,21 @@ function _vm_leds_init2() {
     let canvas = document.createElement('canvas')
     canvas.width = vm.leds.width * vm.leds.size
     canvas.height = vm.leds.height * vm.leds.size
-    document.body.appendChild(canvas)
+    //
+    // Create a new container and apply centering styles
+    let container = document.createElement('div')
+    container.style.display = 'flex'
+    container.style.justifyContent = 'center'
+    container.style.alignItems = 'center'
+    container.style.height = '100vh'
+
+    // Append the canvas to the container
+    container.appendChild(canvas)
+
+    // Append the container to the body of the document
+    document.body.appendChild(container)
+    //document.body.appendChild(canvas)
+
     vm.leds.canvas = canvas
     vm.leds.ctx = canvas.getContext("2d")
     //

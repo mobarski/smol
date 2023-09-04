@@ -19,8 +19,12 @@ function _vm_mouse_init() {
 
     // REF: https://www.w3schools.com/jsref/obj_mouseevent.asp
     document.addEventListener('mousedown', vm_on_mouse_down)
-    document.addEventListener('mouseup', vm_on_mouse_up)
-    document.addEventListener('mousemove', vm_on_mouse_move)
+    document.addEventListener('mouseup',   vm_on_mouse_up)
+    document.addEventListener('mousemove', vm_on_mouse_move, {passive: false})
+    //
+    document.addEventListener('touchstart', vm_on_mouse_down)
+    document.addEventListener('touchend',   vm_on_mouse_up)
+    document.addEventListener('touchmove',  vm_on_mouse_move, {passive: false})
 }
 
 function vm_mouse_btn() {
@@ -68,6 +72,7 @@ function vm_on_mouse_down(e) {
     vm.mouse.xy_pressed = mxy
     vm.mouse.pressed = true
     //console.log('mouse down', e, bcr, mxy)
+    e.preventDefault()
 }
 
 // TODO
@@ -78,12 +83,14 @@ function vm_on_mouse_up(e) {
     vm.mouse.xy_released = mxy
     vm.mouse.pressed = false
     //console.log('mouse up', e, bcr, mxy)
+    e.preventDefault()
 }
 
 function vm_on_mouse_move(e) {
     let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
+    e.preventDefault()
 }
 
 function _vm_mouse_xy(e) {

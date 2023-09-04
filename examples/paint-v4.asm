@@ -1,4 +1,4 @@
-def freq_hz 60
+def freq_hz 30
 
 def mb r1
 def mx r2

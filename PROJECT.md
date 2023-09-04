@@ -2,11 +2,14 @@
 
 ### Next tasks
 
+- [ ] touch = mouse
+- [ ] 
+- [ ] center / title / template
 - [x] split README.md into PROJECT.md
-- [ ] name
+- [x] name -> smol
 - [x] if-then vs if-then-else vs if+if-not
-- [ ] examples runnable on github
-- [ ] CLI + file based configuration
+- [x] examples runnable on github (ie: https://mobarski.github.io/pages/smol/html/paint-v4.html)
+- [x] CLI + file based configuration
 - [ ] leds vs screen
 - [ ] screen vs time vs threads (requestAnimationFrame)
 - [ ] pip + github based installation
@@ -91,7 +94,7 @@
 - [x] variables / aliases
 - [ ] better tokenization (whitespace not required)
 - [ ] minification / obfuscation
-- [ ] macros (to much for being "smol"?)
+- [x] decision: no macros (to much for being "smol"?)
 
 ### Linker
 
@@ -110,4 +113,21 @@
 - **v1.js**: js -> js (interpreted), requires whitespace between tokens
 - **v1.xx**: compiled_language -> js (interpreted), requires whitespace between tokens
 - **v2.py**: python -> another language (js, c, go)
+
+
+
+## Examples
+
+### paint
+
+- v4 - palette in the first row
+- v5 - modal palette 
+
+
+
+### sand
+
+- v1
+
+
 
