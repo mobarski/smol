@@ -594,7 +594,7 @@ function _vm_set_timer() {
 
 vm.ext['timer-set'] = vm_timer_set
 
-vm.code = ['nop','leds-clear',0,'timer-set',30,7,'halt','nop','mouse-frame','mouse-btn','>r1','mouse-xy','>r2','>r3','r0','=',0,'nop','leds-set','r0',0,'r0','r0','+=',1,'if','r0','<',17,17,0,'if','r1','>',3,0,53,'if','r3','==',0,0,48,'r4','=','r2','goto',53,'nop','leds-set','r2','r3','r4','nop','leds-draw','halt']
+vm.code = ['nop','leds-clear',0,'timer-set',60,7,'halt','nop','mouse-frame','mouse-btn','>r1','mouse-xy','>r2','>r3','r0','=',0,'nop','leds-set','r0',0,'r0','r0','+=',1,'if','r0','<',17,17,0,'if','r1','>',3,0,53,'if','r3','==',0,0,48,'r4','=','r2','goto',53,'nop','leds-set','r2','r3','r4','nop','leds-draw','halt']
 vm_init()
 vm_run(0)
 </script>
