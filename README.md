@@ -235,7 +235,7 @@ Get color of the led at x,y and store it in `c`.
 
 
 
-### configuration
+#### configuration
 
 - `vm.cfg.leds.width = ???`
 
@@ -297,6 +297,42 @@ Return mouse button state:
 - `vm.cfg.screen.height = 128`
 - `vm.cfg.screen.width = 128`
 - `vm.cfg.screen.scale = 1`
+
+
+
+### Stack
+
+
+
+#### call
+
+`call :addr`
+
+Call procedure at :addr.
+
+
+
+#### return
+
+`return`
+
+Return from the procedure call.
+
+
+
+#### push
+
+`push x`
+
+Push value onto the stack.
+
+
+
+#### pop
+
+`pop >x`
+
+Pop value from the stack.
 
 
 

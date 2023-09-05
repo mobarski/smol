@@ -315,6 +315,7 @@ vm.mouse.time_released = 0
 vm.mouse.time_frame = 0
 vm.mouse.time_frame_prev = 0
 vm.mouse.pressed = false
+vm.mouse.over = true
 vm.mouse.button_state = 0
 vm.mouse.x = 0
 vm.mouse.y = 0
@@ -333,6 +334,9 @@ function _vm_mouse_init() {
     document.addEventListener('touchstart', vm_on_mouse_down)
     document.addEventListener('touchend',   vm_on_mouse_up)
     document.addEventListener('touchmove',  vm_on_mouse_move, {passive: false})
+    //
+    vm.mouse.canvas.addEventListener('mouseleave', vm_on_mouse_leave)
+    vm.mouse.canvas.addEventListener('mouseenter', vm_on_mouse_enter)
 }
 
 function vm_mouse_btn() {
@@ -374,31 +378,45 @@ function vm_mouse_frame() {
 
 // TODO
 function vm_on_mouse_down(e) {
+    if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
+    if (!vm.mouse.over) { return }
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
     vm.mouse.time_pressed = performance.now()
     vm.mouse.xy_pressed = mxy
     vm.mouse.pressed = true
     //console.log('mouse down', e, bcr, mxy)
-    e.preventDefault()
+    //e.preventDefault()
 }
 
 // TODO
 function vm_on_mouse_up(e) {
+    if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
     vm.mouse.time_released = performance.now()
     vm.mouse.xy_released = mxy
     vm.mouse.pressed = false
     //console.log('mouse up', e, bcr, mxy)
-    e.preventDefault()
+    //e.preventDefault()
 }
 
 function vm_on_mouse_move(e) {
+    if (!vm.mouse.over) { return }
     let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
-    e.preventDefault()
+    //e.preventDefault()
+}
+
+function vm_on_mouse_leave(e) {
+    vm.mouse.over = false
+    //console.log('mouse leave')
+}
+
+function vm_on_mouse_enter(e) {
+    vm.mouse.over = true
+    //console.log('mouse enter')
 }
 
 function _vm_mouse_xy(e) {

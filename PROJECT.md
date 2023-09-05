@@ -3,7 +3,7 @@
 ### Next tasks
 
 - [ ] touch = mouse
-- [ ] 
+- [x] if a op b :then :else VS if a op b :then + if-not a op b :then -> :then :else STAYS
 - [ ] center / title / template
 - [x] split README.md into PROJECT.md
 - [x] name -> smol
