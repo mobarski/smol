@@ -16,7 +16,8 @@ vm.mouse.xy_released = {x:0, y:0} // NOT USED YET (for gestures?)
 vm.init.push(_vm_mouse_init)
 
 function _vm_mouse_init() {
-    vm.mouse.canvas = vm.leds.canvas // TODO: vm.screen.canvas
+    let canvas = vm.leds.canvas // TODO: vm.screen.canvas
+    vm.mouse.canvas = canvas
 
     // REF: https://www.w3schools.com/jsref/obj_mouseevent.asp
     document.addEventListener('mousedown', vm_on_mouse_down)
@@ -27,8 +28,8 @@ function _vm_mouse_init() {
     document.addEventListener('touchend',   vm_on_mouse_up)
     document.addEventListener('touchmove',  vm_on_mouse_move, {passive: false})
     //
-    vm.mouse.canvas.addEventListener('mouseleave', vm_on_mouse_leave)
-    vm.mouse.canvas.addEventListener('mouseenter', vm_on_mouse_enter)
+    canvas.addEventListener('mouseleave', vm_on_mouse_leave)
+    canvas.addEventListener('mouseenter', vm_on_mouse_enter)
 }
 
 function vm_mouse_btn() {
@@ -78,7 +79,7 @@ function vm_on_mouse_down(e) {
     vm.mouse.xy_pressed = mxy
     vm.mouse.pressed = true
     //console.log('mouse down', e, bcr, mxy)
-    //e.preventDefault()
+    e.preventDefault()
 }
 
 // TODO
@@ -90,7 +91,7 @@ function vm_on_mouse_up(e) {
     vm.mouse.xy_released = mxy
     vm.mouse.pressed = false
     //console.log('mouse up', e, bcr, mxy)
-    //e.preventDefault()
+    e.preventDefault()
 }
 
 function vm_on_mouse_move(e) {
@@ -98,7 +99,7 @@ function vm_on_mouse_move(e) {
     let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
-    //e.preventDefault()
+    e.preventDefault()
 }
 
 function vm_on_mouse_leave(e) {
