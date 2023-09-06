@@ -328,16 +328,12 @@ function _vm_mouse_init() {
     vm.mouse.canvas = canvas
 
     // REF: https://www.w3schools.com/jsref/obj_mouseevent.asp
-    document.addEventListener('mousedown', vm_on_mouse_down)
-    document.addEventListener('mouseup',   vm_on_mouse_up)
-    document.addEventListener('mousemove', vm_on_mouse_move, {passive: false})
+    document.addEventListener('pointerdown', vm_on_mouse_down)
+    document.addEventListener('pointerup',   vm_on_mouse_up)
+    document.addEventListener('pointermove', vm_on_mouse_move, {passive: false})
     //
-    document.addEventListener('touchstart', vm_on_mouse_down)
-    document.addEventListener('touchend',   vm_on_mouse_up)
-    document.addEventListener('touchmove',  vm_on_mouse_move, {passive: false})
-    //
-    canvas.addEventListener('mouseleave', vm_on_mouse_leave)
-    canvas.addEventListener('mouseenter', vm_on_mouse_enter)
+    canvas.addEventListener('pointerleave', vm_on_mouse_leave)
+    canvas.addEventListener('pointerenter', vm_on_mouse_enter)
 }
 
 function vm_mouse_btn() {
@@ -379,8 +375,9 @@ function vm_mouse_frame() {
 
 // TODO
 function vm_on_mouse_down(e) {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'touch') return;
     if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
-    if (!vm.mouse.over) { return }
+    //if (!vm.mouse.over) { return }
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
     vm.mouse.time_pressed = performance.now()
@@ -392,6 +389,7 @@ function vm_on_mouse_down(e) {
 
 // TODO
 function vm_on_mouse_up(e) {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'touch') return;
     if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
@@ -403,7 +401,7 @@ function vm_on_mouse_up(e) {
 }
 
 function vm_on_mouse_move(e) {
-    if (!vm.mouse.over) { return }
+    //if (!vm.mouse.over) { return }
     let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
@@ -425,12 +423,9 @@ function _vm_mouse_xy(e) {
 
 	//var ratio = bcr.height/fc.height
 	//var bcr_left = ratio==fc.scale ? bcr.left : 0.5*(bcr.width - fc.width * ratio)
-
-	let bcr_top = bcr.top
-    let bcr_left = bcr.left
 	
-	let mx = e.clientX - bcr_left
-	let my = e.clientY - bcr_top
+	let mx = e.clientX - bcr.left
+	let my = e.clientY - bcr.top
 
     // TODO: get sx, sy from screen ???
     let sx = vm.leds.size

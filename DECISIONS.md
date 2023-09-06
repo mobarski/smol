@@ -17,7 +17,7 @@
 
 ​	b) ABOVE + `if-not CMP :then`
 
-​	c) `if CMP :then :else`
+​	c) **`if CMP :then :else`**
 
 **decision**:
 
@@ -33,7 +33,7 @@
 
 ​	a) inci r1 2
 
-​	b) r1 += 2
+​	b) **r1 += 2**
 
 ​	c) += r1 2
 
@@ -77,7 +77,7 @@
 
 ​	a) json
 
-​	b) toml
+​	b) **toml**
 
 **decision:**
 
@@ -100,7 +100,7 @@
 
 ​	b) 16x16
 
-​	c) 17x17
+​	c) **17x17**
 
 ​	d) 24x24
 
@@ -112,3 +112,4 @@
   - **reason**:
     - 3x3 grid of 5x5 sprite (micro:bit) + 1px separator
     - 4x4 grid of 3x3 sprite + 1px separator + 2x1px margin
+
