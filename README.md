@@ -75,7 +75,7 @@ TODO
 
 ## Build
 
-`python build.py [file.asm|-] [out.html] [config.(json|toml)]`
+`python build.py [file.asm|-] [out.html] [config.toml]`
 
 TODO
 

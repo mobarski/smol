@@ -85,3 +85,30 @@
   - **reason:** one configuration format is enough, it can be easily installed for Python version < 3.11
 - **2023-09-01**: we go with both a) and b)
   - **reason:** none is perfect, a) is in the standard library, b)  is in the standard lib since 3.11+, b) is more nice to work with
+
+
+
+## leds
+
+
+
+### default resolution
+
+**options**
+
+​	a) 17x7
+
+​	b) 16x16
+
+​	c) 17x17
+
+​	d) 24x24
+
+​	e) 23x23
+
+**decision**:
+
+- **2023-09-03**: we go with c)
+  - **reason**:
+    - 3x3 grid of 5x5 sprite (micro:bit) + 1px separator
+    - 4x4 grid of 3x3 sprite + 1px separator + 2x1px margin

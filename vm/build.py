@@ -99,10 +99,7 @@ import sys; sys.path.append('../asm')
 import v1_asm as asm
 
 def build(path_in, path_out=None, path_cfg=None):
-    if path_cfg and path_cfg.endswith('.toml'):
-        cfg = toml.load(open(path_cfg)) if path_cfg else config
-    else:
-        cfg = json.load(open(path_cfg)) if path_cfg else config
+    cfg = toml.load(open(path_cfg)) if path_cfg else config
     print('cfg', cfg) # XXX
     path_out = path_out or 'out.html'
     if path_in=='-':
@@ -126,5 +123,5 @@ if __name__=="__main__":
     if path_in:
         build(path_in, path_out, path_cfg)
     else:
-        print('Usage: python build.py [file.asm|-] [out.html] [config.(json|toml)]')
+        print('Usage: python build.py [file.asm|-] [out.html] [config.toml]')
 
