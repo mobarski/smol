@@ -10,8 +10,9 @@ vm.cfg.mouse = {}
 vm.cfg.threads = {}
 vm.cfg.text = {}
 vm.cfg.timer = {}
+vm.cfg.keys = {}
 vm.cfg.core.registers = 256
-vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer']
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys']
 vm.cfg.leds.width = 17
 vm.cfg.leds.height = 17
 vm.cfg.leds.size = 32
@@ -375,8 +376,7 @@ function vm_mouse_frame() {
 
 // TODO
 function vm_on_mouse_down(e) {
-    if (e.pointerType !== 'mouse' && e.pointerType !== 'touch') return;
-    if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
+    if (e.pointerType == 'mouse' && e.button != 0) return;
     //if (!vm.mouse.over) { return }
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
@@ -384,20 +384,25 @@ function vm_on_mouse_down(e) {
     vm.mouse.xy_pressed = mxy
     vm.mouse.pressed = true
     //console.log('mouse down', e, bcr, mxy)
+    //
+    e.stopPropagation()
     e.preventDefault()
+    e.stopImmediatePropagation()
 }
 
 // TODO
 function vm_on_mouse_up(e) {
-    if (e.pointerType !== 'mouse' && e.pointerType !== 'touch') return;
-    if ((e.button!=0)&&(e.button!=undefined)) { return } // left mouse button or touch only
+    if (e.pointerType == 'mouse' && e.button != 0) return;
     let bcr = vm.mouse.canvas.getBoundingClientRect()
     let mxy = _vm_mouse_xy(e)
     vm.mouse.time_released = performance.now()
     vm.mouse.xy_released = mxy
     vm.mouse.pressed = false
     //console.log('mouse up', e, bcr, mxy)
+    //
+    e.stopPropagation()
     e.preventDefault()
+    e.stopImmediatePropagation()
 }
 
 function vm_on_mouse_move(e) {
@@ -405,7 +410,10 @@ function vm_on_mouse_move(e) {
     let mxy = _vm_mouse_xy(e)
     vm.mouse.x = mxy.x
     vm.mouse.y = mxy.y
+    //
+    e.stopPropagation()
     e.preventDefault()
+    e.stopImmediatePropagation()
 }
 
 function vm_on_mouse_leave(e) {
@@ -607,6 +615,73 @@ function _vm_set_timer() {
 }
 
 vm.ext['timer-set'] = vm_timer_set
+
+// === KEYS MK1 ==============================================================
+
+default_key_to_code = {
+    'ArrowLeft':0,
+    'ArrowRight':1,
+    'ArrowUp':2,
+    'ArrowDown':3,
+    'z':4,
+    'x':5,
+    'q':6, // ???
+    'w':7  // ???
+}
+
+vm.keys = {}
+vm.keys.delay_ms = coalesce(vm.cfg.keys.delay_ms, 500)
+vm.keys.repeat_ms = coalesce(vm.cfg.keys.repeat_ms, 50)
+vm.keys.key_to_code = coalesce(vm.cfg.keys.key_to_code, default_key_to_code)
+vm.keys.time_pressed = {}
+vm.keys.time_released = {}
+vm.keys.pressed = {}
+vm.keys.time_frame = 0
+vm.keys.time_frame_prev = {}
+vm.init.push(_vm_keys_init)
+
+function _vm_keys_init() {
+    // REF: https://www.w3schools.com/jsref/obj_keyboardevent.asp
+    document.addEventListener('keydown', vm_on_key_down)
+    document.addEventListener('keyup',   vm_on_key_up)
+}
+
+function vm_on_key_down(e) {
+    let code = vm.keys.key_to_code[e.key]
+    if (code == undefined) return
+    vm.keys.time_pressed[code] = performance.now()
+    vm.keys.pressed[code] = true
+    //
+    e.stopPropagation()
+    e.preventDefault()
+    e.stopImmediatePropagation()
+}
+
+function vm_on_key_up(e) {
+    let code = vm.keys.key_to_code[e.key]
+    if (code == undefined) return
+    vm.keys.time_pressed[code] = performance.now()
+    vm.keys.pressed[code] = false
+    //
+    e.stopPropagation()
+    e.preventDefault()
+    e.stopImmediatePropagation()
+}
+
+function vm_key_frame() {
+    vm.keys.time_frame_prev = vm.keys.time_frame
+    vm.keys.time_frame = performance.now()
+}
+
+
+// TODO: rename vm_btn
+function vm_key_xxx() {
+    let k = get_op() // key
+    let t = get_op() // output target
+}
+
+vm.ext['key-frame'] = vm_key_frame
+vm.ext['key'] = vm_key_xxx
 
 vm.code = ['nop','leds-clear',0,'timer-set',30,7,'halt','nop','mouse-frame','mouse-btn','>r1','mouse-xy','>r2','>r3','r0','=',0,'nop','leds-set','r0',0,'r0','r0','+=',1,'if','r0','<',17,17,0,'if','r1','>',3,0,53,'if','r3','==',0,0,48,'r4','=','r2','goto',53,'nop','leds-set','r2','r3','r4','nop','leds-draw','halt']
 vm_init()
