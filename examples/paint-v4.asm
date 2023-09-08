@@ -17,6 +17,8 @@ init:
     halt
 
 main:
+    key-frame
+    key 0 >r5
     mouse-frame
     mouse-btn  >mb
     mouse-xy   >mx >my
