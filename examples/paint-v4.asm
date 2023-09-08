@@ -19,6 +19,7 @@ init:
 main:
     key-frame
     key 0 >r5
+
     mouse-frame
     mouse-btn  >mb
     mouse-xy   >mx >my
@@ -29,7 +30,7 @@ main:
         i += 1
     if i < W :loop 0
 
-    if mb > 3 0 :_end
+    if mb > 0 0 :_end
         if my == 0 0 :_skip
             color = mx
             goto :_end

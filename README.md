@@ -272,18 +272,9 @@ Return mouse coordinates
 Return mouse button state:
 
 - 0 - unpressed
-- 1 - released in this frame after t < long_press_ms (short click)
-- 2 - released in this frame after t >= long_press_ms (long click)
-- 3 - pressed in this frame
-- 4 - held, t < long_press_ms
-- 5 - held, long click detected in this frame
-- 6 - held, t > long_press_ms (held after long click)
-
-
-
-#### configuration
-
-- `vm.cfg.mouse.long_press_ms = 500`
+- 1 - just pressed
+- `> 1`, held for x frames
+- `< 0` - just released, held for x frames
 
 
 

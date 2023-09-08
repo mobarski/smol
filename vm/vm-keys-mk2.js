@@ -14,9 +14,7 @@ default_key_to_code = {
 vm.keys = {}
 vm.keys.key_to_code = coalesce(vm.cfg.keys.key_to_code, default_key_to_code)
 vm.keys.pressed = {}
-vm.keys.pressed_prev = {}
 vm.keys.status = {}
-vm.keys.time_frame = 0
 vm.init.push(_vm_keys_init)
 
 function _vm_keys_init() {
@@ -48,8 +46,6 @@ function vm_on_key_up(e) {
 }
 
 function vm_key_frame() {
-    vm.keys.time_frame_prev = vm.keys.time_frame
-    vm.keys.time_frame = performance.now()
     for (k in vm.keys.key_to_code) {
         let key = vm.keys.key_to_code[k]
         if (!vm.keys.pressed[key]) {
@@ -65,7 +61,7 @@ function vm_key_xxx() {
     let k = get_op() // key code
     let t = get_op() // output target
     let v = vm.keys.status[k] || 0
-    console.log('key',k,'status',v) // XXX
+    //console.log('key',k,'status',v) // XXX
     vm_set(t, v)
 }
 

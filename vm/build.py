@@ -11,7 +11,7 @@ part_to_filename = {
     'stack':   'vm-stack-mk1.js',
     'colors':  'vm-colors-mk1.js',
     'leds':    'vm-leds-mk1.js',
-    'mouse':   'vm-mouse-mk1.js',
+    'mouse':   'vm-mouse-mk2.js',
     'keys':    'vm-keys-mk2.js',
     'threads': 'vm-threads-mk1.js',
     'text':    'vm-text-mk1.js',
