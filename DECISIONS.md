@@ -81,11 +81,18 @@
 
 **options**:
 
-​	a) requires double colon to define
+​	a) requires double colon to define / use
 
-​	b) start with `$`
+​	b) **start with `$`**
 
+​	c) start with `#`
 
+​	d) start with `!` - conflict of meaning with `!=`
+
+**decision**:
+
+- 2023-09-10: **we go with b)**
+  - **reason**: b) and c) looks ok, b) is used in Ruby
 
 
 

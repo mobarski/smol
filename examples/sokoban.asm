@@ -36,7 +36,7 @@
 
 ( ========================================================================= )
 
-check-keys::
+$check-keys:
     ( check pressed keys and set pa x1 y1 x2 y2 )
 
     btn-frame ( ??? here ??? )
@@ -79,9 +79,8 @@ check-keys::
     pa = 0 ( no action )
     return
 
-
-player-main::
-    call ::check-keys
+$player-main:
+    call $check-keys
     if pa == 0 .end 0 ( no player action )
 
     leds-get x1 y1 >t1
@@ -89,12 +88,12 @@ player-main::
 
     move-into-empty-space?:
         if t1 == tile.empty 0 :fi
-            call ::update-player-position
+            call $update-player-position
         fi:
 
     move-into-target?:
         if t1 == tile.target 0 :fi
-            call ::update-player-position
+            call $update-player-position
         fi:
 
     move-box?:
@@ -121,30 +120,30 @@ player-main::
                     t1 = tile.empty
                 fi:
                 ( move )
-                call ::update-player-position
+                call $update-player-position
     
     end:
     return
 
 
-update-player-position::
+$update-player-position:
     check-empty:
         if t1 == tile.empty 0 :fi
-            call ::update-player-position-core
+            call $update-player-position-core
             leds-set px py tile.player
             return
         fi:
 
-    .check-target:
+    check-target:
         if t1 == tile.target 0 :fi
-            call ::update-player-position-core
+            call $update-player-position-core
             leds-set px py tile.player-at-target
             return
         fi:
     
     return
 
-update-player-position-core::
+$update-player-position-core:
     leds-set px py t0 ( restore old tile )
     t0 = t1
     px = x1
