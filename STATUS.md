@@ -2,18 +2,41 @@
 
 ### Next tasks
 
+- [x] button state approach
+
+- [ ] finish keys extension (n<=4 players + id=0 system buttons)
+
+  - [ ] pico-8 -> [btnp](https://pico-8.fandom.com/wiki/Btnp) [btn](https://pico-8.fandom.com/wiki/Btn)
+  - [ ] tic-80 -> [btnp](https://github-wiki-see.page/m/nesbox/TIC-80/wiki/btnp) [btn](https://github-wiki-see.page/m/nesbox/TIC-80/wiki/btn)
+
+- [ ] sokoban
+
+  
+
 - [ ] touch = mouse
+
 - [x] if a op b :then :else VS if a op b :then + if-not a op b :then -> :then :else STAYS
+
 - [ ] center / title / template
+
 - [x] split README.md into PROJECT.md
+
 - [x] name -> smol
+
 - [x] if-then vs if-then-else vs if+if-not
+
 - [x] examples runnable on github (ie: https://mobarski.github.io/pages/smol/html/paint-v4.html)
+
 - [x] CLI + file based configuration
+
 - [ ] leds vs screen
+
 - [ ] screen vs time vs threads (requestAnimationFrame)
+
 - [ ] pip + github based installation
+
 - [ ] run with "python -m xxx ..."
+
 - [ ] open the repo
 
 ### Finished task

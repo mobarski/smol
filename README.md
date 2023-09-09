@@ -165,9 +165,9 @@ example use:
 
 ### local label
 
-`_name:`
+`.name:`
 
-Local labels (starting with underscore) are only available between between two normal labels (can be reused).
+Local labels (starting with dot) are only available between between two normal labels (can be reused).
 
 
 

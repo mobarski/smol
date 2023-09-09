@@ -63,7 +63,7 @@ def find_label_definition(name, pos, defined):
     """Find the definition of a label, starting from a given position
     local labels (starting with underscore) are only visible in the same block"""
     i_start = bisect(defined, pos, key=lambda x: x[0]) # TODO: bisect_left/right vs look up/down
-    is_local = lambda name: name[0] == '_'
+    is_local = lambda name: name[0] in ['_','.']
     # look up
     for i in range(i_start-1, -1, -1):
         if is_local(name) and not is_local(defined[i][1]):
