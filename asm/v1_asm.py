@@ -3,8 +3,8 @@ import re
 
 def tokenize(text):
     # requires whiutespace or semicolon to separate tokens
-    tokens = re.findall('[(][^)]*?[)] | ;+ | \S+',text, re.VERBOSE)
-    tokens = [t for t in tokens if t[0] not in '(;'] # remove comments and semicolons
+    tokens = re.findall('[(][^)]*?[)] | [;,]+ | \S+',text, re.VERBOSE)
+    tokens = [t for t in tokens if t[0] not in '(;,'] # remove comments, semicolons and commas
     return tokens
 
 def convert_numbers(x):

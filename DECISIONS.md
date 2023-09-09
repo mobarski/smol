@@ -53,9 +53,63 @@
 
 ​	b) starts with `.`
 
+​	c) no prefix (local is the default label), global labels require prefix
+
+
+
 **decision**:
 
-- 2023-09-10: **we go with b)**
+- 2023-09-10: **we go with c)**
+  - **reason**:
+    - local labels are way more common than global labels
+    - HLLLA
+- 2023-09-09: we go with b)
+- 2023-09-01: we go with a)
+
+
+
+**implementation notes**
+
+- local labels are only visible between two global labels
+- local labels don't have to be unique
+- local labels are first searched forward and then backwards
+  - forward jumps (if,else,case) are more common than loops
+
+
+
+## global labels
+
+**options**:
+
+​	a) requires double colon to define
+
+​	b) start with `$`
+
+
+
+
+
+## output notation
+
+**options**:
+
+​	a) **`>r1`**
+
+​	b) `&r1` - similar to C
+
+​	c) `$r1`
+
+​	d) `:r1` - nope `:` is used already for addresses
+
+​	e) `'r1`
+
+​	f) `%r1`
+
+​	g) `^r1`
+
+
+
+
 
 ## basic EXT operations
 

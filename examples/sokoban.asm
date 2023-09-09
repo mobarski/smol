@@ -36,15 +36,15 @@
 
 ( ========================================================================= )
 
-check-keys:
+check-keys::
     ( check pressed keys and set pa x1 y1 x2 y2 )
 
     btn-frame ( ??? here ??? )
 
-    x1 = px ; y1 = py
-    x2 = px ; y2 = py
+    x1 = px , y1 = py
+    x2 = px , y2 = py
 
-    .check-up:
+    check-up:
         btn btn.up >pb
         if pb == 1 0 :check-down
             y1 -= 1
@@ -52,7 +52,7 @@ check-keys:
             pa = 1
             return
 
-    .check-down:
+    check-down:
         btn btn.down >pb
         if pb == 1 0 :check-left
             y1 += 1
@@ -60,7 +60,7 @@ check-keys:
             pa = 1
             return
 
-    .check-left:
+    check-left:
         btn btn.left >pb
         if pb == 1 0 :check-right
             x1 -= 1
@@ -68,7 +68,7 @@ check-keys:
             pa = 1
             return
 
-    .check-right:
+    check-right:
         btn btn.right >pb
         if pb == 1 0 :check-done
             x1 += 1
@@ -80,64 +80,71 @@ check-keys:
     return
 
 
-player-main:
-    call check-keys
+player-main::
+    call ::check-keys
     if pa == 0 .end 0 ( no player action )
 
     leds-get x1 y1 >t1
     leds-get x2 y2 >t2
 
-    .move-into-empty-space?:
-        if t1 == tile.empty 0 :...
-            call update-player-position
+    move-into-empty-space?:
+        if t1 == tile.empty 0 :fi
+            call ::update-player-position
+        fi:
 
-    .move-into-target?:
-        if t1 == tile.target 0 :...
-            call update-player-position
+    move-into-target?:
+        if t1 == tile.target 0 :fi
+            call ::update-player-position
+        fi:
 
-    .move-box?:
-        if t1 == tile.box           :.move-box 0
-        if t1 == tile.box-at-target :.move-box :.end
+    move-box?:
+        if t1 == tile.box           :move-box 0
+        if t1 == tile.box-at-target :move-box :end
 
-        .move-box:
+        move-box:
             ( move box into target )
-            if t2 == tile.target 0 :.check-empty
+            if t2 == tile.target 0 :check-empty
                 leds-set x2 y2 tile.box-at-target
             
             ( move box into empty space )
-            .check-empty:
-            if t2 == tile.empty 0 :...
+            check-empty:
+            if t2 == tile.empty 0 :fi
                 leds-set x2 y2 tile.box
+            fi:
 
             ( move player )
                 ( restore t1 )
-                if t1 == tile.box-at-target 0 :...
+                if t1 == tile.box-at-target 0 :else
                     t1 = tile.target
-                ... else
+                    goto :fi
+                else:
                     t1 = tile.empty
+                fi:
                 ( move )
-                call update-player-position
+                call ::update-player-position
     
-    .end:
+    end:
     return
 
 
-update-player-position:
-    .check-empty:
-        if t1 == tile.empty 0 :.check-target
-            call update-player-position-core
+update-player-position::
+    check-empty:
+        if t1 == tile.empty 0 :fi
+            call ::update-player-position-core
             leds-set px py tile.player
             return
+        fi:
 
     .check-target:
-        if t1 == tile.target 0 :...
-            call update-player-position-core
+        if t1 == tile.target 0 :fi
+            call ::update-player-position-core
             leds-set px py tile.player-at-target
             return
+        fi:
     
     return
 
-update-player-position-core:
+update-player-position-core::
     leds-set px py t0 ( restore old tile )
     t0 = t1
     px = x1
