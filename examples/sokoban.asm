@@ -55,35 +55,39 @@ $check-keys:
 
     check-up:
         btn btn.up >pb
-        if pb == 1 0 :check-down
+        if pb == 1 0 :fi
             y1 -= 1
             y2 -= 2
             pa = 1
             return
+        fi:
 
     check-down:
         btn btn.down >pb
-        if pb == 1 0 :check-left
+        if pb == 1 0 :fi
             y1 += 1
             y2 += 2
             pa = 1
             return
+        fi:
 
     check-left:
         btn btn.left >pb
-        if pb == 1 0 :check-right
+        if pb == 1 0 :fi
             x1 -= 1
             x2 -= 2
             pa = 1
             return
+        fi:
 
     check-right:
         btn btn.right >pb
-        if pb == 1 0 :check-done
+        if pb == 1 0 :fi
             x1 += 1
             x2 += 2
             p1 = 1
             return
+        fi:
 
     pa = 0 ( no action )
     return
@@ -106,16 +110,16 @@ $player-main:
         fi:
 
     move-box?:
-        if t1 == tile.box           :move-box 0
-        if t1 == tile.box-at-target :move-box :end
+        if t1 == tile.box           :yes 0
+        if t1 == tile.box-at-target :yes :no
 
-        move-box:
+        yes:
             ( move box into target )
-            if t2 == tile.target 0 :check-empty
+            if t2 == tile.target 0 :fi
                 leds-set x2 y2 tile.box-at-target
+            fi:
             
             ( move box into empty space )
-            check-empty:
             if t2 == tile.empty 0 :fi
                 leds-set x2 y2 tile.box
             fi:
@@ -130,8 +134,8 @@ $player-main:
                 fi:
                 ( move )
                 call $update-player-position
-    
-    end:
+        no:
+            ( nop )
     return
 
 

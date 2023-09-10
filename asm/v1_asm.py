@@ -67,8 +67,9 @@ def find_label_definition(name, pos, defined):
     local labels (starting with underscore) are only visible in the same block"""
     i_start = bisect(defined, pos, key=lambda x: x[0]) # TODO: bisect_left/right vs look up/down
     is_global = lambda name: name[0] in ['$']
-    is_local = lambda name: not is_global(name)
-    for look in ['down','up']: # TODO: configure
+    is_local  = lambda name: not is_global(name)
+    directions = ['up', 'down'] if is_global(name) else ['down', 'up']
+    for look in directions:
         if look == 'down':
             for i in range(i_start, len(defined)):
                 if is_local(name) and not is_local(defined[i][1]):
