@@ -36,10 +36,19 @@
 
 ( ========================================================================= )
 
+$init:
+    leds-fill 0
+    timer-set 30 $frame
+    break
+
+$frame:
+    btn-frame
+    call $player-main
+    leds-draw
+    break
+
 $check-keys:
     ( check pressed keys and set pa x1 y1 x2 y2 )
-
-    btn-frame ( ??? here ??? )
 
     x1 = px , y1 = py
     x2 = px , y2 = py

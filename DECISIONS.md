@@ -72,7 +72,7 @@
 
 - local labels are only visible between two global labels
 - local labels don't have to be unique
-- local labels are first searched forward and then backwards
+- **local labels are first searched forward and then backwards**
   - forward jumps (if,else,case) are more common than loops
 
 
@@ -93,6 +93,16 @@
 
 - 2023-09-10: **we go with b)**
   - **reason**: b) and c) looks ok, b) is used in Ruby
+
+**notes**
+
+- the use of global label doesn't require `:`
+
+  - ```
+    call $draw-frame
+    ( vs )
+    call :$frame
+    ```
 
 
 

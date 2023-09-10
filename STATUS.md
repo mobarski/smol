@@ -2,6 +2,8 @@
 
 ### Next tasks
 
+- [ ] global vs local labels
+
 - [x] button state approach
 
 - [ ] finish keys extension (n<=4 players + id=0 system buttons)

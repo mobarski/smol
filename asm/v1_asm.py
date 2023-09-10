@@ -25,6 +25,9 @@ def detect_labels(tokens):
             if t[0] == ':':
                 name = t[1:]
                 used.append((pos,name))
+            elif t[0] == '$':
+                name = t
+                used.append((pos,name))
         pos += 1
     return {'defined':defined, 'used':used}
 
@@ -63,19 +66,21 @@ def find_label_definition(name, pos, defined):
     """Find the definition of a label, starting from a given position
     local labels (starting with underscore) are only visible in the same block"""
     i_start = bisect(defined, pos, key=lambda x: x[0]) # TODO: bisect_left/right vs look up/down
-    is_local = lambda name: name[0] in ['_','.']
-    # look up
-    for i in range(i_start-1, -1, -1):
-        if is_local(name) and not is_local(defined[i][1]):
-            break
-        if defined[i][1] == name:
-            return defined[i][0]
-    # look down
-    for i in range(i_start, len(defined)):
-        if is_local(name) and not is_local(defined[i][1]):
-            break
-        if defined[i][1] == name:
-            return defined[i][0]
+    is_global = lambda name: name[0] in ['$']
+    is_local = lambda name: not is_global(name)
+    for look in ['down','up']: # TODO: configure
+        if look == 'down':
+            for i in range(i_start, len(defined)):
+                if is_local(name) and not is_local(defined[i][1]):
+                    break
+                if defined[i][1] == name:
+                    return defined[i][0]
+        if look == 'up':
+            for i in range(i_start-1, -1, -1):
+                if is_local(name) and not is_local(defined[i][1]):
+                    break
+                if defined[i][1] == name:
+                    return defined[i][0]
     raise Exception(f'Label not found: {name}, starting from {pos}, {defined}')
 
 def as_list(tokens):
