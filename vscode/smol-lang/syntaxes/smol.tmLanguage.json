@@ -1,0 +1,31 @@
+{
+    "name": "Smol",
+    "fileTypes": [".smol"],
+    "patterns": [
+        {
+            "match": "\\b(def)\\b",
+            "name": "keyword.definition.smol"
+        },
+        {
+            "match": "\\b(if|else|then|fi|return|call|break)\\b",
+            "name": "keyword.control.smol"
+        },
+        {
+            "match": "[$][a-z.?!-]+:",
+            "name": "entity.name.smol"
+        },
+        {
+            "match": "\\( [^)]+ \\)",
+            "name": "comment.smol"
+        },
+	{
+		"match": "\\b[-]?[0-9_]+\\b",
+		"name": "constant.numeric"
+	},
+        {
+            "match": "[a-z.?!-]+[:]",
+            "name": "entity.name.smol"
+        }
+    ],
+    "scopeName": "source.smol"
+}
