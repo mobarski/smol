@@ -179,9 +179,12 @@ $setup-level:
     p1.x = 1
     p1.y = 1
     leds-set p1.x p1.y tile.player
+    leds-set 5 4 tile.wall
     leds-set 5 5 tile.wall
     leds-set 5 6 tile.wall
     leds-set 5 7 tile.wall
+    leds-set 5 8 tile.wall
+    leds-set 5 9 tile.wall
     leds-set 8 5 tile.box
     leds-set 8 8 tile.box
     leds-set 1 5 tile.target
