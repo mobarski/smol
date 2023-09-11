@@ -11,9 +11,8 @@ vm.cfg.threads = {}
 vm.cfg.text = {}
 vm.cfg.timer = {}
 vm.cfg.keys = {}
-vm.cfg.stack = {}
 vm.cfg.core.registers = 256
-vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys', 'stack']
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys']
 vm.cfg.leds.width = 17
 vm.cfg.leds.height = 17
 vm.cfg.leds.size = 32
@@ -26,9 +25,7 @@ vm.code = []
 vm.reg = new Array(vm.cfg.core.registers).fill(0)
 vm.ext = {} // extensions
 vm.halt = false
-vm.stop = false // stop also the interrupt timer
 vm.init = []
-vm.trace = [] // XXX
 
 function vm_init() {
 	for (var i=0; i<vm.init.length; i++) {
@@ -40,15 +37,14 @@ function vm_run(n_steps=0) {
 	var i = 0
 	let t0 = performance.now()
 	if (n_steps==0) {
-		for (i=0; (!vm.halt)&&(!vm.stop); i++) { vm_step() }
+		for (i=0; !vm.halt; i++) { vm_step() }
 	} else {
-		for (i=0; (i<n_steps)&&(!vm.halt)&&(!vm.stop); i++) { vm_step() }
+		for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
 	}
 	//console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
 }
 
 function vm_step() {
-	vm.trace.push([vm.ip,vm.code[vm.ip],vm.code[vm.ip+1]]) // XXX
 	let t = get_op()
 	if (t=='if') {
 		// CONDITIONAL JUMP
@@ -75,7 +71,6 @@ function vm_step() {
 }
 
 function get_op() {
-	if (vm.ip>vm.code.length) { console.log('end of code reached!'); vm.stop=true; return 'halt' } // XXX
 	let op = vm.code[vm.ip]
 	vm.ip += 1
 	return op
@@ -105,7 +100,6 @@ function vm_alu(a,op,b) {
 	    case '!=': return a!=b
 	    case '&&': return a&&b
 	    case '||': return a||b
-		default: console.log('unknown op',op,'a',a,'b',b,'ip',vm.ip); vm.stop=true; return 0
     }
 }
 
@@ -137,7 +131,6 @@ function value_of(x) {
 
 // ie: r123 -> 123
 function get_reg(x) {
-	//if (typeof(x) != 'string') { console.log('get_reg',x,'ip',vm.ip); vm.stop=true; return } // XXX
 	return parseInt(x.slice(1))
 }
 
@@ -148,25 +141,20 @@ function get_tgt(x) {
 
 // ie: @r123 -> reg[123]
 function get_ref(x) {
-	//if (typeof(x) != 'string') { console.log('get_ref',x,'ip',vm.ip); vm.stop=true; return } // XXX
 	let r = get_reg(x.slice(1))
 	return vm.reg[r]
 }
 
 function is_reg(x) {
-	if (typeof(x) != 'string') { return false }
-	if (x[0]!='r') { return false }
 	let r = get_reg(x)
 	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
 }
 
 function is_ref(x) {
-	if (typeof(x) != 'string') { return false }
 	return ((x[0]=='@') && is_reg(x.slice(1)))
 }
 
 function is_tgt(x) {
-	if (typeof(x) != 'string') { return false }
 	return ((x[0]=='>') && is_reg(x.slice(1)))
 }
 
@@ -194,11 +182,6 @@ function vm_halt() {
 	vm.halt = true
 }
 
-function vm_stop() {
-	vm.ip -= 1
-	vm.stop = true
-}
-
 function vm_nop() {
 }
 
@@ -221,7 +204,6 @@ function vm_assert() {
 
 vm.ext['goto'] = vm_goto
 vm.ext['halt'] = vm_halt
-vm.ext['stop'] = vm_stop
 vm.ext['log'] = vm_log
 vm.ext['nop'] = vm_nop
 vm.ext['assert'] = vm_assert
@@ -592,7 +574,6 @@ function vm_timer_set() {
 }
 
 function _vm_on_timer() {
-    if (vm.stop) { return }
     vm.timer.debug.push(performance.now())
     vm.timer.tick += 1
     //
@@ -684,36 +665,7 @@ function vm_key_xxx() {
 vm.ext['key-frame'] = vm_key_frame
 vm.ext['key'] = vm_key_xxx
 
-vm.stack = []
-
-function ext_return() {
-	vm.ip = vm.stack.pop()
-}
-
-function ext_call() {
-	let addr = get_op()
-	vm.stack.push(vm.ip)
-	vm.ip = addr
-}
-
-function ext_push() {
-	let a = get_op()
-	let val = value_of(a)
-	vm.stack.push(val)
-}
-
-function ext_pop() {
-	let a = get_op()
-	let val = vm.stack.pop()
-	vm_set(a, val)
-}
-
-vm.ext['return'] = ext_return
-vm.ext['call'] = ext_call
-vm.ext['push'] = ext_push
-vm.ext['pop'] = ext_pop
-
-vm.code = ['nop','leds-clear',0,'timer-set',30,9,'call',256,'halt','nop','key-frame','leds-draw','call',15,'halt','nop','call',108,'if','r3','==',0,106,0,'leds-get','r10','r11','>r21','leds-get','r12','r13','>r22','nop','if','r21','==',0,0,41,'call',209,'nop','nop','if','r21','==',3,0,51,'call',209,'nop','nop','if','r21','==',4,65,0,'if','r21','==',6,65,106,'nop','if','r22','==',3,0,76,'leds-set','r12','r13',6,'nop','if','r22','==',0,0,87,'leds-set','r12','r13',4,'nop','if','r21','==',6,0,99,'r21','=',3,'goto',103,'nop','r21','=',0,'nop','call',209,'nop','return','nop','r10','=','r1','r11','=','r2','r12','=','r1','r13','=','r2','nop','key',2,'>r4','if','r4','==',1,0,141,'r11','-=',1,'r13','-=',2,'r3','=',1,'return','nop','nop','key',3,'>r4','if','r4','==',1,0,162,'r11','+=',1,'r13','+=',2,'r3','=',1,'return','nop','nop','key',0,'>r4','if','r4','==',1,0,183,'r10','-=',1,'r12','-=',2,'r3','=',1,'return','nop','nop','key',1,'>r4','if','r4','==',1,0,204,'r10','+=',1,'r12','+=',2,'r3','=',1,'return','nop','r3','=',0,'return','nop','nop','if','r21','==',0,0,224,'call',241,'leds-set','r1','r2',5,'return','nop','nop','if','r21','==',3,0,239,'call',241,'leds-set','r1','r2',7,'return','nop','return','nop','leds-set','r1','r2','r20','r20','=','r21','r1','=','r10','r2','=','r11','return','nop','r1','=',1,'r2','=',1,'leds-set','r1','r2',5,'leds-set',5,5,2,'leds-set',5,6,2,'leds-set',5,7,2,'leds-set',8,5,4,'leds-set',8,8,4,'leds-set',1,5,'tile-target','leds-set',1,8,'tile-target','return']
+vm.code = ['r2','=',6,'r1','=',2,'if','r2','>',5,15,0,'r1','=',3,'nop','log','r1','assert','r1','==',2,'halt']
 vm_init()
 vm_run(0)
 </script>

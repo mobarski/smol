@@ -56,11 +56,16 @@ def js_and_html(js):
 def code_as_str(code):
     return repr(code).replace(', ',',')
 
+def print_code(code):
+    print('\nCODE:')
+    for i in range(0,len(code),10):
+        print(f'{i:03}', code[i:i+10])
+
 # =================================================================
 
 config = {
     'core.registers': 256,
-    'core.parts': ['core', 'sugar','colors','leds','mouse','threads','text','timer'],
+    'core.parts': ['core', 'sugar','colors','leds','mouse','threads','text','timer','stack'],
     #
     'leds.width': 17,
     'leds.height': 7,
@@ -101,14 +106,14 @@ import v1_asm as asm
 
 def build(path_in, path_out=None, path_cfg=None):
     cfg = toml.load(open(path_cfg)) if path_cfg else config
-    print('cfg', cfg) # XXX
+    print('\nCONFIG:\n', cfg) # XXX
     path_out = path_out or 'out.html'
     if path_in=='-':
         text = sys.stdin.read()
     else:
         text = open(path_in).read()
     code = asm.text_to_code(text)
-    print(code) # TODO: option
+    print_code(code)
 
     js = vm_as_js(cfg, code, run=0)
     html = js_and_html(js)

@@ -13,6 +13,7 @@ function vm_timer_set() {
 }
 
 function _vm_on_timer() {
+    if (vm.stop) { return }
     vm.timer.debug.push(performance.now())
     vm.timer.tick += 1
     //

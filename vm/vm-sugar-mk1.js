@@ -9,6 +9,11 @@ function vm_halt() {
 	vm.halt = true
 }
 
+function vm_stop() {
+	vm.ip -= 1
+	vm.stop = true
+}
+
 function vm_nop() {
 }
 
@@ -31,6 +36,7 @@ function vm_assert() {
 
 vm.ext['goto'] = vm_goto
 vm.ext['halt'] = vm_halt
+vm.ext['stop'] = vm_stop
 vm.ext['log'] = vm_log
 vm.ext['nop'] = vm_nop
 vm.ext['assert'] = vm_assert

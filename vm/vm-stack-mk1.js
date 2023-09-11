@@ -5,8 +5,9 @@ function ext_return() {
 }
 
 function ext_call() {
-	vm.stack.append(vm.ip)
-	vm.ip = get_op()
+	let addr = get_op()
+	vm.stack.push(vm.ip)
+	vm.ip = addr
 }
 
 function ext_push() {

@@ -5,7 +5,9 @@ vm.code = []
 vm.reg = new Array(vm.cfg.core.registers).fill(0)
 vm.ext = {} // extensions
 vm.halt = false
+vm.stop = false // stop also the interrupt timer
 vm.init = []
+vm.trace = [] // XXX
 
 function vm_init() {
 	for (var i=0; i<vm.init.length; i++) {
@@ -17,14 +19,15 @@ function vm_run(n_steps=0) {
 	var i = 0
 	let t0 = performance.now()
 	if (n_steps==0) {
-		for (i=0; !vm.halt; i++) { vm_step() }
+		for (i=0; (!vm.halt)&&(!vm.stop); i++) { vm_step() }
 	} else {
-		for (i=0; (i<n_steps)&&(!vm.halt); i++) { vm_step() }
+		for (i=0; (i<n_steps)&&(!vm.halt)&&(!vm.stop); i++) { vm_step() }
 	}
 	//console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
 }
 
 function vm_step() {
+	vm.trace.push([vm.ip,vm.code[vm.ip],vm.code[vm.ip+1]]) // XXX
 	let t = get_op()
 	if (t=='if') {
 		// CONDITIONAL JUMP
@@ -51,6 +54,7 @@ function vm_step() {
 }
 
 function get_op() {
+	if (vm.ip>vm.code.length) { console.log('end of code reached!'); vm.stop=true; return 'halt' } // XXX
 	let op = vm.code[vm.ip]
 	vm.ip += 1
 	return op
@@ -80,6 +84,7 @@ function vm_alu(a,op,b) {
 	    case '!=': return a!=b
 	    case '&&': return a&&b
 	    case '||': return a||b
+		default: console.log('unknown op',op,'a',a,'b',b,'ip',vm.ip); vm.stop=true; return 0
     }
 }
 
@@ -111,6 +116,7 @@ function value_of(x) {
 
 // ie: r123 -> 123
 function get_reg(x) {
+	//if (typeof(x) != 'string') { console.log('get_reg',x,'ip',vm.ip); vm.stop=true; return } // XXX
 	return parseInt(x.slice(1))
 }
 
@@ -121,20 +127,25 @@ function get_tgt(x) {
 
 // ie: @r123 -> reg[123]
 function get_ref(x) {
+	//if (typeof(x) != 'string') { console.log('get_ref',x,'ip',vm.ip); vm.stop=true; return } // XXX
 	let r = get_reg(x.slice(1))
 	return vm.reg[r]
 }
 
 function is_reg(x) {
+	if (typeof(x) != 'string') { return false }
+	if (x[0]!='r') { return false }
 	let r = get_reg(x)
 	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
 }
 
 function is_ref(x) {
+	if (typeof(x) != 'string') { return false }
 	return ((x[0]=='@') && is_reg(x.slice(1)))
 }
 
 function is_tgt(x) {
+	if (typeof(x) != 'string') { return false }
 	return ((x[0]=='>') && is_reg(x.slice(1)))
 }
 
