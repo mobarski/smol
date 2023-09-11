@@ -18,7 +18,19 @@ function vm_log() {
 	console.log('log',op,val)
 }
 
+function vm_assert() {
+	let a = get_op()
+	let op = get_op()
+	let b = get_op()
+	let val = vm_alu(a,op,b)
+	if (!val) {
+		console.log('assertion failed:',a,op,b)
+		vm.halt = true
+	}
+}
+
 vm.ext['goto'] = vm_goto
 vm.ext['halt'] = vm_halt
 vm.ext['log'] = vm_log
 vm.ext['nop'] = vm_nop
+vm.ext['assert'] = vm_assert

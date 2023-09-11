@@ -124,18 +124,16 @@ if r1 > 0 :loop 0
 ```
 
 ```assembly
-if r1 == 0 :is-zero 0
+if r1 == 0 :fi 0
 	(r1 is not 0)
-is-zero:
+fi:
 ```
 
 ```assembly
-if r1 == 0 0 :not-zero
+if r1 == 0 0 :fi
 	(r1 is 0)
-not-zero:
+fi:
 ```
-
-
 
 
 
@@ -147,55 +145,126 @@ not-zero:
 
 ## Assembly
 
+### names
+
+restrictions:
+
+- no whitespace
+- no semicolon `:` at start / end
+- 
+
+examples:
+
+- `move-player?`
+
+- `move-player`
+
+- `move-player!`
+
+- `player.x`
 
 
-### def
 
-`def name value`
+### definitions
+
+`def name register` - register alias definition
+
+`def name value`  - value alias definition
 
 
 
 example use:
 
-- `def mx r1`
+- `def player.x r1`
 - `def pi 3.142`
-- `def n_iters 10`
+- `def n-iters 10`
 
 
 
-### local label
+### labels
 
-`.name:`
+`name:` - local label declaration
 
-Local labels (starting with dot) are only available between between two normal labels (can be reused).
+`$name:` - global label declaration
+
+`:name` - local label use
+
+`$name` - global label use
+
+Local labels are only visible between between two global labels.
 
 
 
 example use:
 
 ```
-call :aaa (logs: 111 333)
-call :bbb (logs: 999 777)
+call $aaa (logs: 111 333)
+call $bbb (logs: 999 777)
 halt
 
-aaa:
+$aaa:
 	log 111
-	goto :_end
+	goto :end
 	log 222
-	_end:
+	end:
 	log 333
 	return
 
-bbb:
+$bbb:
 	log 999
-	goto :_end
+	goto :end
 	log 888
-	_end:
+	end:
 	log 777
 	return
 ```
 
 
+
+## More examples
+
+
+
+### ternary expressions
+
+
+
+**python**
+
+```python
+a = 2 if x > 5 else 3
+```
+
+**javascript**
+
+```javascript
+a = x > 5 ? 2 : 3
+```
+
+**smol**
+
+```assembly
+a = 2 if x > 5 :| else a = 3 |:
+```
+
+requires `def else 0` but otherwise it's just a sequence of normal operations:
+
+- `a = 2`
+- `if x > 5 :| 0` where `:|` is just a label address, and we use an alias for 0 for better readability
+- `a = 3` 
+- `:|` (label)
+
+
+
+### enums
+
+```
+def planet.mercury 1
+def planet.venus   2
+def planet.earth   3
+def planet.mars    4
+( ... )
+```
 
 
 

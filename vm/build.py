@@ -108,6 +108,7 @@ def build(path_in, path_out=None, path_cfg=None):
     else:
         text = open(path_in).read()
     code = asm.text_to_code(text)
+    print(code) # TODO: option
 
     js = vm_as_js(cfg, code, run=0)
     html = js_and_html(js)

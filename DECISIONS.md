@@ -9,6 +9,24 @@
 
 
 
+## language name
+
+**options**
+
+​	a) **smol**
+
+​	b) fake
+
+​	c) itsy 
+
+​	d) kiss
+
+​	e) kis (keep it simple/smol)
+
+​	f) kic (keep it cosy) 
+
+
+
 ## conditional jump
 
 **options:**
@@ -130,7 +148,7 @@
 
 ## basic EXT operations
 
-### goto :addr
+### goto addr
 
 - decision 2023-09-01: **yes**
   - **reason:** can be achieved with conditional jump with condition always true but this is better for readability and teaching
@@ -146,11 +164,18 @@
 - decision 2023-09-01: **80% yes**
   - **reason**: might be useful for padding code
 
+
+
 ### log val
+
+- decision 2023-09-01: **60% yes**
+  - **rename candidates**: dump, 
+
+
 
 ### assert a op b
 
-
+- decision 2023-09-10: **55% yes**
 
 
 
@@ -168,6 +193,55 @@
   - **reason:** one configuration format is enough, it can be easily installed for Python version < 3.11
 - 2023-09-01: we go with both a) and b)
   - **reason**: none is perfect, a) is in the standard library, b)  is in the standard lib since 3.11+, b) is more nice to work with
+
+
+
+## call
+
+**options**
+
+a)  **no arguments**
+
+```
+call $fun
+```
+
+b)
+
+```
+call $fun 0
+call $fun 2 x y
+call $fun 3 x y >c
+```
+
+c)
+
+```
+call 0 $fun
+call 2 $fun x y
+call 3 $fun x y >c
+```
+
+d) 
+
+```
+call   $fun
+call.0 $fun
+call.2 $fun x y
+call.3 $fun x y >c
+```
+
+e) special operation for handling arguments (push-n)
+
+```
+args 3 x y >c
+call $fun
+```
+
+**decision**
+
+- 2023-09-01: we go with a)
+  - **reason**: the simplest solution, arguments can be handled by registers or by stack
 
 
 

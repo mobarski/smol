@@ -1,3 +1,3 @@
-NAME=sokoban
+NAME=ternary
 python3 ../vm/build.py ${NAME}.asm html/${NAME}.html ../vm/config.toml
 cp html/${NAME}.html ~/repo/pages/smol/html/

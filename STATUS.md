@@ -1,17 +1,28 @@
 # Progress
 
+### WIP
+
+- sokoban
+
 ### Next tasks
 
-- [ ] global vs local labels
+- [ ] split ALU ops into CMP and STMT:
+
+  - [ ] ASM: catch invalid CMP like  `if a += val` or `if a &= mask`
+  - [ ] ASM: catch invalid STMT like `a < 10` or `a != 2`
+
+- [x] global vs local labels
+
+- [x] assert
+
+- [x] ternary expression
 
 - [x] button state approach
 
-- [ ] finish keys extension (n<=4 players + id=0 system buttons)
+- [ ] keys -> buttons (n<=4 players + id=0 system buttons)
 
   - [ ] pico-8 -> [btnp](https://pico-8.fandom.com/wiki/Btnp) [btn](https://pico-8.fandom.com/wiki/Btn)
   - [ ] tic-80 -> [btnp](https://github-wiki-see.page/m/nesbox/TIC-80/wiki/btnp) [btn](https://github-wiki-see.page/m/nesbox/TIC-80/wiki/btn)
-
-- [ ] sokoban
 
   
 
