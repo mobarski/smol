@@ -18,8 +18,8 @@
 ( REGISTER ALLOCATION )
 
     ( player )
-        def px r1
-        def py r2
+        def p1.x r1
+        def p1.y r2
         def pa r3 ( player action )
         def pb r4 ( button state )
 
@@ -54,6 +54,8 @@ $player-main:
 
     leds-get x1 y1 >t1
     leds-get x2 y2 >t2
+    log t1 ( XXX )
+    log t2 ( XXX ) 
 
     move-into-empty-space?:
         if t1 == tile.empty 0 :fi
@@ -66,6 +68,13 @@ $player-main:
         fi:
 
     move-box?:
+        
+        ( t2 must be empty or target )
+        if t2 == tile.wall          :end 0
+        if t2 == tile.box           :end 0
+        if t2 == tile.box-at-target :end 0
+
+        ( t1 must be box or box-at-target )
         if t1 == tile.box           :yes 0
         if t1 == tile.box-at-target :yes :end
 
@@ -97,10 +106,10 @@ $player-main:
 $check-keys:
     ( check pressed keys and set pa x1 y1 x2 y2 )
 
-    x1 = px
-    y1 = py
-    x2 = px
-    y2 = py
+    x1 = p1.x
+    y1 = p1.y
+    x2 = p1.x
+    y2 = p1.y
 
     check-up:
         key btn.up >pb
@@ -146,30 +155,30 @@ $update-player-position:
     check-empty:
         if t1 == tile.empty 0 :fi
             call $update-player-position-core
-            leds-set px py tile.player
+            leds-set p1.x p1.y tile.player
             return
         fi:
 
     check-target:
         if t1 == tile.target 0 :fi
             call $update-player-position-core
-            leds-set px py tile.player-at-target
+            leds-set p1.x p1.y tile.player-at-target
             return
         fi:
     
     return
 
 $update-player-position-core:
-    leds-set px py t0 ( restore old tile )
+    leds-set p1.x p1.y t0 ( restore old tile )
     t0 = t1
-    px = x1
-    py = y1
+    p1.x = x1
+    p1.y = y1
     return
 
 $setup-level:
-    px = 1
-    py = 1
-    leds-set px py tile.player
+    p1.x = 1
+    p1.y = 1
+    leds-set p1.x p1.y tile.player
     leds-set 5 5 tile.wall
     leds-set 5 6 tile.wall
     leds-set 5 7 tile.wall
