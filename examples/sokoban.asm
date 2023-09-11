@@ -184,6 +184,6 @@ $setup-level:
     leds-set 5 7 tile.wall
     leds-set 8 5 tile.box
     leds-set 8 8 tile.box
-    leds-set 1 5 tile-target
-    leds-set 1 8 tile-target
+    leds-set 1 5 tile.target
+    leds-set 1 8 tile.target
     return
