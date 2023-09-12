@@ -1,0 +1,42 @@
+'core.registers' = 100
+'core.parts' = ["core", "sugar","colors","leds","mouse","threads","text","timer","keys","stack","rom"]
+
+'leds.width' = 17
+'leds.height' = 17
+'leds.size' = 32
+'leds.radius' = 15
+
+'colors.data' = [
+    "#F5F5F5",
+    "#D3D3D3",
+    "#808080",
+    "#F08080",
+    "#FFD700",
+    "#00FA9A",
+    "#87CEFA",
+    "#DDA0DD",
+]
+
+
+# REF: http://www.cs.cornell.edu/andru/xsokoban.html
+# REF: http://www.cs.cornell.edu/andru/release/xsokoban-3.3c.tar.gz -> /xsokoban/screens/screen.*
+
+'rom.banks' = [
+    # bank 0 -> level 0 
+    [
+        1,1, # player x,y
+        2,   # target score
+        # tiles
+            5,2, # walls
+                5,5, 5,6, 5,7, 5,8, 5,9,
+            3,2, # walls
+                10,10, 9,10, 8,10,
+            2,3, # targets
+                3,5,
+                3,8,
+            2,4, # boxes
+                10,5,
+                10,8,
+            0,0, # end
+    ],
+]
