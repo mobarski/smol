@@ -1,0 +1,12 @@
+{
+    "name": "Smol",
+    "type": "dark",
+    "tokenColors": [
+        {
+            "scope": "keyword",
+            "settings": {
+                "foreground": "#FF0000"
+            }
+        },
+    ]
+}

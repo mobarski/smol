@@ -1,31 +1,43 @@
 {
     "name": "Smol",
-    "fileTypes": [".smol"],
+    "fileTypes": [".smol",".asm"],
     "patterns": [
         {
             "match": "\\b(def)\\b",
-            "name": "keyword.definition.smol"
+            "name": "meta.preprocessor.smol"
         },
         {
-            "match": "\\b(if|else|then|fi|return|call|break)\\b",
+            "match": "\\b(if|return|call|break|halt|stop)\\b",
             "name": "keyword.control.smol"
         },
         {
-            "match": "[$][a-z.?!-]+:",
-            "name": "entity.name.smol"
+            "match": "\\b(fi|else|then)\\b",
+            "name": "keyword.control.smol"
+        },
+        {
+            "match": "\\b(log|assert)\\b",
+            "name": "support.function.smol"
+        },
+        {
+            "match": "[$][a-z0-9.?!-]+:",
+            "name": "entity.name.section.smol"
         },
         {
             "match": "\\( [^)]+ \\)",
-            "name": "comment.smol"
+            "name": "comment.block.documentation.smol"
         },
 	{
 		"match": "\\b[-]?[0-9_]+\\b",
 		"name": "constant.numeric"
 	},
         {
-            "match": "[a-z.?!-]+[:]",
+            "match": "[a-z0-9.?!-]+[:]",
             "name": "entity.name.smol"
-        }
+        },
+	{
+		"match": "[>][a-z0-9.?!-]+",
+		"name": "storage.smol"
+	}
     ],
     "scopeName": "source.smol"
 }

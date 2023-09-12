@@ -3,6 +3,7 @@
     "displayName": "Smol",
     "description": "Syntax highlighting for Smol language",
     "version": "0.0.1",
+    "author":"Maciej Obarski",
     "engines": {
         "vscode": "^1.58.0"
     },
@@ -11,12 +12,17 @@
         "languages": [{
             "id": "smol",
             "aliases": ["Smol", "smol"],
-            "extensions": [".smol"]
+            "extensions": [".smol",".asm"]
         }],
         "grammars": [{
             "language": "smol",
             "scopeName": "source.smol",
             "path": "./syntaxes/smol.tmLanguage.json"
-        }]
+        }],
+	"themes": [{
+	    "label": "Smol",
+	    "uiTheme": "vs-dark",
+	    "path": "./themes/smol-color-theme.json"
+	}]
     }
 }
