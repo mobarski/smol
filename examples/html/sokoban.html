@@ -12,13 +12,15 @@ vm.cfg.text = {}
 vm.cfg.timer = {}
 vm.cfg.keys = {}
 vm.cfg.stack = {}
-vm.cfg.core.registers = 256
-vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys', 'stack']
-vm.cfg.leds.width = 17
-vm.cfg.leds.height = 17
+vm.cfg.rom = {}
+vm.cfg.core.registers = 100
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys', 'stack', 'rom']
+vm.cfg.leds.width = 19
+vm.cfg.leds.height = 19
 vm.cfg.leds.size = 32
 vm.cfg.leds.radius = 15
 vm.cfg.colors.data = ['#F5F5F5', '#D3D3D3', '#808080', '#F08080', '#FFD700', '#00FA9A', '#87CEFA', '#DDA0DD']
+vm.cfg.rom.banks = [[1, 1, 2, 5, 2, 5, 5, 5, 6, 5, 7, 5, 8, 5, 9, 3, 2, 10, 10, 9, 10, 8, 10, 2, 3, 3, 5, 3, 8, 2, 4, 10, 5, 10, 8, 0, 0], [11, 12, 6, 70, 2, 4, 4, 5, 4, 6, 4, 7, 4, 8, 4, 4, 5, 8, 5, 4, 6, 8, 6, 2, 7, 3, 7, 4, 7, 8, 7, 9, 7, 2, 8, 9, 8, 0, 9, 1, 9, 2, 9, 4, 9, 6, 9, 7, 9, 9, 9, 13, 9, 14, 9, 15, 9, 16, 9, 17, 9, 18, 9, 0, 10, 4, 10, 6, 10, 7, 10, 9, 10, 10, 10, 11, 10, 12, 10, 13, 10, 18, 10, 0, 11, 18, 11, 0, 12, 1, 12, 2, 12, 3, 12, 4, 12, 6, 12, 7, 12, 8, 12, 10, 12, 12, 12, 13, 12, 18, 12, 4, 13, 10, 13, 11, 13, 12, 13, 13, 13, 14, 13, 15, 13, 16, 13, 17, 13, 18, 13, 4, 14, 5, 14, 6, 14, 7, 14, 8, 14, 9, 14, 10, 14, 6, 4, 5, 6, 7, 7, 5, 8, 7, 8, 2, 11, 5, 11, 6, 3, 16, 10, 17, 10, 16, 11, 17, 11, 16, 12, 17, 12]]
 // === CORE MK1 ===============================================================
 
 vm.ip = 0
@@ -713,7 +715,42 @@ vm.ext['call'] = ext_call
 vm.ext['push'] = ext_push
 vm.ext['pop'] = ext_pop
 
-vm.code = ['nop','leds-clear',0,'timer-set',30,9,'call',278,'halt','nop','key-frame','leds-draw','call',15,'halt','nop','call',130,'if','r3','==',0,128,0,'leds-get','r10','r11','>r21','leds-get','r12','r13','>r22','log','r21','log','r22','nop','if','r21','==',0,0,45,'call',231,'nop','nop','if','r21','==',3,0,55,'call',231,'nop','nop','if','r22','==',2,128,0,'if','r22','==',4,128,0,'if','r22','==',6,128,0,'if','r21','==',4,87,0,'if','r21','==',6,87,128,'nop','if','r22','==',3,0,98,'leds-set','r12','r13',6,'nop','if','r22','==',0,0,109,'leds-set','r12','r13',4,'nop','if','r21','==',6,0,121,'r21','=',3,'goto',125,'nop','r21','=',0,'nop','call',231,'nop','return','nop','r10','=','r1','r11','=','r2','r12','=','r1','r13','=','r2','nop','key',2,'>r4','if','r4','==',1,0,163,'r11','-=',1,'r13','-=',2,'r3','=',1,'return','nop','nop','key',3,'>r4','if','r4','==',1,0,184,'r11','+=',1,'r13','+=',2,'r3','=',1,'return','nop','nop','key',0,'>r4','if','r4','==',1,0,205,'r10','-=',1,'r12','-=',2,'r3','=',1,'return','nop','nop','key',1,'>r4','if','r4','==',1,0,226,'r10','+=',1,'r12','+=',2,'r3','=',1,'return','nop','r3','=',0,'return','nop','nop','if','r21','==',0,0,246,'call',263,'leds-set','r1','r2',5,'return','nop','nop','if','r21','==',3,0,261,'call',263,'leds-set','r1','r2',7,'return','nop','return','nop','leds-set','r1','r2','r20','r20','=','r21','r1','=','r10','r2','=','r11','return','nop','r1','=',1,'r2','=',1,'leds-set','r1','r2',5,'leds-set',5,4,2,'leds-set',5,5,2,'leds-set',5,6,2,'leds-set',5,7,2,'leds-set',5,8,2,'leds-set',5,9,2,'leds-set',8,5,4,'leds-set',8,8,4,'leds-set',1,5,3,'leds-set',1,8,3,'return']
+// === ROM ====================================================================
+
+vm.rom = {}
+vm.rom.data = []
+vm.rom.bank = 0
+vm.rom.banks = coalesce(vm.cfg.rom.banks, [[]])
+vm.init.push(_vm_rom_init)
+
+function vm_rom_bank() {
+    let b = get_op() // bank
+    vm.rom.bank = b
+    if (vm.rom.banks[b] == undefined) {
+        console.log('bank not found', b)
+        vm.stop = true
+        return
+    } else {
+        vm.rom.data = vm.rom.banks[b]
+    }
+}
+
+function vm_rom_get() {
+    let a = value_of(get_op()) // addr
+    let t = get_op() // output target
+    let v = vm.rom.data[a] || 0
+    vm_set(t, v)
+}
+
+vm.ext['rom-bank'] = vm_rom_bank
+vm.ext['rom-get'] = vm_rom_get
+
+function _vm_rom_init() {
+    vm.rom.bank = 0
+    vm.rom.data = vm.rom.banks[vm.rom.bank] || []
+}
+
+vm.code = ['nop','leds-clear',0,'timer-set',30,9,'call',326,'halt','nop','key-frame','leds-draw','call',15,'halt','nop','call',126,'if','r3','==',0,124,0,'leds-get','r10','r11','>r21','leds-get','r12','r13','>r22','nop','if','r21','==',0,0,41,'call',227,'nop','nop','if','r21','==',3,0,51,'call',227,'nop','nop','if','r22','==',2,124,0,'if','r22','==',4,124,0,'if','r22','==',6,124,0,'if','r21','==',4,83,0,'if','r21','==',6,83,124,'nop','if','r22','==',3,0,94,'leds-set','r12','r13',6,'nop','if','r22','==',0,0,105,'leds-set','r12','r13',4,'nop','if','r21','==',6,0,117,'r21','=',3,'goto',121,'nop','r21','=',0,'nop','call',227,'nop','return','nop','r10','=','r1','r11','=','r2','r12','=','r1','r13','=','r2','nop','key',2,'>r4','if','r4','>=',1,0,159,'r11','-=',1,'r13','-=',2,'r3','=',1,'return','nop','nop','key',3,'>r4','if','r4','>=',1,0,180,'r11','+=',1,'r13','+=',2,'r3','=',1,'return','nop','nop','key',0,'>r4','if','r4','>=',1,0,201,'r10','-=',1,'r12','-=',2,'r3','=',1,'return','nop','nop','key',1,'>r4','if','r4','>=',1,0,222,'r10','+=',1,'r12','+=',2,'r3','=',1,'return','nop','r3','=',0,'return','nop','nop','if','r21','==',0,0,242,'call',259,'leds-set','r1','r2',5,'return','nop','nop','if','r21','==',3,0,257,'call',259,'leds-set','r1','r2',7,'return','nop','return','nop','leds-set','r1','r2','r20','r20','=','r21','r1','=','r10','r2','=','r11','return','nop','r1','=',1,'r2','=',1,'leds-set','r1','r2',5,'leds-set',5,4,2,'leds-set',5,5,2,'leds-set',5,6,2,'leds-set',5,7,2,'leds-set',5,8,2,'leds-set',5,9,2,'leds-set',8,5,4,'leds-set',8,8,4,'leds-set',1,5,3,'leds-set',1,8,3,'return','nop','r5','=',0,'rom-bank',1,'r30','=',0,'rom-get','r30','>r1','r30','+=',1,'rom-get','r30','>r2','r30','+=',1,'rom-get','r30','>r6','r30','+=',1,'leds-set','r1','r2',5,'nop','rom-get','r30','>r33','r30','+=',1,'rom-get','r30','>r34','r30','+=',1,'if','r33','==',0,405,0,'r31','=',0,'nop','rom-get','r30','>r10','r30','+=',1,'rom-get','r30','>r11','r30','+=',1,'leds-set','r10','r11','r34','r31','+=',1,'if','r31','<','r33',379,357,'nop','return']
 vm_init()
 vm_run(0)
 </script>

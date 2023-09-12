@@ -1,4 +1,6 @@
-DEFAULT=rom
-NAME=${1:-${DEFAULT}}
-python3 ../vm/build.py ${NAME}.asm html/${NAME}.html ../vm/config.toml
+DEFAULT_NAME=rom
+DEFAULT_TOML=../vm/config.toml
+NAME=${1:-${DEFAULT_NAME}}
+TOML=${2:-${DEFAULT_TOML}}
+python3 ../vm/build.py ${NAME}.asm html/${NAME}.html ${TOML}
 cp html/${NAME}.html ~/repo/pages/smol/html/

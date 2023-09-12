@@ -48,7 +48,8 @@
 $init:
     leds-clear 0
     timer-set 30 $frame
-    call $setup-level
+    ( call $setup-level )
+    call $load-level-from-rom
     halt
 
 $frame:
@@ -63,8 +64,6 @@ $player-main:
 
     leds-get x1 y1 >t1
     leds-get x2 y2 >t2
-    log t1 ( XXX )
-    log t2 ( XXX ) 
 
     move-into-empty-space?:
         if t1 == tile.empty 0 :fi
@@ -204,12 +203,13 @@ $setup-level:
 
 $load-level-from-rom:
     box-done = 0
-    rom-bank 0 ( level 0 )
+    rom-bank 1 ( xsokoban level 1 )
 
     i = 0
     rom-get i >p1.x    ; i += 1
     rom-get i >p1.y    ; i += 1
     rom-get i >box-cnt ; i += 1
+    leds-set p1.x p1.y tile.player
 
     loop1:
         rom-get i >n ; i += 1
@@ -221,13 +221,14 @@ $load-level-from-rom:
             rom-get i >y1 ; i += 1
             leds-set x1 y1 t
             j += 1
-            if j < n :loop2 0
+            if j < n :loop2 :loop1
     end:
     return
 
 
+(
 $load-level-from-tape:
-    tape-bank 0 ( level 0 )
+    tape-bank 0
     tape-get >p1.x
     tape-get >p1.y
     tape-get >box-cnt
@@ -243,6 +244,7 @@ $load-level-from-tape:
             tape-get >y1
             leds-set x1 y1 t
             j += 1
-            if j < n :loop2 0
+            if j < n :loop2 :loop1
     end:
     return
+)

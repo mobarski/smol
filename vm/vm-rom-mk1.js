@@ -19,7 +19,7 @@ function vm_rom_bank() {
 }
 
 function vm_rom_get() {
-    let a = get_op() // addr
+    let a = value_of(get_op()) // addr
     let t = get_op() // output target
     let v = vm.rom.data[a] || 0
     vm_set(t, v)
