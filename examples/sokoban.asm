@@ -17,11 +17,13 @@
 
 ( REGISTER ALLOCATION )
 
-    ( player )
+    ( player / game )
         def p1.x r1
         def p1.y r2
         def pa r3 ( player action )
         def pb r4 ( button state )
+        def box-done r5
+        def box-cnt r6
 
     ( xy @ distance )
         def x1 r10
@@ -33,6 +35,13 @@
         def t0 r20
         def t1 r21
         def t2 r22
+
+    ( work )
+        def i r30
+        def j r31
+        def k r32
+        def n r33
+        def t r34
 
 ( ========================================================================= )
 
@@ -175,6 +184,8 @@ $update-player-position-core:
     p1.y = y1
     return
 
+( ========================================================================= )
+
 $setup-level:
     p1.x = 1
     p1.y = 1
@@ -189,4 +200,49 @@ $setup-level:
     leds-set 8 8 tile.box
     leds-set 1 5 tile.target
     leds-set 1 8 tile.target
+    return
+
+$load-level-from-rom:
+    box-done = 0
+    rom-bank 0 ( level 0 )
+
+    i = 0
+    rom-get i >p1.x    ; i += 1
+    rom-get i >p1.y    ; i += 1
+    rom-get i >box-cnt ; i += 1
+
+    loop1:
+        rom-get i >n ; i += 1
+        rom-get i >t ; i += 1
+        if n == 0 :end 0
+        j = 0
+        loop2:
+            rom-get i >x1 ; i += 1
+            rom-get i >y1 ; i += 1
+            leds-set x1 y1 t
+            j += 1
+            if j < n :loop2 0
+    end:
+    return
+
+
+$load-level-from-tape:
+    tape-bank 0 ( level 0 )
+    tape-get >p1.x
+    tape-get >p1.y
+    tape-get >box-cnt
+    box-done = 0
+
+    loop1:
+        tape-get >n
+        tape-get >t
+        if n == 0 :end 0
+        j = 0
+        loop2:
+            tape-get >x1
+            tape-get >y1
+            leds-set x1 y1 t
+            j += 1
+            if j < n :loop2 0
+    end:
     return

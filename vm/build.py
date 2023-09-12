@@ -16,6 +16,8 @@ part_to_filename = {
     'threads': 'vm-threads-mk1.js',
     'text':    'vm-text-mk1.js',
     'timer':   'vm-timer-mk1.js',
+    'rom':     'vm-rom-mk1.js',
+    'tape':    'vm-tape-mk1.js',
 }
 
 def config_as_js(config):
@@ -63,6 +65,7 @@ def print_code(code):
 
 # =================================================================
 
+# TODO: remove
 config = {
     'core.registers': 256,
     'core.parts': ['core', 'sugar','colors','leds','mouse','threads','text','timer','stack'],
