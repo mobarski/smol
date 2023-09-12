@@ -347,6 +347,24 @@ Return mouse button state:
 
 
 
+### ROM
+
+**rom-bank**
+
+`rom-bank b`
+
+Switch ROM bank to b
+
+
+
+**rom-peek**
+
+`rom-peek a >r`
+
+Read value from ROM address `a` and store it in `r` 
+
+
+
 ### Screen
 
 

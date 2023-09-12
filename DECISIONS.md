@@ -45,7 +45,7 @@
 
 
 
-## ALU operations notation
+## ALU op notation in machine code
 
 **options:**
 
@@ -71,7 +71,7 @@
 
 ​	b) starts with `.`
 
-​	c) no prefix (local is the default label), global labels require prefix
+​	c) **no prefix (local is the default label type)**, global labels require prefix
 
 
 
@@ -124,7 +124,7 @@
 
 
 
-## output notation
+## (!) output notation
 
 **options**:
 
@@ -132,15 +132,33 @@
 
 ​	b) `&r1` - similar to C
 
-​	c) `$r1`
+​	c) `$r1` - nope `$` already used for global addresses
 
 ​	d) `:r1` - nope `:` is used already for addresses
 
 ​	e) `'r1`
 
-​	f) `%r1`
+​	f) `%r1` - candidate
 
-​	g) `^r1`
+​	g) `^r1` - candidate
+
+
+
+## block comments
+
+**options**:
+
+​	a) `code ( comment ) code`
+
+​	b) `code /* comment */ code`
+
+​	c) `code [ comment ] code`
+
+​	e) `code { comment } code`
+
+
+
+
 
 
 
@@ -175,7 +193,7 @@
 
 ### assert a op b
 
-- decision 2023-09-10: **55% yes**
+- decision 2023-09-10: **60% yes**
 
 
 
@@ -241,7 +259,7 @@ call $fun
 **decision**
 
 - 2023-09-01: we go with a)
-  - **reason**: the simplest solution, arguments can be handled by registers or by stack
+  - **reason**: the simplest solution, arguments can be handled by registers or by stack, we can later convert it into e)
 
 
 
@@ -272,15 +290,29 @@ call $fun
 - 2023-09-09: considering
   - d) 19x19
     - 3x3 grid of 5x5 sprites (micro:bit) + 1px separator + 2x1px margin
+    - 2x2 grid of 9x9 sprites + 1px separator - no margin
     - standard go board size
-
+    
   - e) 21x21
     - 4x4 grid of 5x5 sprites, separator but no margin
-
+  
 - 2023-09-03: **we go with c)**
-  - **reason**:
-    - 3x3 grid of 5x5 sprite (micro:bit) + 1px separator
+  - **reason**:2023-09-03: we go with c)
+    
+    reason:
+    
+    3x3 grid of 5x5 sprite (micro:bit) + 1px separator - no margin
+    
+    4x4 grid of 3x3 sprite + 1px separator + 2x1px margin
+    
+    2x2 grid of 7x7 sprite + 1px separator + 2x1px margin
+    
+    historical go board size
+    
+  - 
+    - 3x3 grid of 5x5 sprite (micro:bit) + 1px separator - no margin
     - 4x4 grid of 3x3 sprite + 1px separator + 2x1px margin
+    - 2x2 grid of 7x7 sprite + 1px separator + 2x1px margin
     - historical go board size
 
 
@@ -295,3 +327,38 @@ call $fun
     - 1 - just pressed
     - n (n>1) - held, pressed n frames ago
     - -n - just released (was pressed n frames ago)
+
+
+
+## display
+
+**options**:
+
+​	a) low resolution led display
+
+​	b) characters / tiles / cells / emoji
+
+​	c) sprites + tiles
+
+​	d) vectors / turtle
+
+**decision**: we start with a)
+
+ - **reason**:
+   - the lower the resolution the lower the work required
+   - requires more imagination while "consuming"
+   - entities can be represented by a single "pixel" of a specific color
+   - can be easily upgraded to b)
+
+
+
+## (!) rom vs tape
+
+**options**:
+
+​	a) default = rom
+
+​	b) default = tape
+
+​	c) default = tape renamed to rom
+

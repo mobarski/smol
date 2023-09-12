@@ -6,6 +6,8 @@
 
 ### Next tasks
 
+- [ ] vm-rom-mk1
+
 - [ ] split ALU ops into CMP and STMT:
 
   - [ ] ASM: catch invalid CMP like  `if a += val` or `if a &= mask`
