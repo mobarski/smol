@@ -751,7 +751,7 @@ function _vm_rom_init() {
     vm.rom.data = vm.rom.banks[vm.rom.bank] || []
 }
 
-vm.code = ['r2','=',6,'r1','=',2,'if','r2','>',5,15,0,'r1','=',3,'nop','log','r1','assert','r1','==',2,'r2','=',1,'r1','=',2,'if','r2','>',5,37,0,'r1','=',3,'nop','log','r1','assert','r1','==',3,'halt']
+vm.code = ['rom-get',3,'>r1','log','r1','rom-get',2,'>r1','log','r1','rom-bank',1,'rom-get',1,'>r1','log','r1','rom-get',0,'>r1','log','r1','rom-bank',0,'rom-get',1,'>r1','log','r1','rom-get',0,'>r1','log','r1','halt']
 vm_init()
 vm_run(0)
 </script>

@@ -1,5 +1,5 @@
-'core.registers' = 256
-'core.parts' = ["core", "sugar","colors","leds","mouse","threads","text","timer","keys","stack"]
+'core.registers' = 100
+'core.parts' = ["core", "sugar","colors","leds","mouse","threads","text","timer","keys","stack","rom","tape"]
 
 'leds.width' = 17
 'leds.height' = 17
@@ -8,11 +8,27 @@
 
 'colors.data' = [
     "#F5F5F5",
-    "#D3D3D3", # XXX
+    "#D3D3D3",
     "#808080",
     "#F08080",
-    "#FFD700", # YYY
+    "#FFD700",
     "#00FA9A",
     "#87CEFA",
-    "#DDA0DD"
+    "#DDA0DD",
+]
+
+# XXX
+'rom.banks' = [
+    # bank 0
+    [11,22,33,44,55],
+    # bank 1
+    [999,888,777],
+]
+
+# XXX
+'tape.banks' = [
+    # bank 0
+    [111,222,333,444,555],
+    # bank 1
+    [77,66,55,44,33],
 ]

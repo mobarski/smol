@@ -13,15 +13,16 @@ vm.cfg.timer = {}
 vm.cfg.keys = {}
 vm.cfg.stack = {}
 vm.cfg.rom = {}
+vm.cfg.tape = {}
 vm.cfg.core.registers = 100
-vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys', 'stack', 'rom']
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'leds', 'mouse', 'threads', 'text', 'timer', 'keys', 'stack', 'rom', 'tape']
 vm.cfg.leds.width = 17
 vm.cfg.leds.height = 17
 vm.cfg.leds.size = 32
 vm.cfg.leds.radius = 15
 vm.cfg.colors.data = ['#F5F5F5', '#D3D3D3', '#808080', '#F08080', '#FFD700', '#00FA9A', '#87CEFA', '#DDA0DD']
 vm.cfg.rom.banks = [[11, 22, 33, 44, 55], [999, 888, 777]]
-vm.cfg.tape.banks = [[111, 222, 333, 444], [777, 666, 555]]
+vm.cfg.tape.banks = [[111, 222, 333, 444, 555], [77, 66, 55, 44, 33]]
 // === CORE MK1 ===============================================================
 
 vm.ip = 0
@@ -751,7 +752,66 @@ function _vm_rom_init() {
     vm.rom.data = vm.rom.banks[vm.rom.bank] || []
 }
 
-vm.code = ['r2','=',6,'r1','=',2,'if','r2','>',5,15,0,'r1','=',3,'nop','log','r1','assert','r1','==',2,'r2','=',1,'r1','=',2,'if','r2','>',5,37,0,'r1','=',3,'nop','log','r1','assert','r1','==',3,'halt']
+// === TAPE ===================================================================
+
+vm.tape = {}
+vm.tape.data = []
+vm.tape.bank = 0
+vm.tape.pos = 0
+vm.tape.banks = coalesce(vm.cfg.tape.banks, [[]])
+vm.init.push(_vm_tape_init)
+
+function vm_tape_bank() {
+    let b = get_op() // bank
+    vm.tape.bank = b
+    vm.tape.pos = 0
+    if (vm.tape.banks[b] == undefined) {
+        console.log('bank not found', b)
+        vm.stop = true
+        return
+    } else {
+        vm.tape.data = vm.tape.banks[b]
+    }
+}
+
+function vm_tape_get() {
+    let t = get_op() // output target
+    let v = vm.tape.data[vm.tape.pos] || 0
+    vm.tape.pos += 1
+    vm_set(t, v)
+}
+
+/*
+function vm_tape_write() {
+    let v = get_op() // value
+    vm.tape.data[vm.tape.pos] = value_of(v)
+    vm.tape.pos += 1
+}
+*/
+
+// TODO: seek mode (0 = absolute, 1 = relative)
+function vm_tape_seek() {
+    let p = get_op() // position
+    vm.tape.pos = value_of(p)
+}
+
+function vm_tape_pos() {
+    let t = get_op() // output target
+    vm_set(t, vm.tape.pos)
+}
+
+// vm.ext['tape-write'] = vm_tape_write
+vm.ext['tape-bank']  = vm_tape_bank
+vm.ext['tape-get']  = vm_tape_get
+vm.ext['tape-seek']  = vm_tape_seek
+vm.ext['tape-pos']   = vm_tape_pos
+
+function _vm_tape_init() {
+    vm.tape.bank = 0
+    vm.tape.data = vm.tape.banks[vm.tape.bank] || []
+}
+
+vm.code = ['tape-get','>r1','log','r1','tape-get','>r1','log','r1','tape-bank',1,'tape-get','>r1','log','r1','tape-get','>r1','log','r1','tape-bank',0,'tape-get','>r1','log','r1','tape-get','>r1','log','r1','tape-seek',3,'tape-get','>r1','log','r1','tape-get','>r1','log','r1','halt']
 vm_init()
 vm_run(0)
 </script>
