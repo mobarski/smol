@@ -1,5 +1,7 @@
 ( CONSTANTS )
 
+    def LEVEL 3
+
     ( button )
         def btn.left  0
         def btn.right 1
@@ -203,7 +205,7 @@ $setup-level:
 
 $load-level-from-rom:
     box-done = 0
-    rom-bank 1 ( xsokoban level 1 )
+    rom-bank LEVEL
 
     i = 0
     rom-get i >p1.x    ; i += 1
