@@ -6,7 +6,23 @@
 
 ### Next tasks
 
-- [ ] vm-rom-mk1
+- [x] vm-rom-mk1
+
+- [ ] vm-state-mk1 (low capacity mem, easy to copy/paste via url etc)
+
+- [ ] make name builds name.asm + name.toml (if available)
+
+- [ ] build with external smol.js
+
+- [x] repeat key method
+
+- [ ] sokoban:
+
+  - [x] level transition
+
+  - [ ] restart
+
+  - [ ] undo(n)
 
 - [ ] split ALU ops into CMP and STMT:
 

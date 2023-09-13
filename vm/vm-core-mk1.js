@@ -105,13 +105,14 @@ function vm_set(x, val) {
 function value_of(x) {
 	if (is_num(x)) {
 		return x
-	} else if (is_ref(x)) {
-		let r = get_ref(x)
-		return vm.reg[r]
 	} else if (is_reg(x)) {
 		let r = get_reg(x)
 		return vm.reg[r]
-	}		
+	} else if (is_ref(x)) {
+		let r = get_ref(x)
+		return vm.reg[r]
+	}
+	console.log('unknown value',x,'ip',vm.ip); vm.stop=true; return 0
 }
 
 // ie: r123 -> 123

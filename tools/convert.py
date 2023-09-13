@@ -43,8 +43,8 @@ def convert_screen(n):
     out,w,h = convert(text)
     print(f'# xsokoban screen.{n} ({w}x{h})')
     #print(text)
-    print('\t'+str(out).replace(' ','')+',')
+    #print('\t'+str(out).replace(' ','')+',')
 
-for i in range(1,10):
+for i in range(1,90):
     convert_screen(i)
 

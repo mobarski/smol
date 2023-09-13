@@ -1,6 +1,8 @@
 ( CONSTANTS )
 
-    def LEVEL 3
+    def FPS 60
+    def BTN.DELAY.INITIAL 30 # = FPS / 2
+    def BTN.DELAY.REPEAT   5 # = FPS / 12
 
     ( button )
         def btn.left  0
@@ -20,12 +22,14 @@
 ( REGISTER ALLOCATION )
 
     ( player / game )
+        def level r0
         def p1.x r1
         def p1.y r2
         def pa r3 ( player action )
         def pb r4 ( button state )
         def box-done r5
         def box-cnt r6
+        def pbp r7 ( button pressed or repeated )
 
     ( xy @ distance )
         def x1 r10
@@ -49,16 +53,38 @@
 
 $init:
     leds-clear 0
-    timer-set 30 $frame
-    ( call $setup-level )
+    timer-set FPS $frame-main
+    level = 0
     call $load-level-from-rom
     halt
 
-$frame:
+$frame-main:
     key-frame
     leds-draw
+    ( TODO: mode -> game | transition )
     call $player-main
+    call $check-level-done
     halt
+
+$frame-transition:
+    if i == 0 0 :fi
+        level += 1
+        call $load-level-from-rom
+        timer-set FPS $frame-main
+        halt
+    fi:
+    leds-clear 1
+    leds-draw
+    i -= 1
+    halt
+
+$check-level-done:
+    if box-done == box-cnt 0 :fi
+        i = 30 ( number of trasition frames )
+        timer-set FPS $frame-transition
+        halt
+    fi:
+    return
 
 $player-main:
     call $check-keys
@@ -92,6 +118,7 @@ $player-main:
             ( move box into target )
             if t2 == tile.target 0 :fi
                 leds-set x2 y2 tile.box-at-target
+                box-done += 1
             fi:
             
             ( move box into empty space )
@@ -103,6 +130,7 @@ $player-main:
                 ( restore t1 )
                 if t1 == tile.box-at-target 0 :else
                     t1 = tile.target
+                    box-done -= 1
                     goto :fi
                 else:
                     t1 = tile.empty
@@ -123,7 +151,8 @@ $check-keys:
 
     check-up:
         key btn.up >pb
-        if pb == 1 0 :fi
+        call $btn-pressed-or-repeated ( >pbp )
+        if pbp == 1 0 :fi
             y1 -= 1
             y2 -= 2
             pa = 1
@@ -132,7 +161,8 @@ $check-keys:
 
     check-down:
         key btn.down >pb
-        if pb == 1 0 :fi
+        call $btn-pressed-or-repeated ( >pbp )
+        if pbp == 1 0 :fi
             y1 += 1
             y2 += 2
             pa = 1
@@ -141,7 +171,8 @@ $check-keys:
 
     check-left:
         key btn.left >pb
-        if pb == 1 0 :fi
+        call $btn-pressed-or-repeated ( >pbp )
+        if pbp == 1 0 :fi
             x1 -= 1
             x2 -= 2
             pa = 1
@@ -150,7 +181,8 @@ $check-keys:
 
     check-right:
         key btn.right >pb
-        if pb == 1 0 :fi
+        call $btn-pressed-or-repeated ( >pbp )
+        if pbp == 1 0 :fi
             x1 += 1
             x2 += 2
             pa = 1
@@ -185,6 +217,17 @@ $update-player-position-core:
     p1.y = y1
     return
 
+$btn-pressed-or-repeated:
+    if pb == 1 :then 0
+    if pb >= BTN.DELAY.INITIAL 0 :fi ( AND ) if pb % BTN.DELAY.REPEAT :fi :then
+    goto :fi
+    then:
+        pbp = 1
+        return
+    fi:
+        pbp = 0
+        return
+
 ( ========================================================================= )
 
 $setup-level:
@@ -204,8 +247,9 @@ $setup-level:
     return
 
 $load-level-from-rom:
+    leds-clear tile.empty
     box-done = 0
-    rom-bank LEVEL
+    rom-bank level
 
     i = 0
     rom-get i >p1.x    ; i += 1
@@ -227,10 +271,10 @@ $load-level-from-rom:
     end:
     return
 
-
 (
 $load-level-from-tape:
-    tape-bank 0
+    leds-clear tile.empty
+    tape-bank level
     tape-get >p1.x
     tape-get >p1.y
     tape-get >box-cnt
