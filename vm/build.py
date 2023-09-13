@@ -32,27 +32,34 @@ def config_as_js(config):
         js.append(f'vm.cfg.{k} = {v}')
     return '\n'.join(js)
 
-def vm_as_js(config, code, run=False):
+
+def vm_as_js(config):
     out = []
-    js = config_as_js(config)
-    out.append(js)
     parts = config['core.parts']
     for p in parts:
         fn = part_to_filename[p]
         js = open(ROOT+'/'+fn).read()
         out.append(js)
+    return '\n'.join(out)
+
+def code_as_js(code, run=False):
+    out = []
     out.append('vm.code = ' + code_as_str(code))
     out.append('vm_init()')
     if run or run==0:
         out.append(f'vm_run({run})')
     return '\n'.join(out)
 
-def js_and_html(js):
+
+def js_and_html(js1, js2, js3):
     html = []
     html.append('<html></html>')
-    html.append('<script>')
-    html.append(js)
-    html.append('</script>')
+    html.extend(['<script>',js1,'</script>'])
+    if js2:
+        html.extend(['<script>',js2,'</script>'])
+    else:
+        html.append('<script src="smol.js"></script>') # XXX
+    html.extend(['<script>',js3,'</script>'])
     return '\n'.join(html)
 
 def code_as_str(code):
@@ -71,6 +78,7 @@ import v1_asm as asm
 def build(path_in, path_out=None, path_cfg=None):
     if not path_cfg or not os.path.exists(path_cfg):
         path_cfg = ROOT+'/config.toml'
+        print('WARNING: using default config.toml')
     cfg = toml.load(open(path_cfg))
     print('\nCONFIG:\n', cfg) # XXX
     path_out = path_out or 'out.html'
@@ -81,8 +89,14 @@ def build(path_in, path_out=None, path_cfg=None):
     code = asm.text_to_code(text)
     print_code(code)
 
-    js = vm_as_js(cfg, code, run=0)
-    html = js_and_html(js)
+    config_js = config_as_js(cfg)
+    vm_js = vm_as_js(cfg)
+    code_js = code_as_js(code, run=0)
+    if 1 :
+        html = js_and_html(config_js, vm_js, code_js)
+    else:
+        open('smol.js','w').write(vm_js) # XXX
+        html = js_and_html(config_js, None, code_js) # XXX
     open(path_out, 'w').write(html)
 
 # =================================================================
