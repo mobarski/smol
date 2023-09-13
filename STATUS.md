@@ -10,7 +10,7 @@
 
 - [ ] vm-state-mk1 (low capacity mem, easy to copy/paste via url etc)
 
-- [ ] make name builds name.asm + name.toml (if available)
+- [x] make name builds name.asm + name.toml (if available)
 
 - [ ] build with external smol.js
 
