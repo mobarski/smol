@@ -374,3 +374,18 @@ call $fun
 
 ​	c) default = tape renamed to rom
 
+**notes**
+
+```
+a = 0 # rom addr
+rom-get a >x ; a += 1
+rom-get a >y ; a += 1
+rom-get a >z ; a += 1
+
+( vs )
+
+tape-get >x
+tape-get >y
+tape-get >z
+```
+

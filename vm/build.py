@@ -65,50 +65,13 @@ def print_code(code):
 
 # =================================================================
 
-# TODO: remove
-config = {
-    'core.registers': 256,
-    'core.parts': ['core', 'sugar','colors','leds','mouse','threads','text','timer','stack'],
-    #
-    'leds.width': 17,
-    'leds.height': 7,
-    'leds.size': 32,
-    'leds.radius': 15,
-    #
-    # 'colors.data': [
-    #     '#211e20',
-    #     '#555568',
-    #     '#a0a08b',
-    #     '#e9efec',
-    # ]
-    #
-    'colors.data': [
-        '#F5F5F5', # white smoke
-        '#D3D3D3', # light gray
-        '#808080', # gray
-        #
-        '#F08080', # light coral
-        #'#F4A460', # sandy brown
-        #'#FFA500', # orange
-        #'#FFFF00', # yellow
-        '#FFD700', # gold
-        #'#98FB98', # pale green
-        #'#00FF7F', # spring green
-        '#00FA9A', # medium spring green
-        #'#3CB371', # medium sea green
-        '#87CEFA', # light sky blue
-        #'#7B68EE', # medium slate blue
-        '#DDA0DD', # plum
-    ]
-}
-
-# =================================================================
-
 import sys; sys.path.append('../asm')
 import v1_asm as asm
 
 def build(path_in, path_out=None, path_cfg=None):
-    cfg = toml.load(open(path_cfg)) if path_cfg else config
+    if not path_cfg or not os.path.exists(path_cfg):
+        path_cfg = ROOT+'/config.toml'
+    cfg = toml.load(open(path_cfg))
     print('\nCONFIG:\n', cfg) # XXX
     path_out = path_out or 'out.html'
     if path_in=='-':
