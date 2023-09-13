@@ -2,6 +2,7 @@ vm.timer = {}
 vm.timer.addr = 0
 vm.timer.freq = 0
 vm.timer.tick = 0
+vm.timer.timer_id = 0
 //
 vm.timer.debug = []
 vm.timer.t0 = 0
@@ -30,7 +31,8 @@ function _vm_on_timer() {
 function _vm_set_timer() {
     if (vm.timer.freq==0) { return }
     let delay = Math.floor(1000 / vm.timer.freq) // TODO: more precise method (ie 60fps)
-    setTimeout(_vm_on_timer, delay)
+    clearTimeout(vm.timer.timer_id)
+    vm.timer.timer_id = setTimeout(_vm_on_timer, delay)
 }
 
 vm.ext['timer-set'] = vm_timer_set
