@@ -22,10 +22,6 @@
             "match": "[$][a-z0-9.?!-]+:",
             "name": "entity.name.section.smol"
         },
-        {
-            "match": "\\( [^)]+ \\)",
-            "name": "comment.block.documentation.smol"
-        },
 	{
 		"match": "\\b[-]?[0-9_]+\\b",
 		"name": "constant.numeric"
@@ -37,7 +33,24 @@
 	{
 		"match": "[>][a-z0-9.?!-]+",
 		"name": "storage.smol"
-	}
+	},
+
+        {
+            "match": "[#][^\n]*",
+            "name": "comment.line.documentation.smol"
+        },
+        {
+            "match": "\\([^)]+\\)",
+            "name": "comment.block.documentation.smol"
+        },
+        {
+            "match": "[{][^}]+[}]",
+            "name": "comment.block.documentation.smol"
+        },
+        {
+            "match": "\\[[^\\]]+\\]",
+            "name": "comment.block.documentation.smol"
+        }
     ],
     "scopeName": "source.smol"
 }
