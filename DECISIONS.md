@@ -138,7 +138,7 @@
 
 ​	e) `'r1`
 
-​	f) `%r1` - candidate
+​	f) `%r1` - candidate (similar to ASM)
 
 ​	g) `^r1` - candidate
 
@@ -148,19 +148,29 @@
 
 **options**:
 
-​	a) `code ( comment ) code`
+​	a) `code ( comment ) code` **-- current**
 
 ​	b) `code /* comment */ code`
 
-​	c) `code [ comment ] code`
+​	c) `code [ comment ] code` **-- current**
 
-​	e) `code { comment } code`
-
-
+​	e) `code { comment } code` **-- current**
 
 
 
+## line comments
 
+**options**:
+
+​	a) `# comment` - python, ruby, bash **-- current**
+
+​	b) `-- comment` - sql, lua, ada
+
+​	c) `; comment` - asm, lisp, haskel
+
+​	d) `% comment` - latex, matlab, octave
+
+​	e) `// comment` - whole c family
 
 
 
@@ -292,9 +302,11 @@ call $fun
     - 3x3 grid of 5x5 sprites (micro:bit) + 1px separator + 2x1px margin
     - 2x2 grid of 9x9 sprites + 1px separator - no margin
     - standard go board size
+    - allows first 52 levels of xsokoban
     
   - e) 21x21
     - 4x4 grid of 5x5 sprites, separator but no margin
+    - allows all 90 levels of xsokoban (20x17)
   
 - 2023-09-03: **we go with c)**
   - **reason**:2023-09-03: we go with c)
