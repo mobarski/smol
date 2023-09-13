@@ -8,7 +8,7 @@ vm.tape.banks = coalesce(vm.cfg.tape.banks, [[]])
 vm.init.push(_vm_tape_init)
 
 function vm_tape_bank() {
-    let b = get_op() // bank
+    let b = value_of(get_op()) // bank
     vm.tape.bank = b
     vm.tape.pos = 0
     if (vm.tape.banks[b] == undefined) {

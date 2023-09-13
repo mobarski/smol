@@ -7,7 +7,7 @@ vm.rom.banks = coalesce(vm.cfg.rom.banks, [[]])
 vm.init.push(_vm_rom_init)
 
 function vm_rom_bank() {
-    let b = get_op() // bank
+    let b = value_of(get_op()) // bank
     vm.rom.bank = b
     if (vm.rom.banks[b] == undefined) {
         console.log('bank not found', b)
