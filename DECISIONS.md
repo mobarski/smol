@@ -309,6 +309,7 @@ call $fun
     - allows all 90 levels of xsokoban (20x17)
   
 - 2023-09-03: **we go with c)**
+  
   - **reason**:2023-09-03: we go with c)
     
     reason:
@@ -387,5 +388,56 @@ rom-get a >z ; a += 1
 tape-get >x
 tape-get >y
 tape-get >z
+```
+
+```
+$load-level-from-rom:
+    leds-clear tile.empty
+    box-done = 0
+    rom-bank level
+
+    i = 0
+    rom-get i >p1.x    ; i += 1
+    rom-get i >p1.y    ; i += 1
+    rom-get i >box-cnt ; i += 1
+    leds-set p1.x p1.y tile.player
+
+    loop1:
+        rom-get i >n ; i += 1
+        rom-get i >t ; i += 1
+        if n == 0 :end 0
+        j = 0
+        loop2:
+            rom-get i >x1 ; i += 1
+            rom-get i >y1 ; i += 1
+            leds-set x1 y1 t
+            j += 1
+            if j < n :loop2 :loop1
+    end:
+    return
+```
+
+```
+$load-level-from-tape:
+    leds-clear tile.empty
+    tape-bank level
+    tape-get >p1.x
+    tape-get >p1.y
+    tape-get >box-cnt
+    box-done = 0
+
+    loop1:
+        tape-get >n
+        tape-get >t
+        if n == 0 :end 0
+        j = 0
+        loop2:
+            tape-get >x1
+            tape-get >y1
+            leds-set x1 y1 t
+            j += 1
+            if j < n :loop2 :loop1
+    end:
+    return
 ```
 

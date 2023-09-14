@@ -238,22 +238,6 @@ $btn-pressed-or-repeated:
 
 ( ========================================================================= )
 
-$setup-level:
-    p1.x = 1
-    p1.y = 1
-    leds-set p1.x p1.y tile.player
-    leds-set 5 4 tile.wall
-    leds-set 5 5 tile.wall
-    leds-set 5 6 tile.wall
-    leds-set 5 7 tile.wall
-    leds-set 5 8 tile.wall
-    leds-set 5 9 tile.wall
-    leds-set 8 5 tile.box
-    leds-set 8 8 tile.box
-    leds-set 1 5 tile.target
-    leds-set 1 8 tile.target
-    return
-
 $load-level-from-rom:
     leds-clear tile.empty
     box-done = 0
@@ -278,27 +262,3 @@ $load-level-from-rom:
             if j < n :loop2 :loop1
     end:
     return
-
-(
-$load-level-from-tape:
-    leds-clear tile.empty
-    tape-bank level
-    tape-get >p1.x
-    tape-get >p1.y
-    tape-get >box-cnt
-    box-done = 0
-
-    loop1:
-        tape-get >n
-        tape-get >t
-        if n == 0 :end 0
-        j = 0
-        loop2:
-            tape-get >x1
-            tape-get >y1
-            leds-set x1 y1 t
-            j += 1
-            if j < n :loop2 :loop1
-    end:
-    return
-)
