@@ -1,5 +1,5 @@
 'core.registers' = 100
-'core.parts' = ["core", "sugar","colors","leds","mouse","threads","text","timer","keys","stack","rom"]
+'core.parts' = ["core", "sugar","colors","leds","timer","keys","stack","rom"]
 
 'leds.width' = 19
 'leds.height' = 19
