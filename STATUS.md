@@ -20,7 +20,7 @@
 
   - [x] level transition
 
-  - [ ] restart
+  - [x] restart level
 
   - [ ] undo(n)
 

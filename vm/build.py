@@ -68,7 +68,9 @@ def code_as_str(code):
 def print_code(code):
     print('\nCODE:')
     for i in range(0,len(code),10):
-        print(f'{i:03}', code[i:i+10])
+        line = code[i:i+10]
+        #line = ' '.join([str(x) for x in line]) # XXX
+        print(f'{i:03}', line)
 
 # =================================================================
 

@@ -9,6 +9,8 @@
         def btn.right 1
         def btn.up    2
         def btn.down  3
+        def btn.undo  4
+        def btn.reset 5
 
     ( tiles )
         def tile.empty            0
@@ -187,6 +189,12 @@ $check-keys:
             x2 += 2
             pa = 1
             return
+        fi:
+
+    check-reset:
+        key btn.reset >pb
+        if pb == FPS 0 :fi
+            call $load-level-from-rom
         fi:
 
     pa = 0 ( no action )
