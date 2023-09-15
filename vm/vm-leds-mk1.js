@@ -62,8 +62,18 @@ function _vm_leds_init2() {
     container.style.justifyContent = 'center'
     container.style.alignItems = 'center'
     container.style.height = '100vh'
+    container.style.flexDirection = 'column' // NEW
 
-    // Append the canvas to the container
+    // Create a new title element
+    if (vm.cfg.leds.title) {
+        let title = document.createElement('h1')
+        title.textContent = vm.cfg.leds.title
+        title.style.textAlign = 'center'
+        container.appendChild(title)
+        document.title = title.textContent
+    }
+
+    // Append canvas to the container
     container.appendChild(canvas)
 
     // Append the container to the body of the document

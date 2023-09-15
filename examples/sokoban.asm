@@ -95,6 +95,9 @@ $player-main:
     leds-get x1 y1 >t1
     leds-get x2 y2 >t2
 
+    undo?:
+        ( TODO )
+
     move-into-empty-space?:
         if t1 == tile.empty 0 :fi
             call $update-player-position
@@ -195,6 +198,13 @@ $check-keys:
         key btn.reset >pb
         if pb == FPS 0 :fi
             call $load-level-from-rom
+        fi:
+
+    check-undo:
+        key btn.undo >pb
+        if pb == 1 0 :fi
+            ( TODO - indicate undo )
+            return
         fi:
 
     pa = 0 ( no action )

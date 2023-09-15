@@ -5,6 +5,7 @@
 'leds.height' = 19
 'leds.size' = 32
 'leds.radius' = 15
+'leds.title' = "'Smol Sokoban'" # !!! BUG !!!
 
 'colors.data' = [
     "#F5F5F5",
