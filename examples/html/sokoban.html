@@ -32,9 +32,16 @@ vm.init = []
 vm.trace = [] // XXX
 
 function vm_init() {
+	vm.ip = 0
+	vm.halt = false
+	vm.stop = false
 	for (var i=0; i<vm.init.length; i++) {
 		vm.init[i]()
 	}
+}
+
+function vm_load(code_as_text) {
+	vm.code = deserialize_code(code_as_text)
 }
 
 function vm_run(n_steps=0) {
@@ -172,8 +179,20 @@ function is_tgt(x) {
 	return ((x[0]=='>') && is_reg(x.slice(1)))
 }
 
+function deserialize_code(text) {
+	var tokens = text.split(/\s+/)
+	return tokens.map(x => is_num(x) ? parseFloat(x) : x)
+
+}
+
+// HELPERS
+
 function is_num(x) {
-	return !isNaN(x)
+	return !isNaN(x) && !isNaN(parseFloat(x))
+}
+
+function is_int(x) {
+	return !isNaN(x) && !isNaN(parseInt(x))
 }
 
 function coalesce(...args) {
@@ -514,7 +533,7 @@ function _vm_rom_init() {
 
 </script>
 <script>
-vm.code = ['nop','leds-clear',0,'timer-set',60,12,'r0','=',0,'call',377,'halt','nop','key-frame','leds-draw','call',60,'call',44,'halt','nop','if','r30','==',0,0,36,'r0','+=',1,'call',377,'timer-set',60,12,'halt','nop','leds-clear',1,'leds-draw','r30','-=',1,'halt','nop','if','r5','==','r6',0,58,'r30','=',30,'timer-set',60,20,'halt','nop','return','nop','call',177,'if','r3','==',0,175,0,'leds-get','r10','r11','>r21','leds-get','r12','r13','>r22','nop','if','r21','==',0,0,86,'call',299,'nop','nop','if','r21','==',3,0,96,'call',299,'nop','nop','if','r22','==',2,175,0,'if','r22','==',4,175,0,'if','r22','==',6,175,0,'if','r21','==',4,128,0,'if','r21','==',6,128,175,'nop','if','r22','==',3,0,142,'leds-set','r12','r13',6,'r5','+=',1,'nop','if','r22','==',0,0,153,'leds-set','r12','r13',4,'nop','if','r21','==',6,0,168,'r21','=',3,'r5','-=',1,'goto',172,'nop','r21','=',0,'nop','call',299,'nop','return','nop','r10','=','r1','r11','=','r2','r12','=','r1','r13','=','r2','nop','key',2,'>r4','call',346,'if','r7','==',1,0,212,'r11','-=',1,'r13','-=',2,'r3','=',1,'return','nop','nop','key',3,'>r4','call',346,'if','r7','==',1,0,235,'r11','+=',1,'r13','+=',2,'r3','=',1,'return','nop','nop','key',0,'>r4','call',346,'if','r7','==',1,0,258,'r10','-=',1,'r12','-=',2,'r3','=',1,'return','nop','nop','key',1,'>r4','call',346,'if','r7','==',1,0,281,'r10','+=',1,'r12','+=',2,'r3','=',1,'return','nop','nop','key',5,'>r4','if','r4','==',60,0,294,'call',377,'nop','r3','=',0,'return','nop','nop','if','r21','==',0,0,314,'call',331,'leds-set','r1','r2',5,'return','nop','nop','if','r21','==',3,0,329,'call',331,'leds-set','r1','r2',7,'return','nop','return','nop','leds-set','r1','r2','r20','r20','=','r21','r1','=','r10','r2','=','r11','return','nop','if','r4','==',1,367,0,'if','r4','>=',30,0,372,'if','r4','%',5,372,367,'goto',372,'nop','r7','=',1,'return','nop','r7','=',0,'return','nop','leds-clear',0,'r5','=',0,'rom-bank','r0','r30','=',0,'rom-get','r30','>r1','r30','+=',1,'rom-get','r30','>r2','r30','+=',1,'rom-get','r30','>r6','r30','+=',1,'leds-set','r1','r2',5,'nop','rom-get','r30','>r33','r30','+=',1,'rom-get','r30','>r34','r30','+=',1,'if','r33','==',0,458,0,'r31','=',0,'nop','rom-get','r30','>r10','r30','+=',1,'rom-get','r30','>r11','r30','+=',1,'leds-set','r10','r11','r34','r31','+=',1,'if','r31','<','r33',432,410,'nop','return']
+vm_load("nop leds-clear 0 timer-set 60 12 r0 = 0 call 377 halt nop key-frame leds-draw call 60 call 44 halt nop if r30 == 0 0 36 r0 += 1 call 377 timer-set 60 12 halt nop leds-clear 1 leds-draw r30 -= 1 halt nop if r5 == r6 0 58 r30 = 30 timer-set 60 20 halt nop return nop call 177 if r3 == 0 175 0 leds-get r10 r11 >r21 leds-get r12 r13 >r22 nop if r21 == 0 0 86 call 299 nop nop if r21 == 3 0 96 call 299 nop nop if r22 == 2 175 0 if r22 == 4 175 0 if r22 == 6 175 0 if r21 == 4 128 0 if r21 == 6 128 175 nop if r22 == 3 0 142 leds-set r12 r13 6 r5 += 1 nop if r22 == 0 0 153 leds-set r12 r13 4 nop if r21 == 6 0 168 r21 = 3 r5 -= 1 goto 172 nop r21 = 0 nop call 299 nop return nop r10 = r1 r11 = r2 r12 = r1 r13 = r2 nop key 2 >r4 call 346 if r7 == 1 0 212 r11 -= 1 r13 -= 2 r3 = 1 return nop nop key 3 >r4 call 346 if r7 == 1 0 235 r11 += 1 r13 += 2 r3 = 1 return nop nop key 0 >r4 call 346 if r7 == 1 0 258 r10 -= 1 r12 -= 2 r3 = 1 return nop nop key 1 >r4 call 346 if r7 == 1 0 281 r10 += 1 r12 += 2 r3 = 1 return nop nop key 5 >r4 if r4 == 60 0 294 call 377 nop r3 = 0 return nop nop if r21 == 0 0 314 call 331 leds-set r1 r2 5 return nop nop if r21 == 3 0 329 call 331 leds-set r1 r2 7 return nop return nop leds-set r1 r2 r20 r20 = r21 r1 = r10 r2 = r11 return nop if r4 == 1 367 0 if r4 >= 30 0 372 if r4 % 5 372 367 goto 372 nop r7 = 1 return nop r7 = 0 return nop leds-clear 0 r5 = 0 rom-bank r0 r30 = 0 rom-get r30 >r1 r30 += 1 rom-get r30 >r2 r30 += 1 rom-get r30 >r6 r30 += 1 leds-set r1 r2 5 nop rom-get r30 >r33 r30 += 1 rom-get r30 >r34 r30 += 1 if r33 == 0 458 0 r31 = 0 nop rom-get r30 >r10 r30 += 1 rom-get r30 >r11 r30 += 1 leds-set r10 r11 r34 r31 += 1 if r31 < r33 432 410 nop return")
 vm_init()
 vm_run(0)
 </script>

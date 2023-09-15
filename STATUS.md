@@ -6,6 +6,8 @@
 
 ### Next tasks
 
+- [ ] text based code loading -> vm_load(code_as_text)
+
 - [x] vm-rom-mk1
 
 - [ ] vm-state-mk1 (low capacity mem, easy to copy/paste via url etc)

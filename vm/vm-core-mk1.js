@@ -10,9 +10,16 @@ vm.init = []
 vm.trace = [] // XXX
 
 function vm_init() {
+	vm.ip = 0
+	vm.halt = false
+	vm.stop = false
 	for (var i=0; i<vm.init.length; i++) {
 		vm.init[i]()
 	}
+}
+
+function vm_load(code_as_text) {
+	vm.code = deserialize_code(code_as_text)
 }
 
 function vm_run(n_steps=0) {
@@ -150,8 +157,20 @@ function is_tgt(x) {
 	return ((x[0]=='>') && is_reg(x.slice(1)))
 }
 
+function deserialize_code(text) {
+	var tokens = text.split(/\s+/)
+	return tokens.map(x => is_num(x) ? parseFloat(x) : x)
+
+}
+
+// HELPERS
+
 function is_num(x) {
-	return !isNaN(x)
+	return !isNaN(x) && !isNaN(parseFloat(x))
+}
+
+function is_int(x) {
+	return !isNaN(x) && !isNaN(parseInt(x))
 }
 
 function coalesce(...args) {

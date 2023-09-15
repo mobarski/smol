@@ -44,7 +44,8 @@ def vm_as_js(config):
 
 def code_as_js(code, run=False):
     out = []
-    out.append('vm.code = ' + code_as_str(code))
+    #out.append('vm.code = ' + code_as_str(code))
+    out.append('vm_load("'+code_as_str(code)+'")')
     out.append('vm_init()')
     if run or run==0:
         out.append(f'vm_run({run})')
@@ -63,14 +64,16 @@ def js_and_html(js1, js2, js3):
     return '\n'.join(html)
 
 def code_as_str(code):
-    return repr(code).replace(', ',',')
+    #return repr(code).replace(', ',',')
+    _str = json.dumps(code).replace(", "," ").replace('"','')
+    return _str[1:-1]
 
 def print_code(code):
     print('\nCODE:')
     for i in range(0,len(code),10):
         line = code[i:i+10]
         line = ' '.join([str(x) for x in line]) # XXX
-        print(f'{i:03}', line)
+        print(f'{i:04}', line)
 
 # =================================================================
 
