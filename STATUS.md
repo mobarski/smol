@@ -6,7 +6,7 @@
 
 ### Next tasks
 
-- [ ] text based code loading -> vm_load(code_as_text)
+- [x] text based code loading -> vm_load(code_as_text)
 
 - [x] vm-rom-mk1
 
