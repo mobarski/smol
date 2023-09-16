@@ -1,0 +1,313 @@
+<html></html>
+<script>
+vm = {}
+vm.cfg = {}
+vm.cfg.core = {}
+vm.cfg.sugar = {}
+vm.cfg.colors = {}
+vm.cfg.screen = {}
+vm.cfg.core.registers = 100
+vm.cfg.core.parts = ['core', 'sugar', 'colors', 'screen']
+vm.cfg.screen.scale = 4
+</script>
+<script>
+// === CORE MK1 ===============================================================
+
+vm.ip = 0
+vm.code = []
+vm.reg = new Array(vm.cfg.core.registers).fill(0)
+vm.ext = {} // extensions
+vm.halt = false
+vm.stop = false // stop also the interrupt timer
+vm.init = []
+vm.trace = [] // XXX
+
+function vm_init() {
+	vm.ip = 0
+	vm.halt = false
+	vm.stop = false
+	for (var i=0; i<vm.init.length; i++) {
+		vm.init[i]()
+	}
+}
+
+function vm_load(code_as_text) {
+	vm.code = deserialize_code(code_as_text)
+}
+
+function vm_run(n_steps=0) {
+	var i = 0
+	let t0 = performance.now()
+	if (n_steps==0) {
+		for (i=0; (!vm.halt)&&(!vm.stop); i++) { vm_step() }
+	} else {
+		for (i=0; (i<n_steps)&&(!vm.halt)&&(!vm.stop); i++) { vm_step() }
+	}
+	//console.log('vm_run',i,'cycles',performance.now()-t0,'ms') // XXX
+}
+
+function vm_step() {
+	vm.trace.push([vm.ip,vm.code[vm.ip],vm.code[vm.ip+1]]) // XXX
+	let t = get_op()
+	if (t=='if') {
+		// CONDITIONAL JUMP
+		let a = get_op()
+		let op = get_op()
+		let b = get_op()
+		let addr_then = get_op()
+		let addr_else = get_op()
+		if (vm_alu(a,op,b)) {
+			vm.ip = addr_then ? addr_then : vm.ip
+		} else {
+			vm.ip = addr_else ? addr_else : vm.ip
+		}
+	} else if (t in vm.ext) {
+		// EXTENSION
+		vm.ext[t]()
+	} else {
+		// ALU
+		let op = get_op()
+		let b = get_op()
+		let val = vm_alu(t,op,b)
+		vm_set(t, val)
+	}
+}
+
+function get_op() {
+	if (vm.ip>vm.code.length) { console.log('end of code reached!'); vm.stop=true; return 'halt' } // XXX
+	let op = vm.code[vm.ip]
+	vm.ip += 1
+	return op
+}
+
+function vm_alu(a,op,b) {
+	var a = value_of(a)
+	var b = value_of(b)
+	switch (op) {
+	    case  '+': case '+=':  return a+b
+	    case  '-': case '-=':  return a-b
+	    case  '*': case '*=':  return a*b
+	    case  '/': case '/=':  return a/b
+	    case  '%': case '%=':  return a%b
+	    case  '&': case '&=':  return a&b
+	    case  '|': case '|=':  return a|b
+	    case  '^': case '^=':  return a^b
+	    case '<<': case '<<=': return a<<b
+	    case '>>': case '>>=': return a>>b
+	    case '//': case '//=': return Math.floor(a/b)
+	    case  '=': return b
+	    case  '<': return a<b
+	    case  '>': return a>b
+	    case '<=': return a<=b
+	    case '>=': return a>=b
+	    case '==': return a==b
+	    case '!=': return a!=b
+	    case '&&': return a&&b
+	    case '||': return a||b
+		default: console.log('unknown op',op,'a',a,'b',b,'ip',vm.ip); vm.stop=true; return 0
+    }
+}
+
+
+function vm_set(x, val) {
+	if (is_ref(x)) {
+		let r = get_ref(x)
+		vm.reg[r] = val
+	} else if (is_reg(x)){
+		let r = get_reg(x)
+		vm.reg[r] = val
+	} else if (is_tgt(x)) {
+		let r = get_tgt(x)
+		vm.reg[r] = val
+	}
+}
+
+function value_of(x) {
+	if (is_num(x)) {
+		return x
+	} else if (is_reg(x)) {
+		let r = get_reg(x)
+		return vm.reg[r]
+	} else if (is_ref(x)) {
+		let r = get_ref(x)
+		return vm.reg[r]
+	}
+	console.log('unknown value',x,'ip',vm.ip); vm.stop=true; return 0
+}
+
+// ie: r123 -> 123
+function get_reg(x) {
+	//if (typeof(x) != 'string') { console.log('get_reg',x,'ip',vm.ip); vm.stop=true; return } // XXX
+	return parseInt(x.slice(1))
+}
+
+// ie: >r123 -> 123
+function get_tgt(x) {
+	return parseInt(x.slice(2))
+}
+
+// ie: @r123 -> reg[123]
+function get_ref(x) {
+	//if (typeof(x) != 'string') { console.log('get_ref',x,'ip',vm.ip); vm.stop=true; return } // XXX
+	let r = get_reg(x.slice(1))
+	return vm.reg[r]
+}
+
+function is_reg(x) {
+	if (typeof(x) != 'string') { return false }
+	if (x[0]!='r') { return false }
+	let r = get_reg(x)
+	return ((x[0]=='r') && (r>=0) && (r<vm.cfg.core.registers))
+}
+
+function is_ref(x) {
+	if (typeof(x) != 'string') { return false }
+	return ((x[0]=='@') && is_reg(x.slice(1)))
+}
+
+function is_tgt(x) {
+	if (typeof(x) != 'string') { return false }
+	return ((x[0]=='>') && is_reg(x.slice(1)))
+}
+
+function deserialize_code(text) {
+	var tokens = text.split(/\s+/)
+	return tokens.map(x => is_num(x) ? parseFloat(x) : x)
+
+}
+
+// HELPERS
+
+function is_num(x) {
+	return !isNaN(x) && !isNaN(parseFloat(x))
+}
+
+function is_int(x) {
+	return !isNaN(x) && !isNaN(parseInt(x))
+}
+
+function coalesce(...args) {
+    for (let arg of args) {
+        if (arg !== null && arg !== undefined) {
+            return arg;
+        }
+    }
+    return null;
+}
+
+// === SUGAR MK1 ========================================================================
+
+function vm_goto() {
+	vm.ip = get_op() // TODO: value_of(get_op()) -> computed goto
+}
+
+function vm_halt() {
+	vm.ip -= 1
+	vm.halt = true
+}
+
+function vm_stop() {
+	vm.ip -= 1
+	vm.stop = true
+}
+
+function vm_nop() {
+}
+
+function vm_log() {
+	let op = get_op()
+	let val = value_of(op)
+	console.log('log',op,val)
+}
+
+function vm_assert() {
+	let a = get_op()
+	let op = get_op()
+	let b = get_op()
+	let val = vm_alu(a,op,b)
+	if (!val) {
+		console.log('assertion failed:',a,op,b)
+		vm.halt = true
+	}
+}
+
+vm.ext['goto'] = vm_goto
+vm.ext['halt'] = vm_halt
+vm.ext['stop'] = vm_stop
+vm.ext['log'] = vm_log
+vm.ext['nop'] = vm_nop
+vm.ext['assert'] = vm_assert
+
+// === COLORS MK1 =============================================================
+
+vm.colors = {}
+vm.colors.rgb = coalesce(vm.cfg.colors.data, ['#000000','#ffffff'])
+
+function vm_color(x) {
+	let id = x % vm.colors.rgb.length;
+	return vm.colors.rgb[id]
+}
+
+// === SCREEN MK1 =============================================================
+
+vm.screen = {}
+vm.screen.dom_id = coalesce(vm.cfg.screen.dom_id, 'vm-screen')
+vm.screen.height = coalesce(vm.cfg.screen.height, 128)
+vm.screen.width  = coalesce(vm.cfg.screen.width,  128)
+vm.screen.scale  = coalesce(vm.cfg.screen.scale, 1)
+vm.init.push(_vm_init_screen2)
+
+
+function _vm_init_screen() {
+	let scale = vm.cfg.screen.scale
+	let canvas = document.getElementById(vm.screen.dom_id)
+	canvas.width = vm.screen.width * scale
+	canvas.height = vm.screen.height * scale
+	vm.screen.ctx = canvas.getContext("2d") // TODO: vs ("2d", { alpha: false })
+	vm.screen.ctx.scale(scale,scale)
+}
+
+function _vm_init_screen2() {
+	let scale = vm.screen.scale
+    let canvas = document.createElement('canvas')
+    canvas.width = vm.screen.width * scale
+    canvas.height = vm.screen.height * scale
+    //
+    // Create a new container and apply centering styles
+    let container = document.createElement('div')
+    container.style.display = 'flex'
+    container.style.justifyContent = 'center'
+    container.style.alignItems = 'center'
+    container.style.height = '100vh'
+    container.style.flexDirection = 'column' // NEW
+
+    // Append canvas to the container
+    container.appendChild(canvas)
+
+    // Append the container to the body of the document
+    document.body.appendChild(container)
+    //document.body.appendChild(canvas)
+
+    //
+    vm.screen.ctx = canvas.getContext("2d")
+	vm.screen.ctx.scale(scale,scale)
+    vm.screen.canvas = canvas
+}
+
+// default resolution candidates:
+// - 160x128 (common display for micro:bit)
+// - 160x120 (makecode arcade)
+// - 160x144 (gbc)
+// - 128x128 (pico-8)
+// - 128x64 (8-lined dot-matrix display)
+// - 64x64 (lowrezjam)
+// ----------------------------
+// - 128x160 (common display for micro:bit, rotated for mobile)
+// - 160x160 (???)
+
+</script>
+<script>
+vm_load("halt")
+vm_init()
+vm_run(0)
+</script>

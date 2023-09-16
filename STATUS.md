@@ -6,6 +6,13 @@
 
 ### Next tasks
 
+- [ ] leds vs screen
+- [ ] turtle
+
+### Tasks
+
+- [ ] html template passed via config
+
 - [x] text based code loading -> vm_load(code_as_text)
 
 - [x] vm-rom-mk1
@@ -61,8 +68,6 @@
 - [x] examples runnable on github (ie: https://mobarski.github.io/pages/smol/html/paint-v4.html)
 
 - [x] CLI + file based configuration
-
-- [ ] leds vs screen
 
 - [ ] screen vs time vs threads (requestAnimationFrame)
 

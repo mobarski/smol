@@ -18,6 +18,7 @@ part_to_filename = {
     'timer':   'vm-timer-mk1.js',
     'rom':     'vm-rom-mk1.js',
     'tape':    'vm-tape-mk1.js',
+    'screen':  'vm-screen-mk1.js',
 }
 
 def config_as_js(config):

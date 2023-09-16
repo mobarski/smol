@@ -1,0 +1,4 @@
+'core.registers' = 100
+'core.parts' = ["core", "sugar","colors","screen"]
+
+'screen.scale' = 4

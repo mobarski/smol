@@ -19,7 +19,7 @@
 
 ​	c) itsy 
 
-​	d) kiss
+​	d) kiss (because of the :* ... *: symbols)
 
 ​	e) kis (keep it simple/smol)
 
@@ -373,7 +373,11 @@ call $fun
 
 ​	b) default = tape
 
-​	c) default = tape renamed to rom
+​	c) default = tape (renamed to rom)
+
+​	e) default = tape (renamed to file)
+
+
 
 **notes**
 
