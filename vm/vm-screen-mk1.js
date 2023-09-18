@@ -8,6 +8,24 @@ vm.screen.scale  = coalesce(vm.cfg.screen.scale, 1)
 vm.init.push(_vm_init_screen2)
 
 
+function vm_screen_clear() {
+    vm.screen.ctx.clearRect(0, 0, vm.screen.width, vm.screen.height)
+}
+
+function vm_screen_rect() {
+    let x = value_of(get_op())
+    let y = value_of(get_op())
+    let w = value_of(get_op())
+    let h = value_of(get_op())
+    vm.screen.ctx.fillRect(x, y, w, h)
+}
+
+vm.ext['screen-clear'] = vm_screen_clear
+vm.ext['screen-rect'] = vm_screen_rect
+
+
+// === INTERNAL ===
+
 function _vm_init_screen() {
 	let scale = vm.cfg.screen.scale
 	let canvas = document.getElementById(vm.screen.dom_id)

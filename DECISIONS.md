@@ -63,6 +63,22 @@
 
     
 
+## types
+
+**options:**
+
+​	a) int only
+
+​	b) int + float **-- current, makes designing a VM for a static typed language more complicated**
+
+​	c) float only
+
+**decision:**
+
+​	???
+
+
+
 ## local labels
 
 **options**:

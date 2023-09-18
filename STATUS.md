@@ -6,8 +6,9 @@
 
 ### Next tasks
 
-- [ ] leds vs screen
-- [ ] turtle
+- [ ] paint (leds based)
+- [ ] persistent memory (for images / maps)
+- [ ] character based display
 
 ### Tasks
 
@@ -16,6 +17,10 @@
 - [x] text based code loading -> vm_load(code_as_text)
 
 - [x] vm-rom-mk1
+
+- [ ] leds vs screen
+
+- [ ] turtle
 
 - [ ] vm-state-mk1 (low capacity mem, easy to copy/paste via url etc)
 
