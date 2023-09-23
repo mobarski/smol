@@ -420,7 +420,7 @@ Pop value from the stack.
 
 #### tape-select
 
-`tape-select b`
+`tape-select t`
 
 Switch tape to t. Stores current position and restores the position of the new tape.
 
