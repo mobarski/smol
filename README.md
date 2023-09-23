@@ -36,7 +36,7 @@ The core VM has:
   - ALU operation
   - conditional jump
   - extension call
-- 256 general-purpose registers (`r0-r255`)
+- 100 general-purpose registers (`r0-r99`)
 - `ip` register
 -  `code` memory
 - extensions dictionary (`ext`)
