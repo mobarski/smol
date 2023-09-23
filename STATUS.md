@@ -1,12 +1,9 @@
 # Progress
 
-### WIP
-
-- sokoban
-
 ### Next tasks
 
-- [ ] paint (leds based)
+- [ ] paint (leds + tape + keys)
+- [ ] sokoban (50 orig levels, level 0, the end)
 
 ### Tasks
 
@@ -120,37 +117,6 @@
 - [x] text vs banks
 
   
-
-### Extension modules
-
-| extension             | interface    | implementation | config       | tested       | docs         | notes                            |
-| --------------------- | ------------ | -------------- | ------------ | ------------ | ------------ | -------------------------------- |
-| stack                 | ●●● ●        | ●●● ●          |              | ○○○ ○        | ○○○ ○        |                                  |
-| colors                | ●            | ●              | ●            | ●            | ○            |                                  |
-| leds                  | ●●● ●●       | ●●● ●●         | ●●● ●        | ●●● ○○       | ○○○ ○○       |                                  |
-| threads (cooperative) | ●●● ●        | ●●● ●          | ●            | ●●○ ○        | ○○○ ○        | errors: -id                      |
-| text                  | ●●● ●●       | ●●● ●●●        | ●●●          | ●●● ●○○      | ○○○ ○○○      | mk1 = ala 24a2<br />banks!       |
-| timer                 | ●            | ●●●            |              | ●            | ○            | TODO: better delay               |
-| mouse/touch           | ●●● ●        | ●●● ●●● ●●●    | ○○           | ○○○ ○        | ○○○ ○        |                                  |
-| screen                |              |                | ●●●○         |              |              | pages, blit                      |
-| ------------          | ------------ | ------------   | ------------ | ------------ | ------------ | ------------                     |
-| random                |              |                |              |              |              |                                  |
-| time                  |              |                |              |              |              |                                  |
-| palettes              | ●            | ●              | ○            | ○            | ○            | embed selected palettes at build |
-| pads                  |              |                |              |              |              | NES/GB style (4+2+2) x 4?        |
-| keys                  |              |                |              |              |              |                                  |
-| math                  |              |                |              |              |              |                                  |
-| rom                   |              |                |              |              |              |                                  |
-| ram                   |              |                |              |              |              |                                  |
-| draw                  |              |                |              |              |              |                                  |
-| sprites               |              |                |              |              |              |                                  |
-| particles             |              |                |              |              |              |                                  |
-| sound                 |              |                |              |              |              |                                  |
-| font                  |              |                |              |              |              |                                  |
-| music                 |              |                |              |              |              |                                  |
-| micro:bit             |              |                |              |              |              |                                  |
-
-
 
 ### Assembly
 
