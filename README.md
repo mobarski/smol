@@ -197,7 +197,7 @@ Local labels are only visible between between two global labels.
 
 example use:
 
-```
+```assembly
 call $aaa (logs: 111 333)
 call $bbb (logs: 999 777)
 halt
