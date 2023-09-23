@@ -1,13 +1,23 @@
 # Smol
 
+Smol is a minimal register-based virtual machine and assembly language designed for building simple games and applications.
+
+It focuses on:
+
+- simplicity
+- modularity
+- readability (take a look at [this](examples/sokoban.asm))
+- portability
 
 
-## Idea
 
-- Simple register-based VM that can be easily extended (highly modular)
-- Simple assembly code that reads more like higher level language
-- VM extensions that do the heavy-lifting AND act as facades AND adapters
-- Everything compiled into a single file
+## Features
+
+- Tiny VM with only 3 core instructions (ALU ops, conditional jump and extension ops)
+- Programs compile into a single HTML file
+- Modular and extensible via extensions
+- Easy to read assembly language (looks like a higher level language)
+- Great for education and permacomputing
 
 
 
