@@ -57,7 +57,7 @@ $init:
     leds-clear 0
     timer-set FPS $frame-main
     level = 0
-    call $load-level-from-rom
+    call $load-level
     halt
 
 $frame-main:
@@ -71,7 +71,7 @@ $frame-main:
 $frame-transition:
     if i == 0 0 :fi
         level += 1
-        call $load-level-from-rom
+        call $load-level
         timer-set FPS $frame-main
         halt
     fi:
@@ -197,7 +197,7 @@ $check-keys:
     check-reset:
         key btn.reset >pb
         if pb == FPS 0 :fi
-            call $load-level-from-rom
+            call $load-level
         fi:
 
     check-undo:
@@ -248,25 +248,29 @@ $btn-pressed-or-repeated:
 
 ( ========================================================================= )
 
-$load-level-from-rom:
+$load-level:
+    call $load-level-from-tape
+    return
+
+$load-level-from-tape:
     leds-clear tile.empty
     box-done = 0
-    rom-bank level
+    tape-select level
+    tape-seek 0 0
 
-    i = 0
-    rom-get i >p1.x    ; i += 1
-    rom-get i >p1.y    ; i += 1
-    rom-get i >box-cnt ; i += 1
+    tape-read >p1.y
+    tape-read >p1.x
+    tape-read >box-cnt
     leds-set p1.x p1.y tile.player
 
     loop1:
-        rom-get i >n ; i += 1
-        rom-get i >t ; i += 1
+        tape-read >n
+        tape-read >t
         if n == 0 :end 0
         j = 0
         loop2:
-            rom-get i >x1 ; i += 1
-            rom-get i >y1 ; i += 1
+            tape-read >x1
+            tape-read >y1
             leds-set x1 y1 t
             j += 1
             if j < n :loop2 :loop1

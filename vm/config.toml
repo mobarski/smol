@@ -26,7 +26,7 @@
 ]
 
 # XXX
-'tape.banks' = [
+'tape.tapes' = [
     # bank 0
     [111,222,333,444,555],
     # bank 1

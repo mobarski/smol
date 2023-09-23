@@ -1,0 +1,13 @@
+'core.registers' = 100
+'core.parts' = ["core", "sugar", "tape"]
+
+'tape.tapes' = [
+    # tape 0
+    [111,222,333,444,555],
+    # tape 1
+    [77,66,55,44,33],
+    # tape 2
+    [],
+    # tape 3
+    [],
+]

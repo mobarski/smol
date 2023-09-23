@@ -7,10 +7,12 @@
 ### Next tasks
 
 - [ ] paint (leds based)
-- [ ] persistent memory (for images / maps)
-- [ ] character based display
 
 ### Tasks
+
+- [x] persistent memory (for images / maps) - tape???
+
+- [ ] character based display
 
 - [ ] html template passed via config
 

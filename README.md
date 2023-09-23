@@ -414,6 +414,62 @@ Pop value from the stack.
 
 
 
+### Tape
+
+
+
+#### tape-select
+
+`tape-select b`
+
+Switch tape to t. Stores current position and restores the position of the new tape.
+
+
+
+#### tape-read
+
+`tape-read >x`
+
+Read value stored at current position and write it to x. Advance tape position.
+
+
+
+#### tape-write
+
+`tape-write x`
+
+Write x at the current position and advance the tape.
+
+
+
+#### tape-seek
+
+`tape-seek pos mode`
+
+Seek to position `pos` relative to `mode`:
+
+- `0` - beginning of tape
+- `1` - current position
+- `2` - end of tape
+
+
+
+#### tape-tell
+
+`tape-tell >x`
+
+Store tape position in x.
+
+
+
+#### tape-len
+
+`tape-len >x`
+
+Store tape length in x.
+
+
+
 ### Text
 
 
